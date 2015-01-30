@@ -1,0 +1,20 @@
+{
+    "autoload": {
+        "psr-0": {
+            "fkooman\\IndieCert": "src/"
+        }
+    },
+    "description": "IndieCert is a distributed authentication service using X.509 client certificates.",
+    "license": " AGPL-3.0",
+    "name": "fkooman/indiecert",
+    "require": {
+        "ext-openssl": "*",
+        "fkooman/cert-parser": "~0.1.7",
+        "fkooman/ini": "~0.2.0",
+        "fkooman/rest": "~0.6.5",
+        "guzzle/guzzle": "~3.0",
+        "php": ">=5.3.3",
+        "phpseclib/phpseclib": "~0.3.9",
+        "twig/twig": "~1.15"
+    }
+}

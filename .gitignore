@@ -1,0 +1,4 @@
+/vendor
+/data
+/config/*.ini
+/.php_cs.cache

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Keygen</title>
+  <!-- <link rel="stylesheet" type="text/css" href="css/default.css"> -->
+</head>
+<body>
+    <h1>Keygen</h1>
+    <p>This page will generate a certificate for use by your browser to
+    authenticate to web servers that support 'client certificates'.</p>
+
+    <form method="post">
+        <keygen name="spkac" challenge="{{ certChallenge|e }}" keytype="RSA">
+        <input type="submit" value="Generate">
+    </form>
+</body>
+</html>
