@@ -114,21 +114,8 @@ class IndieCertService extends Service
             openssl_random_pseudo_bytes(8)
         );
 
-        $configTemplateDir = dirname(dirname(dirname(__DIR__))).'/config/views';
-        $defaultTemplateDir = dirname(dirname(dirname(__DIR__))).'/views';
+        $twig = $this->getTwig();
 
-        $templateDirs = array();
-
-        // the template directory actually needs to exist, otherwise the
-        // Twig_Loader_Filesystem class will throw an exception when loading
-        // templates, the actual template does not need to exist though...
-        if (false !== is_dir($configTemplateDir)) {
-            $templateDirs[] = $configTemplateDir;
-        }
-        $templateDirs[] = $defaultTemplateDir;
-
-        $loader = new Twig_Loader_Filesystem($templateDirs);
-        $twig = new Twig_Environment($loader);
         return $twig->render(
             'keygenPage.twig',
             array(
@@ -207,10 +194,14 @@ class IndieCertService extends Service
         }
 
         if (!in_array($certFingerprint, $certFingerprints)) {
-            throw new ForbiddenException(
-                sprintf(
-                    'fingerprint does not match, we expected to find "%s"',
-                    $certFingerprint
+
+            $twig = $this->getTwig();
+
+            return $twig->render(
+                'nonMatchingFingerprint.twig',
+                array(
+                    'me' => $me,
+                    'certFingerprint' => $certFingerprint
                 )
             );
         }
@@ -300,5 +291,24 @@ class IndieCertService extends Service
                 'host for client_id and redirect_uri must match'
             );
         }
+    }
+
+    private function getTwig()
+    {
+        $configTemplateDir = dirname(dirname(dirname(__DIR__))).'/config/views';
+        $defaultTemplateDir = dirname(dirname(dirname(__DIR__))).'/views';
+
+        $templateDirs = array();
+
+        // the template directory actually needs to exist, otherwise the
+        // Twig_Loader_Filesystem class will throw an exception when loading
+        // templates, the actual template does not need to exist though...
+        if (false !== is_dir($configTemplateDir)) {
+            $templateDirs[] = $configTemplateDir;
+        }
+        $templateDirs[] = $defaultTemplateDir;
+
+        $loader = new Twig_Loader_Filesystem($templateDirs);
+        return new Twig_Environment($loader);
     }
 }

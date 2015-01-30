@@ -1,0 +1,18 @@
+body {
+    font-family: sans-serif;
+    text-align: justify;
+}
+
+div#container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+code { 
+    background: hsl(220, 80%, 90%); 
+}
+
+pre {
+    white-space: pre-wrap;
+    background: hsl(30,80%,90%);
+}
