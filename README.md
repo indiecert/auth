@@ -1,7 +1,6 @@
 # Introduction
-This is the IndieCert project. A authentication service using self-signed 
-client certificates. The project includes a CA and a way to easily enroll
-clients with client certificates.
+IndieCert is an authentication service using client certificates. This 
+includes a CA and an easy way to enroll clients.
 
 # Installation
 RPM packages are available for Fedora and CentOS/RHEL:

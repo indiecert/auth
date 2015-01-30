@@ -4,7 +4,7 @@
             "fkooman\\IndieCert": "src/"
         }
     },
-    "description": "IndieCert is a distributed authentication service using X.509 client certificates.",
+    "description": "Authentication service using client certificates",
     "license": " AGPL-3.0",
     "name": "fkooman/indiecert",
     "require": {
