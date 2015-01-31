@@ -19,7 +19,7 @@ namespace fkooman\IndieCert;
 
 use fkooman\Http\Request;
 use fkooman\Http\Response;
-use fkooman\Http\FormResponse;
+use fkooman\Http\JsonResponse;
 use fkooman\Rest\Service;
 use Twig_Loader_Filesystem;
 use Twig_Environment;
@@ -117,9 +117,10 @@ class IndieCertService extends Service
         $twig = $this->getTwig();
 
         return $twig->render(
-            'keygenPage.twig',
+            'enrollPage.twig',
             array(
-                'certChallenge' => $certChallenge
+                'certChallenge' => $certChallenge,
+                'referrer' => $request->getHeader('HTTP_REFERER')
             )
         );
     }
@@ -169,9 +170,13 @@ class IndieCertService extends Service
 
         $clientCert = $request->getHeader('SSL_CLIENT_CERT');
         if (null === $clientCert || 0 === strlen($clientCert)) {
-            // FIXME: this is a bit ugly...but it works for now
-            // if no certificate is available or user chose not to send one
-            return new RedirectResponse('enroll', 302);
+            $twig = $this->getTwig();
+
+            return $twig->render(
+                'noCert.twig',
+                array(
+                )
+            );
         }
 
         // determine certificate fingerprint
@@ -194,11 +199,10 @@ class IndieCertService extends Service
         }
 
         if (!in_array($certFingerprint, $certFingerprints)) {
-
             $twig = $this->getTwig();
 
             return $twig->render(
-                'nonMatchingFingerprint.twig',
+                'missingFingerprint.twig',
                 array(
                     'me' => $me,
                     'certFingerprint' => $certFingerprint
@@ -232,29 +236,32 @@ class IndieCertService extends Service
         $indieCode = $this->pdoStorage->getIndieCode($code);
 
         if (false === $indieCode) {
-            $response = new FormResponse(404);
+            $response = new JsonResponse(400);
             $response->setContent(
                 array(
-                    'error' => 'invalid_request',
-                    'error_description' => 'the code provided was not valid',
+                    'error' => 'invalid_request'
                 )
             );
+
             return $response;
         }
 
         if ($clientId !== $indieCode['client_id']) {
+            // FIXME: this MUST be JSON response!
             throw new BadRequestException('non matching client_id');
         }
         if ($redirectUri !== $indieCode['redirect_uri']) {
+            // FIXME: this MUST be JSON response!
             throw new BadRequestException('non matching redirect_uri');
         }
 
-        $response = new FormResponse();
+        $response = new JsonResponse();
         $response->setContent(
             array(
                 'me' => $indieCode['me']
             )
         );
+
         return $response;
     }
 

@@ -16,3 +16,14 @@ pre {
     white-space: pre-wrap;
     background: hsl(30,80%,90%);
 }
+
+span.sup {
+    vertical-align: super;
+    font-size: 75%;
+    color: #888;
+}
+
+div.footnotes {
+    font-size: 75%;
+    color: #888;
+}
