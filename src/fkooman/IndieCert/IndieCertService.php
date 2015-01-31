@@ -26,7 +26,6 @@ use Twig_Environment;
 use Guzzle\Http\Client;
 use fkooman\X509\CertParser;
 use fkooman\Http\Uri;
-use fkooman\Http\Session;
 use fkooman\Http\RedirectResponse;
 use fkooman\Http\Exception\UriException;
 use fkooman\Http\Exception\BadRequestException;
@@ -43,24 +42,16 @@ class IndieCertService extends Service
     /** @var fkooman\RelMeAuth\PdoStorage */
     private $pdoStorage;
 
-    /** @var fkooman\Http\Session */
-    private $session;
-
     /** @var Guzzle\Http\Client */
     private $client;
 
-    public function __construct($caCrt, $caKey, PdoStorage $pdoStorage, Session $session = null, Client $client = null)
+    public function __construct($caCrt, $caKey, PdoStorage $pdoStorage, Client $client = null)
     {
         parent::__construct();
 
         $this->caCrt = $caCrt;
         $this->caKey = $caKey;
         $this->pdoStorage = $pdoStorage;
-
-        if (null === $session) {
-            $session = new Session('IndieCert');
-        }
-        $this->session = $session;
 
         if (null === $client) {
             $client = new Client();
@@ -163,10 +154,6 @@ class IndieCertService extends Service
         $me = $request->getQueryParameter('me');
         $clientId = $request->getQueryParameter('client_id');
         $redirectUri = $request->getQueryParameter('redirect_uri');
-
-        $this->session->setValue('me', $me);
-        $this->session->setValue('client_id', $clientId);
-        $this->session->setValue('redirect_uri', $redirectUri);
 
         $clientCert = $request->getHeader('SSL_CLIENT_CERT');
         if (null === $clientCert || 0 === strlen($clientCert)) {

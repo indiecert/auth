@@ -20,7 +20,6 @@ require_once dirname(__DIR__).'/vendor/autoload.php';
 use fkooman\Ini\IniReader;
 use fkooman\Http\Exception\HttpException;
 use fkooman\Http\Exception\InternalServerErrorException;
-use fkooman\Http\Session;
 use fkooman\IndieCert\IndieCertService;
 use fkooman\IndieCert\PdoStorage;
 use Guzzle\Http\Client;
@@ -42,13 +41,10 @@ try {
     );
     $pdoStorage = new PdoStorage($pdo);
 
-    // SESSION
-    $session = new Session('IndieCert', true);
-
     // HTTP CLIENT
     $client = new Client();
 
-    $service = new IndieCertService($caCrt, $caKey, $pdoStorage, $session, $client);
+    $service = new IndieCertService($caCrt, $caKey, $pdoStorage, $client);
     $service->run()->sendResponse();
 } catch (Exception $e) {
     if ($e instanceof HttpException) {
