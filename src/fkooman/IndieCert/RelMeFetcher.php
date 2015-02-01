@@ -18,6 +18,7 @@
 namespace fkooman\IndieCert;
 
 use Guzzle\Http\Client;
+use Guzzle\Plugin\History\HistoryPlugin;
 
 class RelMeFetcher
 {
@@ -34,8 +35,30 @@ class RelMeFetcher
 
     public function fetchRel($profileUrl)
     {
-        $profilePage = $this->client->get($profileUrl)->send()->getBody();
+        $request = $this->client->get($profileUrl);
+
+        // we track all URLs on the redirect path (if any) and make sure none
+        // of them redirect to a HTTP URL. Unfortunately Guzzle 3 can not do
+        // this by default but we need this "hack". This is fixed in Guzzle 4+
+        // see https://github.com/guzzle/guzzle/issues/841
+        $history = new HistoryPlugin();
+        $request->addSubscriber($history);
+        $response = $request->send();
+
+        $effectiveUrl = $response->getEffectiveUrl();
+
+        foreach ($history->getAll() as $transaction) {
+            if ('https' !== $transaction['request']->getUrl(true)->getScheme()) {
+                throw new \Exception('wow...redirect to http on our path, are you crazy?!');
+            }
+        }
+
+        $profilePage = $response->getBody();
         $htmlParser = new HtmlParser();
-        return $htmlParser->getRelLinks($profilePage);
+
+        return array(
+            'profileUrl' => $response->getEffectiveUrl(),
+            'profileBody' => $htmlParser->getRelLinks($profilePage)
+        );
     }
 }

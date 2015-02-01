@@ -149,11 +149,11 @@ class IndieCertService extends Service
     public function getAuth(Request $request)
     {
         // first validate the request
-        $this->validateQueryParameters($request);
+        $validatedParameters = $this->validateQueryParameters($request);
 
-        $me = $request->getQueryParameter('me');
-        $clientId = $request->getQueryParameter('client_id');
-        $redirectUri = $request->getQueryParameter('redirect_uri');
+        $me = $validatedParameters['me'];
+        $clientId = $validatedParameters['client_id'];
+        $redirectUri = $validatedParameters['redirect_uri'];
 
         $clientCert = $request->getHeader('SSL_CLIENT_CERT');
         if (null === $clientCert || 0 === strlen($clientCert)) {
@@ -174,12 +174,12 @@ class IndieCertService extends Service
         );
 
         $relMeFetcher = new RelMeFetcher($this->client);
-        $relLinks = $relMeFetcher->fetchRel(
-            $request->getQueryParameter('me')
+        $relResponse = $relMeFetcher->fetchRel(
+            $me
         );
 
         $certFingerprints = array();
-        foreach ($relLinks as $meLink) {
+        foreach ($relResponse['profileBody'] as $meLink) {
             if (preg_match('/^di:sha-256;[a-zA-Z0-9_-]+\?ct=application\/x-x509-user-cert$/', $meLink)) {
                 $certFingerprints[] = $meLink;
             }
@@ -199,7 +199,7 @@ class IndieCertService extends Service
     
         // create indiecode
         $code = bin2hex(openssl_random_pseudo_bytes(16));
-        $this->pdoStorage->storeIndieCode($me, $clientId, $redirectUri, $code);
+        $this->pdoStorage->storeIndieCode($relResponse['profileUrl'], $clientId, $redirectUri, $code);
 
         // redirect back to app
         return new RedirectResponse(sprintf('%s?code=%s', $redirectUri, $code), 302);
@@ -257,34 +257,49 @@ class IndieCertService extends Service
         // we must have 'me', 'client_id' and 'redirect_uri' and they all
         // must be valid (HTTPS) URLs and the host of the client_id and
         // redirect_uri must match
-        $requiredParameters = array('me', 'client_id', 'redirect_uri');
-        foreach ($requiredParameters as $p) {
-            $qp = $request->getQueryParameter($p);
-            if (null === $qp) {
-                throw new BadRequestException(
-                    sprintf('missing parameter "%s"', $p)
-                );
-            }
-            try {
-                $u = new Uri($qp);
+        $me = $request->getQueryParameter('me');
+        $clientId = $request->getQueryParameter('client_id');
+        $redirectUri = $request->getQueryParameter('redirect_uri');
+
+        if (null === $me || null === $clientId || null === $redirectUri) {
+            throw new BadRequestException('missing parameter');
+        }
+
+        // me is a special case to allow (naked) domain logins for
+        // instance by specifying 'tuxed.net' it will be rewritten as
+        // 'https://tuxed.net'
+        if (is_string($me) && 0 !== strpos($me, 'http')) {
+            // type appending 'https://'
+            $me = sprintf('https://%s', $me);
+        }
+            
+        try {
+            $meUri = new Uri($me);
+            $clientIdUri = new Uri($clientId);
+            $redirectUriUri = new Uri($redirectUri);
+            
+            // they all need to have 'https' scheme
+            foreach (array($meUri, $clientIdUri, $redirectUriUri) as $u) {
                 if ('https' !== $u->getScheme()) {
-                    throw new BadRequestException(
-                        sprintf('URL must be HTTPS for "%s"', $p)
-                    );
+                    throw new BadRequestException('URL must be HTTPS');
                 }
-            } catch (UriException $e) {
+            }
+
+            // clientId and redirectUri MUST have the same hostname
+            if ($clientIdUri->getHost() !== $redirectUriUri->getHost()) {
                 throw new BadRequestException(
-                    sprintf('invalid URL for "%s"', $p)
+                    'host for client_id and redirect_uri must match'
                 );
             }
+        } catch (UriException $e) {
+            throw new BadRequestException('invalid URL in query parameters');
         }
-        $clientId = new Uri($request->getQueryParameter('client_id'));
-        $redirectUri = new Uri($request->getQueryParameter('redirect_uri'));
-        if ($clientId->getHost() !== $redirectUri->getHost()) {
-            throw new BadRequestException(
-                'host for client_id and redirect_uri must match'
-            );
-        }
+
+        return array(
+            'me' => $me,
+            'client_id' => $clientId,
+            'redirect_uri' => $redirectUri
+        );
     }
 
     private function getTwig()
