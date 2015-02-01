@@ -66,7 +66,7 @@ class IndieCertService extends Service
         $this->get(
             '/welcome',
             function (Request $request) use ($compatThis) {
-                return 'Welcome to IndieCert';
+                return $compatThis->getWelcome($request);
             }
         );
 
@@ -99,6 +99,16 @@ class IndieCertService extends Service
         );
     }
 
+    public function getWelcome(Request $request)
+    {
+        $twig = $this->getTwig();
+
+        return $twig->render(
+            'welcomePage.twig',
+            array(
+            )
+        );
+    }
     public function getEnroll(Request $request)
     {
         $certChallenge = bin2hex(
@@ -191,7 +201,7 @@ class IndieCertService extends Service
             return $twig->render(
                 'missingFingerprint.twig',
                 array(
-                    'me' => $me,
+                    'me' => $relResponse['profileUrl'],
                     'certFingerprint' => $certFingerprint
                 )
             );

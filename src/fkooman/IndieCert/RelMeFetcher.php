@@ -19,6 +19,7 @@ namespace fkooman\IndieCert;
 
 use Guzzle\Http\Client;
 use Guzzle\Plugin\History\HistoryPlugin;
+use RuntimeException;
 
 class RelMeFetcher
 {
@@ -47,9 +48,9 @@ class RelMeFetcher
 
         $effectiveUrl = $response->getEffectiveUrl();
 
-        foreach ($history->getAll() as $transaction) {
-            if ('https' !== $transaction['request']->getUrl(true)->getScheme()) {
-                throw new \Exception('wow...redirect to http on our path, are you crazy?!');
+        foreach ($history->getAll() as $t) {
+            if ('https' !== $t['request']->getUrl(true)->getScheme()) {
+                throw new RuntimeException('redirect path contains non-HTTPS URLs');
             }
         }
 
