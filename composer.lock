@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "1b9f4a7a014c4bb7dc28668d432ade61",
+    "hash": "6198b73c09ee6fd383376c54c5072868",
     "packages": [
         {
             "name": "fkooman/cert-parser",
@@ -125,16 +125,16 @@
         },
         {
             "name": "fkooman/rest",
-            "version": "0.6.5",
+            "version": "0.6.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fkooman/php-lib-rest.git",
-                "reference": "86f903380b5525d2b997f09c77150379d37b6c4b"
+                "reference": "98f7e294a20145c2cc3b8b8c8e5dfc797f8e988a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fkooman/php-lib-rest/zipball/86f903380b5525d2b997f09c77150379d37b6c4b",
-                "reference": "86f903380b5525d2b997f09c77150379d37b6c4b",
+                "url": "https://api.github.com/repos/fkooman/php-lib-rest/zipball/98f7e294a20145c2cc3b8b8c8e5dfc797f8e988a",
+                "reference": "98f7e294a20145c2cc3b8b8c8e5dfc797f8e988a",
                 "shasum": ""
             },
             "require": {
@@ -165,7 +165,7 @@
                 }
             ],
             "description": "Simple PHP library for writing REST services.",
-            "time": "2015-01-28 12:36:46"
+            "time": "2015-02-07 22:10:26"
         },
         {
             "name": "guzzle/guzzle",
@@ -261,26 +261,26 @@
         },
         {
             "name": "phpseclib/phpseclib",
-            "version": "0.3.9",
+            "version": "0.3.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpseclib/phpseclib.git",
-                "reference": "c6e88ca6e81bc5a2d7161658e16a95b7ef8d6ad1"
+                "reference": "d15bba1edcc7c89e09cc74c5d961317a8b947bf4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/c6e88ca6e81bc5a2d7161658e16a95b7ef8d6ad1",
-                "reference": "c6e88ca6e81bc5a2d7161658e16a95b7ef8d6ad1",
+                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/d15bba1edcc7c89e09cc74c5d961317a8b947bf4",
+                "reference": "d15bba1edcc7c89e09cc74c5d961317a8b947bf4",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.0.0"
             },
             "require-dev": {
-                "phing/phing": "2.7.*",
-                "phpunit/phpunit": "4.0.*",
-                "sami/sami": "1.*",
-                "squizlabs/php_codesniffer": "1.*"
+                "phing/phing": "~2.7",
+                "phpunit/phpunit": "~4.0",
+                "sami/sami": "~2.0",
+                "squizlabs/php_codesniffer": "~1.5"
             },
             "suggest": {
                 "ext-gmp": "Install the GMP (GNU Multiple Precision) extension in order to speed up arbitrary precision integer arithmetic operations.",
@@ -355,21 +355,21 @@
                 "x.509",
                 "x509"
             ],
-            "time": "2014-11-10 03:08:59"
+            "time": "2015-01-28 21:50:33"
         },
         {
             "name": "symfony/event-dispatcher",
-            "version": "v2.6.3",
+            "version": "v2.6.4",
             "target-dir": "Symfony/Component/EventDispatcher",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/EventDispatcher.git",
-                "reference": "40ff70cadea3785d83cac1c8309514b36113064e"
+                "reference": "f75989f3ab2743a82fe0b03ded2598a2b1546813"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/EventDispatcher/zipball/40ff70cadea3785d83cac1c8309514b36113064e",
-                "reference": "40ff70cadea3785d83cac1c8309514b36113064e",
+                "url": "https://api.github.com/repos/symfony/EventDispatcher/zipball/f75989f3ab2743a82fe0b03ded2598a2b1546813",
+                "reference": "f75989f3ab2743a82fe0b03ded2598a2b1546813",
                 "shasum": ""
             },
             "require": {
@@ -413,7 +413,7 @@
             ],
             "description": "Symfony EventDispatcher Component",
             "homepage": "http://symfony.com",
-            "time": "2015-01-05 14:28:40"
+            "time": "2015-02-01 16:10:57"
         },
         {
             "name": "twig/twig",
