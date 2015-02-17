@@ -28,6 +28,7 @@ class CertManager
 
     public static function generateCertificateAuthority($keySize = 2048, $commonName = 'Demo CA')
     {
+        $keySize = intval($keySize);
         $r = new Crypt_RSA();
         $keyData = $r->createKey($keySize);
 
