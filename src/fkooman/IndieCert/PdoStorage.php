@@ -34,17 +34,17 @@ class PdoStorage
         $this->prefix = $prefix;
     }
 
-    public function storeIndieCode($me, $clientId, $redirectUri, $code)
+    public function storeIndieCode($me, $redirectUri, $normalizedMe, $code)
     {
         $stmt = $this->db->prepare(
             sprintf(
-                'INSERT INTO %s (me, client_id, redirect_uri, code) VALUES(:me, :client_id, :redirect_uri, :code)',
+                'INSERT INTO %s (me, redirect_uri, normalized_me, code) VALUES(:me, :redirect_uri, :normalized_me, :code)',
                 $this->prefix.'indie_codes'
             )
         );
         $stmt->bindValue(':me', $me, PDO::PARAM_STR);
-        $stmt->bindValue(':client_id', $clientId, PDO::PARAM_STR);
         $stmt->bindValue(':redirect_uri', $redirectUri, PDO::PARAM_STR);
+        $stmt->bindValue(':normalized_me', $normalizedMe, PDO::PARAM_STR);
         $stmt->bindValue(':code', $code, PDO::PARAM_STR);
         $stmt->execute();
 
@@ -108,8 +108,8 @@ class PdoStorage
             'CREATE TABLE IF NOT EXISTS %s (
                 code VARCHAR(255) NOT NULL,
                 me VARCHAR(255) NOT NULL,
-                client_id VARCHAR(255) NOT NULL,
                 redirect_uri VARCHAR(255) NOT NULL,
+                normalized_me VARCHAR(255) NOT NULL,
                 PRIMARY KEY (code)
             )',
             $prefix.'indie_codes'

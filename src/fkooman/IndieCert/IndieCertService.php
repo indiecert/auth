@@ -161,8 +161,11 @@ class IndieCertService extends Service
         // first validate the request
         $validatedParameters = $this->validateQueryParameters($request);
 
+        // we need the requested me (not the one possibly appended with
+        // 'https://' to store in the DB
+        $requestMe = $request->getQueryParameter('me');
+
         $me = $validatedParameters['me'];
-        $clientId = $validatedParameters['client_id'];
         $redirectUri = $validatedParameters['redirect_uri'];
 
         $clientCert = $request->getHeader('SSL_CLIENT_CERT');
@@ -209,10 +212,10 @@ class IndieCertService extends Service
     
         // create indiecode
         $code = bin2hex(openssl_random_pseudo_bytes(16));
-        $this->pdoStorage->storeIndieCode($relResponse['profileUrl'], $clientId, $redirectUri, $code);
+        $this->pdoStorage->storeIndieCode($requestMe, $redirectUri, $relResponse['profileUrl'], $code);
 
         // redirect back to app
-        return new RedirectResponse(sprintf('%s?code=%s', $redirectUri, $code), 302);
+        return new RedirectResponse(sprintf('%s?me=%s&code=%s', $redirectUri, $requestMe, $code), 302);
     }
 
     public function postVerify(Request $request)
@@ -221,13 +224,13 @@ class IndieCertService extends Service
         if (null === $code) {
             throw new BadRequestException('missing code');
         }
-        $clientId = $request->getPostParameter('client_id');
-        if (null === $clientId) {
-            throw new BadRequestException('missing client_id');
-        }
         $redirectUri = $request->getPostParameter('redirect_uri');
         if (null === $redirectUri) {
             throw new BadRequestException('missing redirect_uri');
+        }
+        $me = $request->getPostParameter('me');
+        if (null === $me) {
+            throw new BadRequestException('missing me');
         }
 
         $indieCode = $this->pdoStorage->getIndieCode($code);
@@ -243,19 +246,19 @@ class IndieCertService extends Service
             return $response;
         }
 
-        if ($clientId !== $indieCode['client_id']) {
-            // FIXME: this MUST be JSON response!
-            throw new BadRequestException('non matching client_id');
-        }
         if ($redirectUri !== $indieCode['redirect_uri']) {
             // FIXME: this MUST be JSON response!
             throw new BadRequestException('non matching redirect_uri');
+        }
+        if ($me !== $indieCode['me']) {
+            // FIXME: this MUST be JSON response!
+            throw new BadRequestException('non matching me');
         }
 
         $response = new JsonResponse();
         $response->setContent(
             array(
-                'me' => $indieCode['me']
+                'me' => $indieCode['normalized_me']
             )
         );
 
@@ -264,14 +267,12 @@ class IndieCertService extends Service
 
     private function validateQueryParameters(Request $request)
     {
-        // we must have 'me', 'client_id' and 'redirect_uri' and they all
-        // must be valid (HTTPS) URLs and the host of the client_id and
-        // redirect_uri must match
+        // we must have 'me' and 'redirect_uri' and they all
+        // must be valid (HTTPS) URLs
         $me = $request->getQueryParameter('me');
-        $clientId = $request->getQueryParameter('client_id');
         $redirectUri = $request->getQueryParameter('redirect_uri');
 
-        if (null === $me || null === $clientId || null === $redirectUri) {
+        if (null === $me || null === $redirectUri) {
             throw new BadRequestException('missing parameter');
         }
 
@@ -285,21 +286,13 @@ class IndieCertService extends Service
             
         try {
             $meUri = new Uri($me);
-            $clientIdUri = new Uri($clientId);
             $redirectUriUri = new Uri($redirectUri);
             
             // they all need to have 'https' scheme
-            foreach (array($meUri, $clientIdUri, $redirectUriUri) as $u) {
+            foreach (array($meUri, $redirectUriUri) as $u) {
                 if ('https' !== $u->getScheme()) {
                     throw new BadRequestException('URL must be HTTPS');
                 }
-            }
-
-            // clientId and redirectUri MUST have the same hostname
-            if ($clientIdUri->getHost() !== $redirectUriUri->getHost()) {
-                throw new BadRequestException(
-                    'host for client_id and redirect_uri must match'
-                );
             }
         } catch (UriException $e) {
             throw new BadRequestException('invalid URL in query parameters');
@@ -307,7 +300,6 @@ class IndieCertService extends Service
 
         return array(
             'me' => $me,
-            'client_id' => $clientId,
             'redirect_uri' => $redirectUri
         );
     }
