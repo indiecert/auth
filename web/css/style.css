@@ -32,3 +32,21 @@ div.footnotes {
     font-size: 75%;
     color: #888;
 }
+
+form {
+    text-align: center;
+    margin: 1em auto;
+}
+
+button {
+    margin: 1em;
+}
+
+button.approve {
+    color: green;
+}
+
+button.reject {
+    color: #c00;
+}
+

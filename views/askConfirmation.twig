@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IndieCert</title>
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<body>
+    <div id="container">
+    <h1>IndieCert</h1>
+    <p>
+<strong>{{ host|e }}</strong> wants to confirm your identity
+<strong>{{ me|e }}</strong>.
+    </p>
+
+    <form method="post" action="">
+        <button class="reject" type="submit" name="approval" value="reject">Reject</button>
+        <button class="approve" type="submit" name="approval" value="approve">Approve</button>
+    </form>
+
+    </div>
+</body>
+</html>

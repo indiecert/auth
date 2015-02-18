@@ -78,6 +78,13 @@ class IndieCertService extends Service
         );
 
         $this->post(
+            '/auth',
+            function (Request $request) use ($compatThis) {
+                return $compatThis->postAuth($request);
+            }
+        );
+
+        $this->post(
             '/verify',
             function (Request $request) use ($compatThis) {
                 return $compatThis->postVerify($request);
@@ -158,14 +165,37 @@ class IndieCertService extends Service
 
     public function getAuth(Request $request)
     {
-        // first validate the request
         $validatedParameters = $this->validateQueryParameters($request);
+        
+        $me = $validatedParameters['me'];
+        $redirectUri = $validatedParameters['redirect_uri'];
+    
+        $redirectUriObj = new Uri($redirectUri);
 
-        // we need the requested me (not the one possibly appended with
-        // 'https://' to store in the DB
-        $requestMe = $request->getQueryParameter('me');
+        $twig = $this->getTwig();
+        return $twig->render(
+            'askConfirmation.twig',
+            array(
+                'me' => $me,
+                'host' => $redirectUriObj->getHost()
+            )
+        );
+    }
+
+    public function postAuth(Request $request)
+    {
+        // CSRF protection
+        if ($request->getHeader('HTTP_REFERER') !== $request->getRequestUri()->getUri()) {
+            throw new BadRequestException('CSRF protection triggered');
+        }
+        $validatedParameters = $this->validateQueryParameters($request);
+        
+        if ('approve' !== $request->getPostParameter('approval')) {
+            throw new ForbiddenException('user did not approve identity validation');
+        }
 
         $me = $validatedParameters['me'];
+        $prefixedMe = $validatedParameters['prefixed_me'];
         $redirectUri = $validatedParameters['redirect_uri'];
 
         $clientCert = $request->getHeader('SSL_CLIENT_CERT');
@@ -188,7 +218,7 @@ class IndieCertService extends Service
 
         $relMeFetcher = new RelMeFetcher($this->client);
         $relResponse = $relMeFetcher->fetchRel(
-            $me
+            $prefixedMe
         );
 
         $certFingerprints = array();
@@ -209,13 +239,12 @@ class IndieCertService extends Service
                 )
             );
         }
-    
+
         // create indiecode
         $code = bin2hex(openssl_random_pseudo_bytes(16));
-        $this->pdoStorage->storeIndieCode($requestMe, $redirectUri, $relResponse['profileUrl'], $code);
+        $this->pdoStorage->storeIndieCode($me, $redirectUri, $relResponse['profileUrl'], $code);
 
-        // redirect back to app
-        return new RedirectResponse(sprintf('%s?me=%s&code=%s', $redirectUri, $requestMe, $code), 302);
+        return new RedirectResponse(sprintf('%s?me=%s&code=%s', $redirectUri, $me, $code), 302);
     }
 
     public function postVerify(Request $request)
@@ -276,20 +305,21 @@ class IndieCertService extends Service
             throw new BadRequestException('missing parameter');
         }
 
-        // me is a special case to allow (naked) domain logins for
-        // instance by specifying 'tuxed.net' it will be rewritten as
+        // me is a special case to allow domain logins without prefixing it
+        // with 'https://', e.g. 'tuxed.net' will be rewritten as
         // 'https://tuxed.net'
-        if (is_string($me) && 0 !== strpos($me, 'http')) {
-            // type appending 'https://'
-            $me = sprintf('https://%s', $me);
+        if (is_string($me) && 0 === strpos($me, 'http')) {
+            $prefixedMe = $me;
+        } else {
+            $prefixedMe = sprintf('https://%s', $me);
         }
-            
+   
         try {
-            $meUri = new Uri($me);
-            $redirectUriUri = new Uri($redirectUri);
+            $prefixedMeObj = new Uri($prefixedMe);
+            $redirectUriObj = new Uri($redirectUri);
             
             // they all need to have 'https' scheme
-            foreach (array($meUri, $redirectUriUri) as $u) {
+            foreach (array($prefixedMeObj, $redirectUriObj) as $u) {
                 if ('https' !== $u->getScheme()) {
                     throw new BadRequestException('URL must be HTTPS');
                 }
@@ -300,6 +330,7 @@ class IndieCertService extends Service
 
         return array(
             'me' => $me,
+            'prefixed_me' => $prefixedMe,
             'redirect_uri' => $redirectUri
         );
     }
