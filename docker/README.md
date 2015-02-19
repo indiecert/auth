@@ -1,6 +1,6 @@
 # Introduction
 These are all the files to get a Docker instance running with 
-`php-relmeauth-service`.
+IndieCert.
 
 To build the Docker image:
 
