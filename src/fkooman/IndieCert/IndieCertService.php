@@ -208,19 +208,19 @@ class IndieCertService extends Service
         );
 
         $certFingerprints = array();
-        foreach ($relResponse['profileBody'] as $meLink) {
+        foreach ($relResponse['relLinks'] as $meLink) {
             if (preg_match('/^di:sha-256;[a-zA-Z0-9_-]+\?ct=application\/x-x509-user-cert$/', $meLink)) {
                 $certFingerprints[] = $meLink;
             }
         }
 
         if (!in_array($certFingerprint, $certFingerprints)) {
-            return $this->templateManager->missingFingerprint($relResponse['profileUrl'], $certFingerprint);
+            return $this->templateManager->missingFingerprint($relResponse['pageUri'], $certFingerprint);
         }
 
         // create indiecode
         $code = $this->io->getRandomHex();
-        $this->pdoStorage->storeIndieCode($me, $redirectUri, $relResponse['profileUrl'], $code, $this->io->getTime());
+        $this->pdoStorage->storeIndieCode($me, $redirectUri, $relResponse['pageUri'], $code, $this->io->getTime());
 
         return new RedirectResponse(sprintf('%s?me=%s&code=%s', $redirectUri, $me, $code), 302);
     }

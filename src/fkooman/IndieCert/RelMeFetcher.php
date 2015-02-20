@@ -19,6 +19,7 @@ namespace fkooman\IndieCert;
 
 use Guzzle\Http\Client;
 use Guzzle\Plugin\History\HistoryPlugin;
+use Guzzle\Http\Url;
 use RuntimeException;
 
 class RelMeFetcher
@@ -34,9 +35,9 @@ class RelMeFetcher
         $this->client = $client;
     }
 
-    public function fetchRel($profileUrl)
+    public function fetchRel($pageUri)
     {
-        $request = $this->client->get($profileUrl);
+        $request = $this->client->get($pageUri);
 
         // we track all URLs on the redirect path (if any) and make sure none
         // of them redirect to a HTTP URL. Unfortunately Guzzle 3 can not do
@@ -54,12 +55,12 @@ class RelMeFetcher
             }
         }
 
-        $profilePage = $response->getBody();
+        $pageBody = $response->getBody();
         $htmlParser = new HtmlParser();
 
         return array(
-            'profileUrl' => $response->getEffectiveUrl(),
-            'profileBody' => $htmlParser->getRelLinks($profilePage)
+            'pageUri' => $response->getEffectiveUrl(),
+            'relLinks' => $htmlParser->getRelLinks($pageBody)
         );
     }
 }
