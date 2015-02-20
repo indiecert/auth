@@ -87,7 +87,7 @@ class PdoStorage
         $stmt = $this->db->prepare(
             sprintf(
                 'INSERT INTO %s (common_name) VALUES(:common_name)',
-                $this->prefix.'certificates'
+                $this->prefix.'indie_certificates'
             )
         );
         $stmt->bindValue(':common_name', $commonName, PDO::PARAM_STR);
@@ -119,7 +119,7 @@ class PdoStorage
             'CREATE TABLE IF NOT EXISTS %s (
                 common_name VARCHAR(255) NOT NULL
             )',
-            $prefix.'certificates'
+            $prefix.'indie_certificates'
         );
 
         return $query;
@@ -132,7 +132,7 @@ class PdoStorage
             $this->db->query($q);
         }
 
-        $tables = array('indie_codes', 'certificates');
+        $tables = array('indie_codes', 'indie_certificates');
         foreach ($tables as $t) {
             // make sure the tables are empty
             $this->db->query(
