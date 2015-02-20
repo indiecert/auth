@@ -45,7 +45,10 @@ class IndieCertService extends Service
     /** @var Guzzle\Http\Client */
     private $client;
 
-    public function __construct($caCrt, $caKey, PdoStorage $pdoStorage, Client $client = null)
+    /** @var fkooman\IndieCert\IO */
+    private $io;
+
+    public function __construct($caCrt, $caKey, PdoStorage $pdoStorage, Client $client = null, IO $io = null)
     {
         parent::__construct();
 
@@ -58,6 +61,11 @@ class IndieCertService extends Service
         }
         $this->client = $client;
    
+        if (null === $io) {
+            $io = new IO();
+        }
+        $this->io = $io;
+
         // in PHP 5.3 we cannot use $this from a closure
         $compatThis = &$this;
 
@@ -118,16 +126,12 @@ class IndieCertService extends Service
     }
     public function getEnroll(Request $request)
     {
-        $certChallenge = bin2hex(
-            openssl_random_pseudo_bytes(8)
-        );
-
         $twig = $this->getTwig();
 
         return $twig->render(
             'enrollPage.twig',
             array(
-                'certChallenge' => $certChallenge,
+                'certChallenge' => $this->io->getRandomHex(),
                 'referrer' => $request->getHeader('HTTP_REFERER')
             )
         );
@@ -149,9 +153,8 @@ class IndieCertService extends Service
         }
 
         // determine serialNumber
-        $commonName = bin2hex(
-            openssl_random_pseudo_bytes(16)
-        );
+        $commonName = $this->io->getRandomHex();
+
         // we want to keep a list of CN/serial for book keeping and revocation
         
         $certManager = new CertManager($this->pdoStorage, $this->caCrt, $this->caKey);
@@ -241,8 +244,8 @@ class IndieCertService extends Service
         }
 
         // create indiecode
-        $code = bin2hex(openssl_random_pseudo_bytes(16));
-        $this->pdoStorage->storeIndieCode($me, $redirectUri, $relResponse['profileUrl'], $code);
+        $code = $this->io->getRandomHex();
+        $this->pdoStorage->storeIndieCode($me, $redirectUri, $relResponse['profileUrl'], $code, $this->io->getTime());
 
         return new RedirectResponse(sprintf('%s?me=%s&code=%s', $redirectUri, $me, $code), 302);
     }
@@ -273,6 +276,11 @@ class IndieCertService extends Service
             );
 
             return $response;
+        }
+
+        if ($this->io->getTime() > $indieCode['issue_time'] + 600) {
+            // FIXME: this MUST be JSON response!
+            throw new BadRequestException('code expired');
         }
 
         if ($redirectUri !== $indieCode['redirect_uri']) {
