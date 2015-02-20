@@ -25,6 +25,8 @@ Also make sure you configure the details for the providers you want to use
 with IndieCert in `/etc/indiecert/config.ini`.
 
 # Development
+We assume that your web server runs under the `apache` user and your user 
+account is called `fkooman` in group `fkooman`.
 
     $ cd /var/www
     $ sudo mkdir indiecert
@@ -38,6 +40,10 @@ with IndieCert in `/etc/indiecert/config.ini`.
     $ sudo restorecon -R /var/www/indiecert/data
     $ cd config
     $ cp config.ini.default config.ini
+
+Now to initialize the database:
+s
+    $ sudo -u apache bin/indiecert-init
 
 # License
 Licensed under the GNU Affero General Public License as published by the Free 
