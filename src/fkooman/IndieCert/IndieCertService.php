@@ -21,8 +21,6 @@ use fkooman\Http\Request;
 use fkooman\Http\Response;
 use fkooman\Http\JsonResponse;
 use fkooman\Rest\Service;
-use Twig_Loader_Filesystem;
-use Twig_Environment;
 use Guzzle\Http\Client;
 use fkooman\X509\CertParser;
 use fkooman\Http\Uri;
@@ -48,6 +46,9 @@ class IndieCertService extends Service
     /** @var fkooman\IndieCert\IO */
     private $io;
 
+    /** @var fkooman\IndieCert\TemplateManager */
+    private $templateManager;
+
     public function __construct($caCrt, $caKey, PdoStorage $pdoStorage, Client $client = null, IO $io = null)
     {
         parent::__construct();
@@ -65,6 +66,8 @@ class IndieCertService extends Service
             $io = new IO();
         }
         $this->io = $io;
+
+        $this->templateManager = new TemplateManager();
 
         // in PHP 5.3 we cannot use $this from a closure
         $compatThis = &$this;
@@ -116,24 +119,14 @@ class IndieCertService extends Service
 
     public function getWelcome(Request $request)
     {
-        $twig = $this->getTwig();
-
-        return $twig->render(
-            'welcomePage.twig',
-            array(
-            )
-        );
+        return $this->templateManager->welcomePage();
     }
+
     public function getEnroll(Request $request)
     {
-        $twig = $this->getTwig();
-
-        return $twig->render(
-            'enrollPage.twig',
-            array(
-                'certChallenge' => $this->io->getRandomHex(),
-                'referrer' => $request->getHeader('HTTP_REFERER')
-            )
+        return $this->templateManager->enrollPage(
+            $this->io->getRandomHex(),
+            $request->getHeader('HTTP_REFERER')
         );
     }
 
@@ -175,13 +168,9 @@ class IndieCertService extends Service
     
         $redirectUriObj = new Uri($redirectUri);
 
-        $twig = $this->getTwig();
-        return $twig->render(
-            'askConfirmation.twig',
-            array(
-                'me' => $me,
-                'host' => $redirectUriObj->getHost()
-            )
+        return $this->templateManager->askConfirmation(
+            $me,
+            $redirectUriObj->getHost()
         );
     }
 
@@ -203,13 +192,7 @@ class IndieCertService extends Service
 
         $clientCert = $request->getHeader('SSL_CLIENT_CERT');
         if (null === $clientCert || 0 === strlen($clientCert)) {
-            $twig = $this->getTwig();
-
-            return $twig->render(
-                'noCert.twig',
-                array(
-                )
-            );
+            return $this->templateManager->noCert();
         }
 
         // determine certificate fingerprint
@@ -232,15 +215,7 @@ class IndieCertService extends Service
         }
 
         if (!in_array($certFingerprint, $certFingerprints)) {
-            $twig = $this->getTwig();
-
-            return $twig->render(
-                'missingFingerprint.twig',
-                array(
-                    'me' => $relResponse['profileUrl'],
-                    'certFingerprint' => $certFingerprint
-                )
-            );
+            return $this->templateManager->missingFingerprint($relResponse['profileUrl'], $certFingerprint);
         }
 
         // create indiecode
@@ -341,24 +316,5 @@ class IndieCertService extends Service
             'prefixed_me' => $prefixedMe,
             'redirect_uri' => $redirectUri
         );
-    }
-
-    private function getTwig()
-    {
-        $configTemplateDir = dirname(dirname(dirname(__DIR__))).'/config/views';
-        $defaultTemplateDir = dirname(dirname(dirname(__DIR__))).'/views';
-
-        $templateDirs = array();
-
-        // the template directory actually needs to exist, otherwise the
-        // Twig_Loader_Filesystem class will throw an exception when loading
-        // templates, the actual template does not need to exist though...
-        if (false !== is_dir($configTemplateDir)) {
-            $templateDirs[] = $configTemplateDir;
-        }
-        $templateDirs[] = $defaultTemplateDir;
-
-        $loader = new Twig_Loader_Filesystem($templateDirs);
-        return new Twig_Environment($loader);
     }
 }
