@@ -42,7 +42,7 @@ account is called `fkooman` in group `fkooman`.
     $ cp config.ini.default config.ini
 
 Now to initialize the database:
-s
+
     $ sudo -u apache bin/indiecert-init
 
 # License
