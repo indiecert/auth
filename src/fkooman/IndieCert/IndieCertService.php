@@ -166,15 +166,48 @@ class IndieCertService extends Service
         $me = $this->validateMe($request->getQueryParameter('me'));
         $redirectUri = $this->validateRedirectUri($request->getQueryParameter('redirect_uri'));
     
+        $certFingerprint = $this->getCertFingerprint($request->getHeader('SSL_CLIENT_CERT'));
+        if (false === $certFingerprint) {
+            return $this->templateManager->noCert();
+        }
+
         $pageFetcher = new PageFetcher($this->client);
         $pageResponse = $pageFetcher->fetch($me);
 
-        $redirectUriObj = new Uri($redirectUri);
+        $relMeLinks = $this->extractRelMeLinks($pageResponse->getBody());
 
-        return $this->templateManager->askConfirmation(
+        if (false === $this->hasFingerprint($relMeLinks, $certFingerprint)) {
+            return $this->templateManager->missingFingerprint($pageResponse->getEffectiveUrl(), $certFingerprint);
+        }
+
+        $approval = $this->pdoStorage->getApproval($pageResponse->getEffectiveUrl(), $redirectUri);
+        if (false !== $approval) {
+            // check if not expired
+            if ($this->io->getTime() >= $approval['expires_at']) {
+                $this->pdoStorage->deleteApproval($pageResponse->getEffectiveUrl(), $redirectUri);
+                $approval = false;
+            }
+        }
+    
+        if (false === $approval) {
+            $redirectUriObj = new Uri($redirectUri);
+
+            return $this->templateManager->askConfirmation(
+                $pageResponse->getEffectiveUrl(),
+                $redirectUriObj->getHost()
+            );
+        }
+
+        // create indiecode
+        $code = $this->io->getRandomHex();
+        $this->pdoStorage->storeIndieCode(
+            $code,
             $pageResponse->getEffectiveUrl(),
-            $redirectUriObj->getHost()
+            $redirectUri,
+            $this->io->getTime()
         );
+
+        return new RedirectResponse(sprintf('%s?code=%s', $redirectUri, $code), 302);
     }
 
     public function postAuth(Request $request)
@@ -205,31 +238,36 @@ class IndieCertService extends Service
             return $this->templateManager->missingFingerprint($pageResponse->getEffectiveUrl(), $certFingerprint);
         }
 
+        // remember
+        if (null !== $request->getPostParameter('remember')) {
+            $this->pdoStorage->storeApproval($pageResponse->getEffectiveUrl(), $redirectUri, $this->io->getTime() + 3600*24*7);
+        }
+
         // create indiecode
         $code = $this->io->getRandomHex();
-        $this->pdoStorage->storeIndieCode($me, $redirectUri, $pageResponse->getEffectiveUrl(), $code, $this->io->getTime());
+        $this->pdoStorage->storeIndieCode(
+            $code,
+            $pageResponse->getEffectiveUrl(),
+            $redirectUri,
+            $this->io->getTime()
+        );
 
-        return new RedirectResponse(sprintf('%s?me=%s&code=%s', $redirectUri, $me, $code), 302);
+        return new RedirectResponse(sprintf('%s?code=%s', $redirectUri, $code), 302);
     }
 
     public function postVerify(Request $request)
     {
+        // $code = $this->verifyCode($request->getPostParameter('code'));
         $code = $request->getPostParameter('code');
         if (null === $code) {
             throw new BadRequestException('missing code');
         }
-        $redirectUri = $request->getPostParameter('redirect_uri');
-        if (null === $redirectUri) {
-            throw new BadRequestException('missing redirect_uri');
-        }
-        $me = $request->getPostParameter('me');
-        if (null === $me) {
-            throw new BadRequestException('missing me');
-        }
+        $redirectUri = $this->validateRedirectUri($request->getPostParameter('redirect_uri'));
 
-        $indieCode = $this->pdoStorage->getIndieCode($code);
+        $indieCode = $this->pdoStorage->getIndieCode($code, $redirectUri);
 
         if (false === $indieCode) {
+            //throw new BadRequestException('invalid_request');
             $response = new JsonResponse(400);
             $response->setContent(
                 array(
@@ -245,23 +283,18 @@ class IndieCertService extends Service
             throw new BadRequestException('code expired');
         }
 
-        if ($redirectUri !== $indieCode['redirect_uri']) {
-            // FIXME: this MUST be JSON response!
-            throw new BadRequestException('non matching redirect_uri');
-        }
-        if ($me !== $indieCode['me']) {
-            // FIXME: this MUST be JSON response!
-            throw new BadRequestException('non matching me');
-        }
-
         $response = new JsonResponse();
         $response->setContent(
             array(
-                'me' => $indieCode['normalized_me']
+                'me' => $indieCode['me']
             )
         );
 
         return $response;
+    }
+
+    private function handleCertPageCheck(Request $request)
+    {
     }
 
     private function hasFingerprint(array $relMeLinks, $certFingerprint)

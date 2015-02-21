@@ -2,6 +2,7 @@
 
 ## 0.1.4
 - major refactoring
+- add option to remember approval for a week
 
 ## 0.1.3
 - expire codes after 10 minutes instead of them being valid indefinitely

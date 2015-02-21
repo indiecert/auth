@@ -34,18 +34,17 @@ class PdoStorage
         $this->prefix = $prefix;
     }
 
-    public function storeIndieCode($me, $redirectUri, $normalizedMe, $code, $issueTime)
+    public function storeIndieCode($code, $me, $redirectUri, $issueTime)
     {
         $stmt = $this->db->prepare(
             sprintf(
-                'INSERT INTO %s (me, redirect_uri, normalized_me, code, issue_time) VALUES(:me, :redirect_uri, :normalized_me, :code, :issue_time)',
+                'INSERT INTO %s (code, me, redirect_uri, issue_time) VALUES(:code, :me, :redirect_uri, :issue_time)',
                 $this->prefix.'indie_codes'
             )
         );
+        $stmt->bindValue(':code', $code, PDO::PARAM_STR);
         $stmt->bindValue(':me', $me, PDO::PARAM_STR);
         $stmt->bindValue(':redirect_uri', $redirectUri, PDO::PARAM_STR);
-        $stmt->bindValue(':normalized_me', $normalizedMe, PDO::PARAM_STR);
-        $stmt->bindValue(':code', $code, PDO::PARAM_STR);
         $stmt->bindValue(':issue_time', $issueTime, PDO::PARAM_INT);
         $stmt->execute();
 
@@ -54,25 +53,27 @@ class PdoStorage
         }
     }
 
-    public function getIndieCode($code)
+    public function getIndieCode($code, $redirectUri)
     {
         $stmt = $this->db->prepare(
             sprintf(
-                'SELECT * FROM %s WHERE code = :code',
+                'SELECT * FROM %s WHERE code = :code AND redirect_uri = :redirect_uri',
                 $this->prefix.'indie_codes'
             )
         );
         $stmt->bindValue(':code', $code, PDO::PARAM_STR);
+        $stmt->bindValue(':redirect_uri', $redirectUri, PDO::PARAM_STR);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
         $stmt = $this->db->prepare(
             sprintf(
-                'DELETE FROM %s WHERE code = :code',
+                'DELETE FROM %s WHERE code = :code AND redirect_uri = :redirect_uri',
                 $this->prefix.'indie_codes'
             )
         );
         $stmt->bindValue(':code', $code, PDO::PARAM_STR);
+        $stmt->bindValue(':redirect_uri', $redirectUri, PDO::PARAM_STR);
         $stmt->execute();
 
         if (1 === $stmt->rowCount()) {
@@ -81,6 +82,54 @@ class PdoStorage
         }
 
         return false;
+    }
+
+    public function storeApproval($me, $redirectUri, $expiresAt)
+    {
+        $stmt = $this->db->prepare(
+            sprintf(
+                'INSERT INTO %s (me, redirect_uri, expires_at) VALUES(:me, :redirect_uri, :expires_at)',
+                $this->prefix.'indie_approvals'
+            )
+        );
+        $stmt->bindValue(':me', $me, PDO::PARAM_STR);
+        $stmt->bindValue(':redirect_uri', $redirectUri, PDO::PARAM_STR);
+        $stmt->bindValue(':expires_at', $expiresAt, PDO::PARAM_INT);
+        $stmt->execute();
+
+        if (1 !== $stmt->rowCount()) {
+            throw new PdoStorageException('unable to add');
+        }
+    }
+
+    public function getApproval($me, $redirectUri)
+    {
+        $stmt = $this->db->prepare(
+            sprintf(
+                'SELECT * FROM %s WHERE me = :me AND redirect_uri = :redirect_uri',
+                $this->prefix.'indie_approvals'
+            )
+        );
+        $stmt->bindValue(':me', $me, PDO::PARAM_STR);
+        $stmt->bindValue(':redirect_uri', $redirectUri, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function deleteApproval($me, $redirectUri)
+    {
+        $stmt = $this->db->prepare(
+            sprintf(
+                'DELETE FROM %s WHERE me = :me AND redirect_uri = :redirect_uri',
+                $this->prefix.'indie_approvals'
+            )
+        );
+        $stmt->bindValue(':me', $me, PDO::PARAM_STR);
+        $stmt->bindValue(':redirect_uri', $redirectUri, PDO::PARAM_STR);
+        $stmt->execute();
+        if (1 !== $stmt->rowCount()) {
+            throw new PdoStorageException('unable to delete');
+        }
     }
 
     public function storeCertificate($commonName)
@@ -107,11 +156,19 @@ class PdoStorage
 
         $query[] = sprintf(
             'CREATE TABLE IF NOT EXISTS %s (
-                code VARCHAR(255) NOT NULL,
-                issue_time INT NOT NULL,
                 me VARCHAR(255) NOT NULL,
                 redirect_uri VARCHAR(255) NOT NULL,
-                normalized_me VARCHAR(255) NOT NULL,
+                expires_at INT NOT NULL
+            )',
+            $prefix.'indie_approvals'
+        );
+
+        $query[] = sprintf(
+            'CREATE TABLE IF NOT EXISTS %s (
+                code VARCHAR(255) NOT NULL,
+                me VARCHAR(255) NOT NULL,
+                redirect_uri VARCHAR(255) NOT NULL,
+                issue_time INT NOT NULL,
                 PRIMARY KEY (code)
             )',
             $prefix.'indie_codes'
@@ -134,7 +191,7 @@ class PdoStorage
             $this->db->query($q);
         }
 
-        $tables = array('indie_codes', 'indie_certificates');
+        $tables = array('indie_approvals', 'indie_codes', 'indie_certificates');
         foreach ($tables as $t) {
             // make sure the tables are empty
             $this->db->query(
