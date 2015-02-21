@@ -84,6 +84,13 @@ class IndieCertService extends Service
         );
 
         $this->get(
+            '/cb',
+            function (Request $request) use ($compatThis) {
+                return $compatThis->getCb($request);
+            }
+        );
+
+        $this->get(
             '/auth',
             function (Request $request) use ($compatThis) {
                 return $compatThis->getAuth($request);
@@ -121,7 +128,32 @@ class IndieCertService extends Service
 
     public function getWelcome(Request $request)
     {
-        return $this->templateManager->welcomePage();
+        $redirectUri = $request->getRequestUri()->getBaseUri() . $request->getAppRoot() . 'cb';
+        return $this->templateManager->welcomePage($redirectUri);
+    }
+
+    public function getCb(Request $request)
+    {
+        // this is the callback from the 'try it'
+        $redirectUri = $request->getRequestUri()->getBaseUri() . $request->getAppRoot() . 'cb';
+        $verifyUri = $request->getRequestUri()->getBaseUri() . $request->getAppRoot() . 'verify';
+
+        $code = $request->getQueryParameter('code');
+                
+        $verifyRequest = $this->client->post(
+            $verifyUri,
+            array(),
+            array(
+                'code' => $code,
+                'redirect_uri' => $redirectUri
+            )
+        );
+        $verifyResponse = $verifyRequest->send()->json();
+        $me = $verifyResponse['me'];
+
+        return $this->templateManager->authenticatedPage(
+            $me
+        );
     }
 
     public function getEnroll(Request $request)

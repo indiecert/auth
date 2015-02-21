@@ -1,5 +1,8 @@
 # Changes
 
+## 0.1.5
+- integrate demo in the "welcome" page
+
 ## 0.1.4
 - major refactoring
 - add option to remember approval for a week

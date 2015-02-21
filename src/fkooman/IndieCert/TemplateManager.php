@@ -43,11 +43,22 @@ class TemplateManager
         );
     }
 
-    public function welcomePage()
+    public function welcomePage($redirectUri)
     {
         return $this->twig->render(
             'welcomePage.twig',
             array(
+                'redirect_uri' => $redirectUri
+            )
+        );
+    }
+
+    public function authenticatedPage($me)
+    {
+        return $this->twig->render(
+            'authenticatedPage.twig',
+            array(
+                'me' => $me
             )
         );
     }
