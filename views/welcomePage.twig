@@ -9,27 +9,42 @@
 </head>
 <body>
     <div id="container">
-    <h1>IndieCert</h1>
+    <a class="header" href="welcome"><h1>IndieCert</h1></a>
+    <p class="warn">
+This is currently an <strong>EXPERIMENTAL</strong> service!
+    </p>
+
     <p>
-Welcome to IndieCert! IndieCert is a service to make use of client certificates
-to authenticate to services. This service is intended as a reference
-implementation of IndieCert. All code is available under the AGPLv3 license
-and anyone can run their own instance of this code.
+IndieCert is a service to authenticate to services around the web without
+using usernames and passwords. IndieCert uses client certificates installed
+in the user's browser. Client certificates provide superior security. Until
+now it has been cumbersome to deploy client certificates outside managed
+corporate environments. This service improves on
+this by making it easier to deploy client certificates and support multiple
+(mobile) devices.
+    </p>
+    <p class="info">
+For more information you are kindly invited to look at the technical
+description in
+<a href="https://www.tuxed.net/fkooman/blog/indiecert.html">this</a> blog
+entry.
     </p>
     <p>
-If you want more information about IndieCert you can check out
-<a href="https://www.tuxed.net/fkooman/blog/indiecert.html">this</a> blog post,
-you can find the source code
-<a href="https://github.com/fkooman/indiecert">here</a>.
+All <a href="https://github.com/fkooman/indiecert">code</a> is available under
+the <a href="https://gnu.org/licenses/agpl.html">AGPLv3</a> license. There are
+also Docker
+<a href="https://github.com/fkooman/indiecert/tree/master/docker">instructions</a>
+for easily running your own instance!
     </p>
+
     <h2>Try It!</h2>
     <p>
 Here you can try out IndieCert! You will be guided through generating a client
-certificate and adding the fingerprint to your homepage!
+certificate and adding the fingerprint to your home page! Please enter a domain
+name or URL to a page you can modify. It <strong>MUST</strong> be reachable over HTTPS!
     </p>
 
     <form method="get" action="auth">
-    <label for="me">Web Address:</label>
     <input type="hidden" name="redirect_uri" value="{{ redirect_uri|e }}">
     <input type="text" name="me" id="me" placeholder="yourdomain.com">
     <input type="submit" value="Sign In">

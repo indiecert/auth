@@ -1,5 +1,11 @@
 # Changes
 
+## 0.1.6
+- make it possible to disable server certificate check for use by the Docker 
+  image and local development
+- update the templates to remove some old text, make them more colorful and
+  update the welcome page substantially
+
 ## 0.1.5
 - integrate demo in the "welcome" page
 

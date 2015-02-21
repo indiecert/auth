@@ -42,7 +42,14 @@ try {
     $pdoStorage = new PdoStorage($pdo);
 
     // HTTP CLIENT
-    $client = new Client();
+    $disableServerCertCheck = $iniReader->v('disableServerCertCheck', false, false);
+
+    $client = new Client(
+        '',
+        array(
+            'ssl.certificate_authority' => !$disableServerCertCheck
+        )
+    );
 
     $service = new IndieCertService($caCrt, $caKey, $pdoStorage, $client);
     $service->run()->sendResponse();

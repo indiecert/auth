@@ -50,3 +50,32 @@ button.reject {
     color: #c00;
 }
 
+a.header {
+    text-decoration: none;
+    color: #000;
+}
+
+a {
+    text-decoration: underline;
+    color: #000;
+}
+
+p.info {
+    background-color: #006633;
+    color: #fff;
+    padding: 1em;
+}
+
+p.info a {
+    color: #fff;
+}
+
+p.warn {
+    background-color: #fc0;
+    color: #000;
+    padding: 1em;
+}
+
+p.warn a {
+    color: #000;
+}

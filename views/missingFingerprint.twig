@@ -9,12 +9,16 @@
 </head>
 <body>
     <div id="container">
-    <h1>IndieCert</h1>
-    <p>
-    <strong>
+    <a class="header" href="welcome"><h1>IndieCert</h1></a>
+
+    <p class="warn">
 IndieCert was unable to find a matching fingerprint on your claimed URL
-<code>{{ me|e }}</code>.
-    </strong>
+    </p>
+
+    <p>
+You claimed the identity <code>{{ me|e }}</code>, but we were unable to
+find the fingerprint of the certificate you are currently authenticated with
+on this page.
     </p>
 
     <p>
