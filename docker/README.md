@@ -14,9 +14,9 @@ That should be all. You can replace `fkooman` with your own name of course.
 
 Put the following in `/etc/hosts`:
 
-    127.1.2.3      indiecert.net
+    127.1.2.3      dev.indiecert.net
 
-Now go to [https://indiecert.net](https://indiecert.net).
+Now go to [https://dev.indiecert.net](https://dev.indiecert.net).
 
 To run an interactive shell in the Docker container:
 
