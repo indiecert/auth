@@ -8,13 +8,13 @@ To build the Docker image:
 
 To run the container:
 
-    docker run -d -p 443:443 -p 80:80 fkooman/indiecert
+    docker run -h dev.indiecert.net -d -p 443:443 -p 80:80 fkooman/indiecert
 
 That should be all. You can replace `fkooman` with your own name of course.
 
 Put the following in `/etc/hosts`:
 
-    127.1.2.3      dev.indiecert.net
+    127.0.0.1      dev.indiecert.net
 
 Now go to [https://dev.indiecert.net](https://dev.indiecert.net).
 

@@ -2,12 +2,12 @@ FROM       fedora:21
 MAINTAINER François Kooman <fkooman@tuxed.net>
 
 RUN yum -y update; yum clean all
-RUN yum install -y mod_ssl yum-plugin-copr; yum clean all 
+RUN yum install -y yum-plugin-copr; yum clean all 
 
 RUN yum copr enable -y fkooman/php-base
 RUN yum copr enable -y fkooman/php-relmeauth
 
-RUN yum install -y indiecert; yum clean all
+RUN yum install -y mod_ssl indiecert; yum clean all
 
 # generate the server certificate
 RUN openssl req -subj '/CN=dev.indiecert.net' -new -x509 -nodes -out /etc/pki/tls/certs/dev.indiecert.net.crt -keyout /etc/pki/tls/private/dev.indiecert.net.key
