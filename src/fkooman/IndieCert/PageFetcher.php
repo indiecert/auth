@@ -22,7 +22,7 @@ use Guzzle\Plugin\History\HistoryPlugin;
 use Guzzle\Http\Url;
 use RuntimeException;
 
-class RelMeFetcher
+class PageFetcher
 {
     /* @var Guzzle\Http\Client */
     private $client;
@@ -35,7 +35,7 @@ class RelMeFetcher
         $this->client = $client;
     }
 
-    public function fetchRel($pageUri)
+    public function fetch($pageUri)
     {
         $request = $this->client->get($pageUri);
 
@@ -47,20 +47,12 @@ class RelMeFetcher
         $request->addSubscriber($history);
         $response = $request->send();
 
-        $effectiveUrl = $response->getEffectiveUrl();
-
         foreach ($history->getAll() as $t) {
             if ('https' !== $t['request']->getUrl(true)->getScheme()) {
                 throw new RuntimeException('redirect path contains non-HTTPS URLs');
             }
         }
 
-        $pageBody = $response->getBody();
-        $htmlParser = new HtmlParser();
-
-        return array(
-            'pageUri' => $response->getEffectiveUrl(),
-            'relLinks' => $htmlParser->getRelLinks($pageBody)
-        );
+        return new PageResponse($response->getEffectiveUrl(), $response->getBody());
     }
 }

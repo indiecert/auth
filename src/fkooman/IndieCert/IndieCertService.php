@@ -23,11 +23,13 @@ use fkooman\Http\JsonResponse;
 use fkooman\Rest\Service;
 use Guzzle\Http\Client;
 use fkooman\X509\CertParser;
+use fkooman\X509\CertParserException;
 use fkooman\Http\Uri;
 use fkooman\Http\RedirectResponse;
 use fkooman\Http\Exception\UriException;
 use fkooman\Http\Exception\BadRequestException;
 use fkooman\Http\Exception\ForbiddenException;
+use DomDocument;
 
 class IndieCertService extends Service
 {
@@ -161,66 +163,51 @@ class IndieCertService extends Service
 
     public function getAuth(Request $request)
     {
-        $validatedParameters = $this->validateQueryParameters($request);
-        
-        $me = $validatedParameters['me'];
-        $redirectUri = $validatedParameters['redirect_uri'];
+        $me = $this->validateMe($request->getQueryParameter('me'));
+        $redirectUri = $this->validateRedirectUri($request->getQueryParameter('redirect_uri'));
     
+        $pageFetcher = new PageFetcher($this->client);
+        $pageResponse = $pageFetcher->fetch($me);
+
         $redirectUriObj = new Uri($redirectUri);
 
         return $this->templateManager->askConfirmation(
-            $me,
+            $pageResponse->getEffectiveUrl(),
             $redirectUriObj->getHost()
         );
     }
 
     public function postAuth(Request $request)
     {
+        $me = $this->validateMe($request->getQueryParameter('me'));
+        $redirectUri = $this->validateRedirectUri($request->getQueryParameter('redirect_uri'));
+    
         // CSRF protection
         if ($request->getHeader('HTTP_REFERER') !== $request->getRequestUri()->getUri()) {
             throw new BadRequestException('CSRF protection triggered');
         }
-        $validatedParameters = $this->validateQueryParameters($request);
         
         if ('approve' !== $request->getPostParameter('approval')) {
             throw new ForbiddenException('user did not approve identity validation');
         }
 
-        $me = $validatedParameters['me'];
-        $prefixedMe = $validatedParameters['prefixed_me'];
-        $redirectUri = $validatedParameters['redirect_uri'];
-
-        $clientCert = $request->getHeader('SSL_CLIENT_CERT');
-        if (null === $clientCert || 0 === strlen($clientCert)) {
+        $certFingerprint = $this->getCertFingerprint($request->getHeader('SSL_CLIENT_CERT'));
+        if (false === $certFingerprint) {
             return $this->templateManager->noCert();
         }
 
-        // determine certificate fingerprint
-        $certParser = new CertParser($clientCert);
-        $certFingerprint = sprintf(
-            'di:sha-256;%s?ct=application/x-x509-user-cert',
-            $certParser->getFingerPrint('sha256', true)
-        );
+        $pageFetcher = new PageFetcher($this->client);
+        $pageResponse = $pageFetcher->fetch($me);
 
-        $relMeFetcher = new RelMeFetcher($this->client);
-        $relResponse = $relMeFetcher->fetchRel(
-            $prefixedMe
-        );
+        $relMeLinks = $this->extractRelMeLinks($pageResponse->getBody());
 
-        $certFingerprints = array();
-        foreach ($relResponse['relLinks'] as $meLink) {
-            if (preg_match('/^di:sha-256;[a-zA-Z0-9_-]+\?ct=application\/x-x509-user-cert$/', $meLink)) {
-                $certFingerprints[] = $meLink;
-            }
-        }
-
-        if (!in_array($certFingerprint, $certFingerprints)) {
-            return $this->templateManager->missingFingerprint($relResponse['pageUri'], $certFingerprint);
+        if (false === $this->hasFingerprint($relMeLinks, $certFingerprint)) {
+            return $this->templateManager->missingFingerprint($pageResponse->getEffectiveUrl(), $certFingerprint);
         }
 
         // create indiecode
         $code = $this->io->getRandomHex();
-        $this->pdoStorage->storeIndieCode($me, $redirectUri, $relResponse['pageUri'], $code, $this->io->getTime());
+        $this->pdoStorage->storeIndieCode($me, $redirectUri, $pageResponse->getEffectiveUrl(), $code, $this->io->getTime());
 
         return new RedirectResponse(sprintf('%s?me=%s&code=%s', $redirectUri, $me, $code), 302);
     }
@@ -277,44 +264,95 @@ class IndieCertService extends Service
         return $response;
     }
 
-    private function validateQueryParameters(Request $request)
+    private function hasFingerprint(array $relMeLinks, $certFingerprint)
     {
-        // we must have 'me' and 'redirect_uri' and they all
-        // must be valid (HTTPS) URLs
-        $me = $request->getQueryParameter('me');
-        $redirectUri = $request->getQueryParameter('redirect_uri');
-
-        if (null === $me || null === $redirectUri) {
-            throw new BadRequestException('missing parameter');
+        $certFingerprints = array();
+        foreach ($relMeLinks as $meLink) {
+            if (preg_match('/^di:sha-256;[a-zA-Z0-9_-]+\?ct=application\/x-x509-user-cert$/', $meLink)) {
+                $certFingerprints[] = $meLink;
+            }
         }
 
-        // me is a special case to allow domain logins without prefixing it
-        // with 'https://', e.g. 'tuxed.net' will be rewritten as
-        // 'https://tuxed.net'
-        if (is_string($me) && 0 === strpos($me, 'http')) {
-            $prefixedMe = $me;
-        } else {
-            $prefixedMe = sprintf('https://%s', $me);
+        if (!in_array($certFingerprint, $certFingerprints)) {
+            return false;
         }
-   
+
+        return true;
+    }
+
+    private function getCertFingerprint($clientCert)
+    {
+        // determine certificate fingerprint
         try {
-            $prefixedMeObj = new Uri($prefixedMe);
-            $redirectUriObj = new Uri($redirectUri);
-            
-            // they all need to have 'https' scheme
-            foreach (array($prefixedMeObj, $redirectUriObj) as $u) {
-                if ('https' !== $u->getScheme()) {
-                    throw new BadRequestException('URL must be HTTPS');
+            $certParser = new CertParser($clientCert);
+            return sprintf(
+                'di:sha-256;%s?ct=application/x-x509-user-cert',
+                $certParser->getFingerPrint('sha256', true)
+            );
+        } catch (CertParserException $e) {
+            return false;
+        }
+    }
+
+    private function extractRelMeLinks($htmlString)
+    {
+        $dom = new DomDocument();
+        // disable error handling by DomDocument so we handle them ourselves
+        libxml_use_internal_errors(true);
+        $dom->loadHTML($htmlString);
+        // throw away all errors, we do not care about them anyway
+        libxml_clear_errors();
+
+        $tags = array('link', 'a');
+        $relMeLinks = array();
+        foreach ($tags as $tag) {
+            $elements = $dom->getElementsByTagName($tag);
+            foreach ($elements as $element) {
+                $href = $element->getAttribute('href');
+                $rel = $element->getAttribute('rel');
+                if ('me' === $rel) {
+                    $relMeLinks[] = $href;
                 }
             }
-        } catch (UriException $e) {
-            throw new BadRequestException('invalid URL in query parameters');
         }
 
-        return array(
-            'me' => $me,
-            'prefixed_me' => $prefixedMe,
-            'redirect_uri' => $redirectUri
-        );
+        return $relMeLinks;
+    }
+
+    private function validateMe($me)
+    {
+        if (null === $me) {
+            throw new BadRequestException('missing parameter "me"');
+        }
+        if (0 !== strpos($me, 'http')) {
+            $me = sprintf('https://%s', $me);
+        }
+        try {
+            $uriObj = new Uri($me);
+            if ('https' !== $uriObj->getScheme()) {
+                throw new BadRequestException('"me" must be https uri');
+            }
+
+            return $me;
+        } catch (UriException $e) {
+            throw new BadRequestException('"me" is an invalid uri');
+        }
+    }
+
+    private function validateRedirectUri($redirectUri)
+    {
+        if (null === $redirectUri) {
+            throw new BadRequestException('missing parameter "redirect_uri"');
+        }
+        try {
+            $uriObj = new Uri($redirectUri);
+            if ('https' !== $uriObj->getScheme()) {
+                throw new BadRequestException('"redirect_uri" must be https uri');
+            }
+
+            return $redirectUri;
+        } catch (UriException $e) {
+            throw new BadRequestException('"redirect_uri" is an invalid uri');
+        }
     }
 }
