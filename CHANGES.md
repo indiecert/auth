@@ -3,6 +3,8 @@
 ## 0.1.7
 - add FAQ
 - add Footer
+- fix docker instructions to actually work, but needs at least RPM package 
+  version 0.1.6 to work properly
 
 ## 0.1.6
 - make it possible to disable server certificate check for use by the Docker 
