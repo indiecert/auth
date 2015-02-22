@@ -1,5 +1,8 @@
 # Changes
 
+## 0.1.8
+- update httpd config to only ask for certificate on `/auth`
+
 ## 0.1.7
 - add FAQ
 - add Footer
