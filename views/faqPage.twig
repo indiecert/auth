@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IndieCert</title>
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<body>
+    <div id="container">
+    <a class="header" href="welcome"><h1>IndieCert</h1></a>
+
+    <h2>Frequently Asked Questions</h2>
+
+    <h3>Why IndieCert?</h3>
+    <p>
+I got interested in decentralized authentication systems after working on SAML,
+OpenID, OAuth and ran into <a href="http://webid.info/">WebID</a> and
+<a href="https://indieauth.com">IndieAuth</a>. So I though, I can do something
+similar, but then with client certificates instead of "social" login using
+Twitter and GitHub.
+    </p>
+
+    <h3>Why client certificates?</h3>
+    <p>
+They always fascinated me. This secure technology is available in every
+browser, but no one uses it! Of course, this is due to the difficulty in
+deploying it and browser support for actually generating these beautiful
+client certificates... So it is not perfect, but at least on some browsers and
+mobile devices it works really well.
+    </p>
+
+    <h3>Supported Browsers</h3>
+    <p>
+So far, it seems that Firefox and Chrom(e)(ium) work really well, both on the
+desktop and on Android. There is a small issue with Firefox where you need to
+restart the browser after installing the certificate to be able to authenticate
+to the web server with it. I am not sure why this is, and it does not occur
+in Chrom(e)(ium). About Safari, I am not sure. I do not have a Mac so it is a
+bit hard to test. It seems Safari supports the <code>&lt;keygen&gt;</code> tag to
+generate a private key, but it always seems to want to download the certificate
+instead of installing it in Keychain.
+    </p>
+
+    <h3>What about Internet Explorer?</h3>
+    <p>
+Well... it is possible to get it to work somehow with an ActiveX control or
+so I've read somewhere. So far I haven't investigated it any further... Of
+course it is possible to generate a certificate in Firefox, export it to
+PKCS#12 format and import it the Windows certificate manager.
+    </p>
+
+    <h3>And my iDevice?</h3>
+    <p>
+Well. It seems the easiest is to generate a certificate using Firefox and
+exporting it to PKCS#12 and then import it on your iDevice. As
+far as I know Safari on iOS does not support <code>&lt;keygen&gt;</code> at
+all, but I don't have an iDevice to test with, so it remains speculation.
+    </p>
+
+    <h3>How can I help?</h3>
+    <p>
+Test it out on as many browsers and devices possible and create issues on
+<a href="https://github.com/fkooman/indiecert/issues">GitHub</a>, and if you
+can patches to get Safari to work better, IE at all and come up with solutions
+for iDevices :-)
+    </p>
+
+    <div class="footer">
+        <a href="faq">FAQ</a> | IndieCert
+    </div>
+    </div>
+</body>
+</html>

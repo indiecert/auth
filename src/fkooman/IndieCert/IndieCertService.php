@@ -77,6 +77,13 @@ class IndieCertService extends Service
         $this->setDefaultRoute('/welcome');
 
         $this->get(
+            '/faq',
+            function (Request $request) use ($compatThis) {
+                return $compatThis->getFaq($request);
+            }
+        );
+
+        $this->get(
             '/welcome',
             function (Request $request) use ($compatThis) {
                 return $compatThis->getWelcome($request);
@@ -124,6 +131,11 @@ class IndieCertService extends Service
                 return $compatThis->postEnroll($request);
             }
         );
+    }
+
+    public function getFaq(Request $request)
+    {
+        return $this->templateManager->faqPage();
     }
 
     public function getWelcome(Request $request)

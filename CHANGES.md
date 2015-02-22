@@ -1,5 +1,9 @@
 # Changes
 
+## 0.1.7
+- add FAQ
+- add Footer
+
 ## 0.1.6
 - make it possible to disable server certificate check for use by the Docker 
   image and local development

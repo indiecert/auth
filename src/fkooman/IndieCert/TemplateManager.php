@@ -43,6 +43,15 @@ class TemplateManager
         );
     }
 
+    public function faqPage()
+    {
+        return $this->twig->render(
+            'faqPage.twig',
+            array(
+            )
+        );
+    }
+
     public function welcomePage($redirectUri)
     {
         return $this->twig->render(

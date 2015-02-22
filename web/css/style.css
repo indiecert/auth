@@ -31,6 +31,7 @@ span.sup {
 div.footnotes {
     font-size: 75%;
     color: #888;
+    margin-bottom: 1em;
 }
 
 form {
@@ -78,4 +79,16 @@ p.warn {
 
 p.warn a {
     color: #000;
+}
+
+div.footer {
+    border-top: 1px solid #888;
+    padding: 0.5em;
+    text-align: right;
+    font-size: 85%;
+    color: #888;
+}
+
+div.footer a {
+    color: #888;
 }
