@@ -27,25 +27,32 @@ start the authentication process. Two parameters MUST be specified:
     <dt><code>redirect_uri</code></dt>
     <dd>
 the URL belonging to the relying party the browser is redirected back to after
-the authentication is successful and the user approved it;
+the authentication is successful and the user approved it, it MUST be a HTTPS
+URL;
     </dd>
     <dt><code>me</code></dt>
     <dd>
-the URL to the user's home page
+the URL to the user's home page or host name, e.g.: <code>example.org</code> or
+<code>https://www.example.org/user</code>;
     </dd>
 </dl>
+
     <p>
-Both URLs MUST be HTTPS URLs.
+If the <code>me</code> field is not a valid HTTPS URI it will be prepended with
+<code>https://</code> and optionally get a <code>/</code> postfix, e.g.:
+<code>example.org</code> will be converted to
+<code>https://example.org/</code>.
     </p>
+
     <h4>Example</h4>
     <p>
-The redirect to the authentication server can be accomplished in two ways.
-Using a redirect:
+The redirect to the authentication server can be accomplished in a number of
+ways, e.g.: using a redirect:
     </p>
 
 <blockquote>
 <pre>HTTP/1.1 302 Found
-Location: https://indiecert.net/auth?redirect_uri=https://example.org/callback&amp;me=https://tuxed.net/fkooman
+Location: https://indiecert.net/auth?redirect_uri=https://example.org/callback&amp;me=https://www.example.org/user
 </pre>
 </blockquote>
 
@@ -91,8 +98,7 @@ identity. The following parameters are required:
     <dd>the URL the browser was redirected back to after the successful authentication;</dd>
 </dl>
 <p>
-Now a HTTP <code>POST</code> can be used to obtain the user's (normalized) home
-page URL:
+Now a HTTP <code>POST</code> can be used to obtain the user's home page URL:
     </p>
 <blockquote>
 <pre>
@@ -122,7 +128,7 @@ Cache-Control: no-store
 Pragma: no-cache
 
 {
-    "me": "https://www.tuxed.net/fkooman/"
+    "me": "https://www.example.org/user/"
 }
 </pre>
 </blockquote>
