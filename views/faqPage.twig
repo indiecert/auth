@@ -30,10 +30,40 @@ deploying it and browser support for actually generating these beautiful
 client certificates... So it is not perfect, but at least on some browsers and
 mobile devices it works really well.
     </p>
+
+    <h3>Fingerprints?</h3>
+    <p>
+You need to store a <code>&lt;link rel="me" href="fingerprint"&gt;</code> on
+your homepage that matches the fingerprint that was installed in your browser.
+You can add multiple fingerprints to your home page for multiple browsers and/or
+devices. IndieCert will help you by showing the fingerprint to put on your
+home page if it is not (yet) there when you try to authenticate.
+    </p>
+
     <h3>Where can I get more information?</h3>
     <p>
 You can read this <a href="https://www.tuxed.net/fkooman/blog/indiecert.html">blog</a> entry.
-    </p>    
+    </p>
+
+    <h3>Can I specify an URL instead of a domain?</h3>
+    <p>
+You can do both. The IndieCert service will follow your URL or domain by
+performing a HTTPS request, follow the redirects and determine the 'effective'
+URL to extract the fingerprints. If you specify <code>example.org</code>
+IndieCert will try to fetch <code>https://example.org</code> and possibly
+follow any redirects. You can also specify a full URL, e.g.:
+<code>https://www.example.org/johndoe/</code>.
+    </p>
+
+    <h3>Do I need a HTTPS home page?</h3>
+    <p>
+Yes. In order to be sure that your client certificate and your identity
+expressed by the URL you claim are bound you need to make the URL available
+over HTTPS. It can <strong>NOT</strong> be a self signed certificate. It must
+be signed by a "trusted" CA. You can use
+<a href="https://startssl.com/">StartSSL</a> to obtain a free certificate or
+wait for <a href="https://letsencrypt.org/">Let’s Encrypt</a>.
+    </p>
 
     <h3>Supported Browsers</h3>
     <p>
@@ -63,6 +93,15 @@ far as I know Safari on iOS does not support <code>&lt;keygen&gt;</code> at
 all, but I don't have an iDevice to test with, so it remains speculation.
     </p>
 
+    <h3>Can I run my own instance?</h3>
+Yes! This is one of the design principles that it is easy to run your own
+instance of IndieCert. You can find the code and installation instructions in
+the GitHub <a href="https://github.com/fkooman/indiecert">repository</a>. RPMs
+are available for CentOS/Red Hat Enterprise Linux and Fedora. You can also run
+a Docker
+<a href="https://github.com/fkooman/indiecert/tree/master/docker">instance</a>.
+    </p>
+
     <h3>How can I help or get help?</h3>
     <p>
 Test it out on as many browsers and devices possible and create issues on
@@ -71,7 +110,7 @@ can patches to get Safari to work better, IE at all and come up with solutions
 for iDevices :-)
     </p>
     <p>
-If you have any questions, please post them as a GitHub issue as well, or 
+If you have any questions, please post them as a GitHub issue as well, or
 contact me directly. Look <a href="https://www.tuxed.net/fkooman/">here</a> to
 find ways of contacting me.
     </p>
