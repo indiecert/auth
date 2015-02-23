@@ -40,9 +40,22 @@ devices. IndieCert will help you by showing the fingerprint to put on your
 home page if it is not (yet) there when you try to authenticate.
     </p>
 
-    <h3>Where can I get more information?</h3>
+    <h3>How can I become a relying party?</h3>
     <p>
-You can read this <a href="https://www.tuxed.net/fkooman/blog/indiecert.html">blog</a> entry.
+You can read the 
+<a href="https://www.tuxed.net/fkooman/blog/indiecert.html">blog</a> entry on
+how to integrate your application as a relying party. The protocol is still 
+under development and will still have some minor modifications, especially
+regarding linking the authentication request and response to avoid CSRF.
+    </p>
+
+    <h3>How secure is this? What if the IndieCert server gets compromised?</h3>
+    <p>
+The worst case scenario is that anyone can claim any identity, so you can take
+over someone's account. The idea is for this service to be distributed, running
+on different implementations, so the impact of a compromise will be reduced. 
+Recovery from compromise will require a regeneration of the CA and require all 
+users to enroll again to the service to generate a new client certificate.
     </p>
 
     <h3>Can I specify an URL instead of a domain?</h3>
@@ -50,7 +63,7 @@ You can read this <a href="https://www.tuxed.net/fkooman/blog/indiecert.html">bl
 You can do both. The IndieCert service will follow your URL or domain by
 performing a HTTPS request, follow the redirects and determine the 'effective'
 URL to extract the fingerprints. If you specify <code>example.org</code>
-IndieCert will try to fetch <code>https://example.org</code> and possibly
+IndieCert will try to fetch <code>https://example.org/</code> and possibly
 follow any redirects. You can also specify a full URL, e.g.:
 <code>https://www.example.org/johndoe/</code>.
     </p>
@@ -100,6 +113,11 @@ the GitHub <a href="https://github.com/fkooman/indiecert">repository</a>. RPMs
 are available for CentOS/Red Hat Enterprise Linux and Fedora. You can also run
 a Docker
 <a href="https://github.com/fkooman/indiecert/tree/master/docker">instance</a>.
+    </p>
+
+    <h3>Where can I get more information?</h3>
+    <p>
+You can read this <a href="https://www.tuxed.net/fkooman/blog/indiecert.html">blog</a> entry.
     </p>
 
     <h3>How can I help or get help?</h3>
