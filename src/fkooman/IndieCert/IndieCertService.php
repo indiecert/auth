@@ -415,6 +415,10 @@ class IndieCertService extends Service
             if (null !== $uriObj->getFragment()) {
                 throw new BadRequestException('"me" cannot contain fragment');
             }
+            // if we have no path add '/'
+            if (null === $uriObj->getPath()) {
+                $me .= '/';
+            }
 
             return $me;
         } catch (UriException $e) {
