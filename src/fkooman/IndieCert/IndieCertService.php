@@ -149,8 +149,14 @@ class IndieCertService extends Service
         // this is the callback from the 'try it'
         $redirectUri = $request->getRequestUri()->getBaseUri() . $request->getAppRoot() . 'cb';
         $verifyUri = $request->getRequestUri()->getBaseUri() . $request->getAppRoot() . 'verify';
+        $authUri = $request->getRequestUri()->getBaseUri() . $request->getAppRoot() . 'auth';
 
-        $code = $request->getQueryParameter('code');
+        // the referrer MUST be the authUri otherwise, CSRF
+        if (0 !== strpos($request->getHeader('HTTP_REFERER'), $authUri)) {
+            throw new BadRequestException('CSRF protection triggered');
+        }
+
+        $code = $this->validateCode($request->getQueryParameter('code'));
                 
         $verifyRequest = $this->client->post(
             $verifyUri,
@@ -301,8 +307,7 @@ class IndieCertService extends Service
 
     public function postVerify(Request $request)
     {
-        // $code = $this->verifyCode($request->getPostParameter('code'));
-        $code = $request->getPostParameter('code');
+        $code = $this->validateCode($request->getPostParameter('code'));
         if (null === $code) {
             throw new BadRequestException('missing code');
         }
@@ -444,5 +449,17 @@ class IndieCertService extends Service
         } catch (UriException $e) {
             throw new BadRequestException('"redirect_uri" is an invalid uri');
         }
+    }
+
+    private function validateCode($code)
+    {
+        if (null === $code) {
+            throw new BadRequestException('missing parameter "code"');
+        }
+        if (1 !== preg_match('/^[a-fA-F0-9]+$/', $code)) {
+            throw new BadRequestException('"code" contains invalid characters');
+        }
+
+        return $code;
     }
 }

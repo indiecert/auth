@@ -1,5 +1,8 @@
 # Changes
 
+## 0.1.9
+- solve CSRF for 'try me' page
+
 ## 0.1.8
 - updated FAQ
 - if `me` does not have a path always add `/`
