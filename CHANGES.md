@@ -1,6 +1,7 @@
 # Changes
 
 ## 0.1.9
+- add RP documentation
 - solve CSRF for 'try me' page
 
 ## 0.1.8

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IndieCert</title>
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<body>
+    <div id="container">
+    <a class="header" href="welcome"><h1>IndieCert</h1></a>
+
+    <h2>Relying Party</h2>
+    <p>
+This page tells you how to integrate with IndieCert running on
+<code>https://indiecert.net</code> or other instances.
+    </p>
+
+    <h3>Authentication Request</h3>
+    <p>
+The service redirects the user to <code>https://indiecert.net/auth</code> to
+start the authentication process. Two parameters MUST be specified:
+    </p>
+
+<dl>
+    <dt><code>redirect_uri</code></dt>
+    <dd>
+the URL belonging to the relying party the browser is redirected back to after
+the authentication is successful and the user approved it;
+    </dd>
+    <dt><code>me</code></dt>
+    <dd>
+the URL to the user's home page
+    </dd>
+</dl>
+    <p>
+Both URLs MUST be HTTPS URLs.
+    </p>
+    <h4>Example</h4>
+    <p>
+The redirect to the authentication server can be accomplished in two ways.
+Using a redirect:
+    </p>
+
+<blockquote>
+<pre>HTTP/1.1 302 Found
+Location: https://indiecert.net/auth?redirect_uri=https://example.org/callback&amp;me=https://tuxed.net/fkooman
+</pre>
+</blockquote>
+
+    <p>
+or using a <code>&lt;form&gt;</code>:
+    </p>
+<blockquote>
+<pre>
+&gt;form method="get" action="https://indiecert.net/auth"&gt;
+    &lt;input type="hidden" name="redirect_uri" value="https://example.org/callback"&gt;
+    &lt;input type="text" name="me" id="me" placeholder="yourdomain.com"&gt;
+    &lt;input type="submit" value="Sign In"&gt;
+&lt;/form&gt;
+</pre>
+</blockquote>
+
+    <h3>Authentication Response</h3>
+    <p>
+IndieCert will redirect the browser back to the <code>redirect_uri</code>
+specified in the authentication request after the user is authenticated at
+IndieCert.
+    </p>
+
+    <h4>Example</h4>
+
+<blockquote>
+<pre>
+HTTP/1.1 302 Found
+Location: https://example.org/callback?code=wW3OLXJZn35d7zFwg9YGmWti
+</pre>
+</blockquote>
+ 
+    <h3>Verification Request</h3>
+    <p>
+The <code>code</code> parameter can now be used to request the claimed user
+identity. The following parameters are required:
+    </p>
+
+<dl>
+    <dt><code>code</code></dt>
+    <dd>the code obtained in the authentication response query parameter <code>code</code>.</dd>
+    <dt><code>redirect_uri</code></dt>
+    <dd>the URL the browser was redirected back to after the successful authentication;</dd>
+</dl>
+<p>
+Now a HTTP <code>POST</code> can be used to obtain the user's (normalized) home
+page URL:
+    </p>
+<blockquote>
+<pre>
+POST /verify HTTP/1.1
+Host: indiecert.net
+Content-Type: application/x-www-form-urlencoded
+
+redirect_uri=https%3A%2F%2Fexample.org%2Fcallback&amp;code=wW3OLXJZn35d7zFwg9YGmWti
+</pre>
+</blockquote>
+
+    <p>
+The response will be formatted as JSON indicating the actual user home page in
+the <code>me</code> parameter.
+    </p>
+
+This is the identity that MUST be used by the relying party to identify the
+user as it could differ from the initial <code>me</code> specified by the user,
+e.g.: redirects were followed to reach the user's home page.
+    </p>
+
+<blockquote>
+<pre>
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=utf-8
+Cache-Control: no-store
+Pragma: no-cache
+
+{
+    "me": "https://www.tuxed.net/fkooman/"
+}
+</pre>
+</blockquote>
+
+    <p>
+In case there was a failure in verifying the code, e.g. it was already used, or
+not valid the following response can be expected:
+    </p>
+
+<blockquote>
+<pre>
+HTTP/1.1 400 Bad Request
+Content-Type: application/json;charset=utf-8
+Cache-Control: no-store
+Pragma: no-cache
+
+{
+    "error":"invalid_request"
+}
+</pre>
+</blockquote>
+
+    <h3>Security</h3>
+    <h4>CSRF</h4>
+    <p>
+In the current protocol design there is a potential problem with CSRF. It is
+possible for user X to go through the authentication step and use the obtained
+code to trick user Y to authenticate to a relying party under user X's code.
+This way user Y could unknowingly leak private data to user X's account.
+    </p>
+    <p>
+A fix is to check the referrer header on the callback URL. This MUST always be
+the same URL the user was redirected to in the first place, so it will have
+the form <code>https://indiecert.net/auth?me=X&redirect_uri=Y</code>. If the
+callback makes sure the referrer starts with
+<code>https://indiecert.net/auth</code> this CSRF attack becomes impossible.
+    </p>
+
+    <div class="footer">
+        <a href="faq">FAQ</a> | IndieCert
+    </div>
+    </div>
+</body>
+</html>

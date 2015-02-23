@@ -91,6 +91,13 @@ class IndieCertService extends Service
         );
 
         $this->get(
+            '/rp',
+            function (Request $request) use ($compatThis) {
+                return $compatThis->getRp($request);
+            }
+        );
+
+        $this->get(
             '/cb',
             function (Request $request) use ($compatThis) {
                 return $compatThis->getCb($request);
@@ -142,6 +149,11 @@ class IndieCertService extends Service
     {
         $redirectUri = $request->getRequestUri()->getBaseUri() . $request->getAppRoot() . 'cb';
         return $this->templateManager->welcomePage($redirectUri);
+    }
+
+    public function getRp(Request $request)
+    {
+        return $this->templateManager->rpPage();
     }
 
     public function getCb(Request $request)

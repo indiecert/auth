@@ -62,6 +62,15 @@ class TemplateManager
         );
     }
 
+    public function rpPage()
+    {
+        return $this->twig->render(
+            'relyingPartyPage.twig',
+            array(
+            )
+        );
+    }
+
     public function authenticatedPage($me)
     {
         return $this->twig->render(
