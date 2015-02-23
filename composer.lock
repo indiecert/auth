@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "6198b73c09ee6fd383376c54c5072868",
+    "hash": "6db2630517b6e155426e80266f6f749d",
     "packages": [
         {
             "name": "fkooman/cert-parser",

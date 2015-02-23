@@ -19,10 +19,8 @@ Initialize the database, by default this is SQLite. If you want to use any
 other database please first modify the configuration file
 `/etc/indiecert/config.ini`.
 
-    $ sudo -u apache indiecert-init
-
-Also make sure you configure the details for the providers you want to use 
-with IndieCert in `/etc/indiecert/config.ini`.
+    $ sudo -u apache indiecert-init-ca
+    $ sudo -u apache indiecert-init-db
 
 # Development
 We assume that your web server runs under the `apache` user and your user 
@@ -41,9 +39,10 @@ account is called `fkooman` in group `fkooman`.
     $ cd config
     $ cp config.ini.default config.ini
 
-Now to initialize the database:
+Now to initialize the CA and database:
 
-    $ sudo -u apache bin/indiecert-init
+    $ sudo -u apache bin/indiecert-init-ca
+    $ sudo -u apache bin/indiecert-init-db
 
 # License
 Licensed under the GNU Affero General Public License as published by the Free 

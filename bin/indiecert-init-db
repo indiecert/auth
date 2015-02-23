@@ -1,0 +1,24 @@
+#!/usr/bin/php
+<?php
+
+require_once dirname(__DIR__).'/vendor/autoload.php';
+
+use fkooman\Ini\IniReader;
+use fkooman\IndieCert\PdoStorage;
+
+try {
+    $config = IniReader::fromFile(dirname(__DIR__).'/config/config.ini');
+
+    // initialize the DB
+    $pdo = new PDO(
+        $config->v('PdoStorage', 'dsn'),
+        $config->v('PdoStorage', 'username', false),
+        $config->v('PdoStorage', 'password', false)
+    );
+
+    $pdoStorage = new PdoStorage($pdo);
+    $pdoStorage->initDatabase();
+} catch (Exception $e) {
+    echo $e->getMessage().PHP_EOL;
+    exit(1);
+}

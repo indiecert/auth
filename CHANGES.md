@@ -2,6 +2,8 @@
 
 ## 0.1.8
 - update httpd config to only ask for certificate on `/auth`
+- use two init scripts for both CA and db instead of only one
+- update dependencies
 
 ## 0.1.7
 - add FAQ

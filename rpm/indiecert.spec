@@ -26,7 +26,7 @@ Requires:   php-composer(fkooman/json) >= 0.6.0
 Requires:   php-composer(fkooman/json) < 0.7.0
 Requires:   php-composer(fkooman/ini) >= 0.2.0
 Requires:   php-composer(fkooman/ini) < 0.3.0
-Requires:   php-composer(fkooman/rest) >= 0.6.7
+Requires:   php-composer(fkooman/rest) >= 0.6.8
 Requires:   php-composer(fkooman/rest) < 0.7.0
 Requires:   php-composer(fkooman/cert-parser) >= 0.1.8
 Requires:   php-composer(fkooman/cert-parser) < 0.2.0
@@ -54,7 +54,8 @@ includes a CA and an easy way to enroll clients.
 %prep
 %setup -qn %{github_name}-%{version}
 
-sed -i "s|dirname(__DIR__)|'%{_datadir}/indiecert'|" bin/indiecert-init
+sed -i "s|dirname(__DIR__)|'%{_datadir}/indiecert'|" bin/indiecert-init-ca
+sed -i "s|dirname(__DIR__)|'%{_datadir}/indiecert'|" bin/indiecert-init-db
 
 %build
 
@@ -94,7 +95,8 @@ fi
 %defattr(-,root,root,-)
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/indiecert.conf
 %config(noreplace) %{_sysconfdir}/indiecert
-%{_bindir}/indiecert-init
+%{_bindir}/indiecert-init-ca
+%{_bindir}/indiecert-init-db
 %dir %{_datadir}/indiecert
 %{_datadir}/indiecert/src
 %{_datadir}/indiecert/vendor

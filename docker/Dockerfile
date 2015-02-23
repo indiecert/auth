@@ -18,16 +18,14 @@ RUN echo '' > /etc/httpd/conf.d/indiecert.conf
 # add httpd config for dev.indiecert.net
 ADD dev.indiecert.net-httpd.conf /etc/httpd/conf.d/dev.indiecert.net.conf
 
-# generate a 1024 bit key, 2048 takes too long for just a Docker demo...
-RUN sed -i 's/2048/1024/' /etc/indiecert/config.ini
-
 # disable the certificate check for use within the docker image
 RUN sed -i 's/;disableServerCertCheck/disableServerCertCheck/' /etc/indiecert/config.ini
 
 USER apache
 
 # Initialize CA and DB
-RUN indiecert-init
+RUN indiecert-init-ca
+RUN indiecert-init-db
 
 USER root
 
