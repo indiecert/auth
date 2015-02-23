@@ -409,6 +409,12 @@ class IndieCertService extends Service
             if ('https' !== $uriObj->getScheme()) {
                 throw new BadRequestException('"me" must be https uri');
             }
+            if (null !== $uriObj->getQuery()) {
+                throw new BadRequestException('"me" cannot contain query parameters');
+            }
+            if (null !== $uriObj->getFragment()) {
+                throw new BadRequestException('"me" cannot contain fragment');
+            }
 
             return $me;
         } catch (UriException $e) {
@@ -425,6 +431,9 @@ class IndieCertService extends Service
             $uriObj = new Uri($redirectUri);
             if ('https' !== $uriObj->getScheme()) {
                 throw new BadRequestException('"redirect_uri" must be https uri');
+            }
+            if (null !== $uriObj->getFragment()) {
+                throw new BadRequestException('"redirect_uri" cannot contain fragment');
             }
 
             return $redirectUri;

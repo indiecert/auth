@@ -4,6 +4,8 @@
 - update httpd config to only ask for certificate on `/auth`
 - use two init scripts for both CA and db instead of only one
 - update dependencies
+- `me` cannot contain query parameters or fragment
+- `redirect_uri` cannot contain fragment
 
 ## 0.1.7
 - add FAQ
