@@ -1,6 +1,7 @@
 # Changes
 
 ## 0.1.8
+- updated FAQ
 - if `me` does not have a path always add `/`
 - update httpd config to only ask for certificate on `/auth`
 - use two init scripts for both CA and db instead of only one
