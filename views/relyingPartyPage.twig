@@ -145,7 +145,7 @@ Pragma: no-cache
 </pre>
 </blockquote>
 
-    <h3>Security</h3>
+    <h3>Security Considerations</h3>
     <h4>CSRF</h4>
     <p>
 In the current protocol design there is a potential problem with CSRF. It is
@@ -155,10 +155,12 @@ This way user Y could unknowingly leak private data to user X's account.
     </p>
     <p>
 A fix is to check the referrer header on the callback URL. This MUST always be
-the same URL the user was redirected to in the first place, so it will have
-the form <code>https://indiecert.net/auth?me=X&redirect_uri=Y</code>. If the
-callback makes sure the referrer starts with
+the same URL the user was redirected to during the authentication step, so it
+will have the form <code>https://indiecert.net/auth?me=X&redirect_uri=Y</code>.
+If the callback makes sure the referrer starts with
 <code>https://indiecert.net/auth</code> this CSRF attack becomes impossible.
+Another protection by the IndieCert server is that a <code>code</code> is
+only valid for 10 minutes.
     </p>
 
     <div class="footer">
