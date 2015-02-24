@@ -49,7 +49,7 @@ try {
         array(
             'ssl.certificate_authority' => !$disableServerCertCheck,
             'request.options' => array(
-                'timeout' => 7
+                'timeout' => 5
             )
         )
     );
