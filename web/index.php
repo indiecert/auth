@@ -47,7 +47,10 @@ try {
     $client = new Client(
         '',
         array(
-            'ssl.certificate_authority' => !$disableServerCertCheck
+            'ssl.certificate_authority' => !$disableServerCertCheck,
+            'request.options' => array(
+                'timeout' => 7
+            )
         )
     );
 
