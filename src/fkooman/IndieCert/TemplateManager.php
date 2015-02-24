@@ -62,11 +62,14 @@ class TemplateManager
         );
     }
 
-    public function rpPage()
+    public function rpPage($authUri, $verifyPath, $hostName)
     {
         return $this->twig->render(
             'relyingPartyPage.twig',
             array(
+                'authUri' => $authUri,
+                'verifyPath' => $verifyPath,
+                'hostName' => $hostName
             )
         );
     }

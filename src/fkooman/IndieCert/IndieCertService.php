@@ -153,7 +153,10 @@ class IndieCertService extends Service
 
     public function getRp(Request $request)
     {
-        return $this->templateManager->rpPage();
+        $authUri = $request->getRequestUri()->getBaseUri() . $request->getAppRoot() . 'auth';
+        $verifyPath = $request->getAppRoot() . 'verify';
+        $hostName = $request->getRequestUri()->getHost();
+        return $this->templateManager->rpPage($authUri, $verifyPath, $hostName);
     }
 
     public function getCb(Request $request)

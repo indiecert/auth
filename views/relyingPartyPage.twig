@@ -13,37 +13,39 @@
 
     <h2>Relying Party</h2>
     <p>
-This page tells you how to integrate with IndieCert running on
-<code>https://indiecert.net</code> or other instances.
+Here you can read how to integrate your service as a <em>relying party</em>
+with IndieCert.
     </p>
 
     <h3>Authentication Request</h3>
     <p>
-The service redirects the user to <code>https://indiecert.net/auth</code> to
-start the authentication process. Two parameters MUST be specified:
+The relying party redirects the browser to <code>{{ authUri|e }}</code> to
+initiate the authentication process. Two query parameters MUST be specified:
     </p>
 
 <dl>
-    <dt><code>redirect_uri</code></dt>
-    <dd>
-the URL belonging to the relying party the browser is redirected back to after
-the authentication is successful and the user approved it, it MUST be a HTTPS
-URL;
-    </dd>
     <dt><code>me</code></dt>
     <dd>
-the URL to the user's home page or host name, e.g.: <code>example.org</code> or
-<code>https://www.example.org/user</code>;
+the URL to the user's home page, or host name, e.g.: <code>example.org</code>
+or <code>https://www.example.org/user</code>.
+    </dd>
+    <dt><code>redirect_uri</code></dt>
+    <dd>
+the callback URL belonging to the relying party where the browser will be
+redirected back to after successful authentication and after user approval. It
+MUST be an absolute HTTPS URL, e.g.: <code>https://example.org/callback</code>;
     </dd>
 </dl>
 
     <p>
-If the <code>me</code> field is not a valid HTTPS URI it will be prepended with
-<code>https://</code> and optionally get a <code>/</code> postfix, e.g.:
-<code>example.org</code> will be converted to
-<code>https://example.org/</code>.
+If the <code>me</code> field is not a valid HTTPS URI it will be modified by
+adding <code>https://</code> and optionally a trailing <code>/</code>. For
+example: <code>example.org</code> will be modified to
+<code>https://example.org/</code>. After (optional) modification of
+<code>me</code>, both <code>me</code> and <code>redirect_uri</code> MUST point
+to HTTPS resources.
     </p>
-
+    
     <h4>Example</h4>
     <p>
 The redirect to the authentication server can be accomplished in a number of
@@ -52,7 +54,7 @@ ways, e.g.: using a redirect:
 
 <blockquote>
 <pre>HTTP/1.1 302 Found
-Location: https://indiecert.net/auth?redirect_uri=https://example.org/callback&amp;me=https://www.example.org/user
+Location: {{ authUri|e }}?redirect_uri=https://example.org/callback&amp;me=https://www.example.org/user
 </pre>
 </blockquote>
 
@@ -61,7 +63,7 @@ or using a <code>&lt;form&gt;</code>:
     </p>
 <blockquote>
 <pre>
-&gt;form method="get" action="https://indiecert.net/auth"&gt;
+&lt;form method="get" action="{{ authUri|e }}"&gt;
     &lt;input type="hidden" name="redirect_uri" value="https://example.org/callback"&gt;
     &lt;input type="text" name="me" id="me" placeholder="yourdomain.com"&gt;
     &lt;input type="submit" value="Sign In"&gt;
@@ -73,7 +75,7 @@ or using a <code>&lt;form&gt;</code>:
     <p>
 IndieCert will redirect the browser back to the <code>redirect_uri</code>
 specified in the authentication request after the user is authenticated at
-IndieCert.
+IndieCert and approved the authentication.
     </p>
 
     <h4>Example</h4>
@@ -88,22 +90,26 @@ Location: https://example.org/callback?code=wW3OLXJZn35d7zFwg9YGmWti
     <h3>Verification Request</h3>
     <p>
 The <code>code</code> parameter can now be used to request the claimed user
-identity. The following parameters are required:
+identity. The <code>code</code> is valid for 10 minutes and can be used
+only once. The following parameters MUST be specified:
     </p>
 
 <dl>
     <dt><code>code</code></dt>
-    <dd>the code obtained in the authentication response query parameter <code>code</code>.</dd>
+    <dd>the code obtained in the authentication response query parameter <code>code</code>;</dd>
     <dt><code>redirect_uri</code></dt>
-    <dd>the URL the browser was redirected back to after the successful authentication;</dd>
+    <dd>
+the URL the browser was redirected back to after the successful authentication,
+e.g.: <code>https://example.org/callback</code>.
+    </dd>
 </dl>
 <p>
 Now a HTTP <code>POST</code> can be used to obtain the user's home page URL:
     </p>
 <blockquote>
 <pre>
-POST /verify HTTP/1.1
-Host: indiecert.net
+POST {{ verifyPath|e}} HTTP/1.1
+Host: {{ hostName|e }}
 Content-Type: application/x-www-form-urlencoded
 
 redirect_uri=https%3A%2F%2Fexample.org%2Fcallback&amp;code=wW3OLXJZn35d7zFwg9YGmWti
@@ -111,13 +117,14 @@ redirect_uri=https%3A%2F%2Fexample.org%2Fcallback&amp;code=wW3OLXJZn35d7zFwg9YGm
 </blockquote>
 
     <p>
-The response will be formatted as JSON indicating the actual user home page in
-the <code>me</code> parameter.
+The response will be returned as JSON, with the <code>me</code> field indicating
+the user's homepage.
     </p>
 
 This is the identity that MUST be used by the relying party to identify the
 user as it could differ from the initial <code>me</code> specified by the user,
-e.g.: redirects were followed to reach the user's home page.
+e.g.: <code>https://</code> was added or redirects were followed to reach the
+user's home page.
     </p>
 
 <blockquote>
@@ -154,19 +161,23 @@ Pragma: no-cache
     <h3>Security Considerations</h3>
     <h4>CSRF</h4>
     <p>
-In the current protocol design there is a potential problem with CSRF. It is
-possible for user X to go through the authentication step and use the obtained
-code to trick user Y to authenticate to a relying party under user X's code.
-This way user Y could unknowingly leak private data to user X's account.
+In order to prevent cross site request forgery (CSRF) the relying party MUST
+make sure the
+<a href="https://en.wikipedia.org/wiki/HTTP_referer">HTTP "Referer"</a> equals
+the initial authentication request.
     </p>
+    
     <p>
-A fix is to check the referrer header on the callback URL. This MUST always be
-the same URL the user was redirected to during the authentication step, so it
-will have the form <code>https://indiecert.net/auth?me=X&redirect_uri=Y</code>.
-If the callback makes sure the referrer starts with
-<code>https://indiecert.net/auth</code> this CSRF attack becomes impossible.
-Another protection by the IndieCert server is that a <code>code</code> is
-only valid for 10 minutes.
+The attack we try to avoid is the attack where user X tricks user Y to
+authenticate to a relying party using user X's identity and possibly
+unintentionally leak private date to user X's account.
+    </p>
+
+    <p>
+The relying party may not "keep state", so it MUST check that the HTTP "Referer"
+header begins with <code>{{ authUri|e }}</code>. If the referrer is missing
+from the HTTP request or does not match the authentication URI the callback
+MUST fail.
     </p>
 
     <div class="footer">

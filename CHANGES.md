@@ -1,5 +1,8 @@
 # Changes
 
+## 0.1.10
+- substantially update relying party documentation
+
 ## 0.1.9
 - add RP documentation
 - solve CSRF for 'try me' page
