@@ -61,6 +61,7 @@ try {
         $response = $e->getHtmlResponse();
     } else {
         // we catch all other (unexpected) exceptions and return a 500
+        error_log($e->getTraceAsString());
         $e = new InternalServerErrorException($e->getMessage());
         $response = $e->getHtmlResponse();
     }
