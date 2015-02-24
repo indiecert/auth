@@ -15,13 +15,13 @@ Source2:    indiecert-autoload.php
 
 BuildArch:  noarch
 
-Requires:   php >= 5.3.3
+Requires:   php >= 5.4.0
 Requires:   php-openssl
 Requires:   php-pdo
 Requires:   httpd
 
-Requires:   php-composer(guzzle/guzzle) >= 3.9
-Requires:   php-composer(guzzle/guzzle) < 4.0
+Requires:   php-composer(guzzlehttp/guzzle) >= 4.0
+Requires:   php-composer(guzzlehttp/guzzle) < 5.0
 Requires:   php-composer(fkooman/json) >= 0.6.0
 Requires:   php-composer(fkooman/json) < 0.7.0
 Requires:   php-composer(fkooman/ini) >= 0.2.0

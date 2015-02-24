@@ -10,14 +10,14 @@ use Symfony\Component\ClassLoader\UniversalClassLoader;
 $loader = new UniversalClassLoader();
 $loader->registerNamespaces(
     array(
-        'fkooman\\IndieCert'                  => $baseDir.'/src',
-        'fkooman\\Rest'                       => $vendorDir,
-        'fkooman\\Json'                       => $vendorDir,
-        'fkooman\\Ini'                        => $vendorDir,
-        'fkooman\\X509'                       => $vendorDir,
-        'fkooman\\Http'                       => $vendorDir,
-        'Symfony\\Component\\EventDispatcher' => $vendorDir,
-        'Guzzle'                              => $vendorDir
+        'fkooman\\IndieCert' => $baseDir.'/src',
+        'fkooman\\Rest'      => $vendorDir,
+        'fkooman\\Json'      => $vendorDir,
+        'fkooman\\Ini'       => $vendorDir,
+        'fkooman\\X509'      => $vendorDir,
+        'fkooman\\Http'      => $vendorDir,
+        'GuzzleHttp\\Stream' => $vendorDir,
+        'GuzzleHttp'         => $vendorDir
     )
 );
 
@@ -28,3 +28,6 @@ $loader->registerPrefixes(array(
 ));
 
 $loader->register();
+
+require_once $vendorDir.'/GuzzleHttp/functions.php';
+require_once $vendorDir.'/GuzzleHttp/Stream/functions.php';

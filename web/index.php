@@ -22,7 +22,7 @@ use fkooman\Http\Exception\HttpException;
 use fkooman\Http\Exception\InternalServerErrorException;
 use fkooman\IndieCert\IndieCertService;
 use fkooman\IndieCert\PdoStorage;
-use Guzzle\Http\Client;
+use GuzzleHttp\Client;
 
 try {
     $iniReader = IniReader::fromFile(
@@ -45,10 +45,9 @@ try {
     $disableServerCertCheck = $iniReader->v('disableServerCertCheck', false, false);
 
     $client = new Client(
-        '',
         array(
-            'ssl.certificate_authority' => !$disableServerCertCheck,
-            'request.options' => array(
+            'defaults' => array(
+                'verify' => !$disableServerCertCheck,
                 'timeout' => 5
             )
         )

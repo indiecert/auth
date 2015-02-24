@@ -1,5 +1,10 @@
 # Changes
 
+## 0.2.0
+- update to Guzzle 4
+- require PHP >= 5.4
+- remove some PHP 5.3 hacks
+
 ## 0.1.10
 - substantially update relying party documentation
 

@@ -21,7 +21,7 @@ use fkooman\Http\Request;
 use fkooman\Http\Response;
 use fkooman\Http\JsonResponse;
 use fkooman\Rest\Service;
-use Guzzle\Http\Client;
+use GuzzleHttp\Client;
 use fkooman\X509\CertParser;
 use fkooman\X509\CertParserException;
 use fkooman\Http\Uri;
@@ -42,7 +42,7 @@ class IndieCertService extends Service
     /** @var fkooman\RelMeAuth\PdoStorage */
     private $pdoStorage;
 
-    /** @var Guzzle\Http\Client */
+    /** @var GuzzleHttp\Client */
     private $client;
 
     /** @var fkooman\IndieCert\IO */
@@ -71,71 +71,68 @@ class IndieCertService extends Service
 
         $this->templateManager = new TemplateManager();
 
-        // in PHP 5.3 we cannot use $this from a closure
-        $compatThis = &$this;
-
         $this->setDefaultRoute('/welcome');
 
         $this->get(
             '/faq',
-            function (Request $request) use ($compatThis) {
-                return $compatThis->getFaq($request);
+            function (Request $request) {
+                return $this->getFaq($request);
             }
         );
 
         $this->get(
             '/welcome',
-            function (Request $request) use ($compatThis) {
-                return $compatThis->getWelcome($request);
+            function (Request $request) {
+                return $this->getWelcome($request);
             }
         );
 
         $this->get(
             '/rp',
-            function (Request $request) use ($compatThis) {
-                return $compatThis->getRp($request);
+            function (Request $request) {
+                return $this->getRp($request);
             }
         );
 
         $this->get(
             '/cb',
-            function (Request $request) use ($compatThis) {
-                return $compatThis->getCb($request);
+            function (Request $request) {
+                return $this->getCb($request);
             }
         );
 
         $this->get(
             '/auth',
-            function (Request $request) use ($compatThis) {
-                return $compatThis->getAuth($request);
+            function (Request $request) {
+                return $this->getAuth($request);
             }
         );
 
         $this->post(
             '/auth',
-            function (Request $request) use ($compatThis) {
-                return $compatThis->postAuth($request);
+            function (Request $request) {
+                return $this->postAuth($request);
             }
         );
 
         $this->post(
             '/verify',
-            function (Request $request) use ($compatThis) {
-                return $compatThis->postVerify($request);
+            function (Request $request) {
+                return $this->postVerify($request);
             }
         );
 
         $this->get(
             '/enroll',
-            function (Request $request) use ($compatThis) {
-                return $compatThis->getEnroll($request);
+            function (Request $request) {
+                return $this->getEnroll($request);
             }
         );
 
         $this->post(
             '/enroll',
-            function (Request $request) use ($compatThis) {
-                return $compatThis->postEnroll($request);
+            function (Request $request) {
+                return $this->postEnroll($request);
             }
         );
     }
@@ -173,15 +170,17 @@ class IndieCertService extends Service
 
         $code = $this->validateCode($request->getQueryParameter('code'));
                 
-        $verifyRequest = $this->client->post(
+        $verifyRequest = $this->client->createRequest(
+            'POST',
             $verifyUri,
-            array(),
             array(
-                'code' => $code,
-                'redirect_uri' => $redirectUri
+                'body' => array(
+                    'code' => $code,
+                    'redirect_uri' => $redirectUri
+                )
             )
         );
-        $verifyResponse = $verifyRequest->send()->json();
+        $verifyResponse = $this->client->send($verifyRequest)->json();
         $me = $verifyResponse['me'];
 
         return $this->templateManager->authenticatedPage(
@@ -357,10 +356,6 @@ class IndieCertService extends Service
         return $response;
     }
 
-    private function handleCertPageCheck(Request $request)
-    {
-    }
-
     private function hasFingerprint(array $relMeLinks, $certFingerprint)
     {
         $certFingerprints = array();
@@ -471,7 +466,7 @@ class IndieCertService extends Service
         if (null === $code) {
             throw new BadRequestException('missing parameter "code"');
         }
-        if (1 !== preg_match('/^[a-fA-F0-9]+$/', $code)) {
+        if (1 !== preg_match('/^[a-zA-Z0-9]+$/', $code)) {
             throw new BadRequestException('"code" contains invalid characters');
         }
 
