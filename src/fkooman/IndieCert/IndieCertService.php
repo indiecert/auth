@@ -229,7 +229,8 @@ class IndieCertService extends Service
     {
         $me = $this->validateMe($request->getQueryParameter('me'));
         $redirectUri = $this->validateRedirectUri($request->getQueryParameter('redirect_uri'));
-    
+        $state = $this->validateState($request->getQueryParameter('state'));
+
         $certFingerprint = $this->getCertFingerprint($request->getHeader('SSL_CLIENT_CERT'));
         if (false === $certFingerprint) {
             return $this->templateManager->noCert();
@@ -271,14 +272,21 @@ class IndieCertService extends Service
             $this->io->getTime()
         );
 
-        return new RedirectResponse(sprintf('%s?code=%s', $redirectUri, $code), 302);
+        if (null === $state) {
+            $responseUri = sprintf('%s?code=%s', $redirectUri, $code);
+        } else {
+            $responseUri = sprintf('%s?code=%s&state=%s', $redirectUri, $code, $state);
+        }
+
+        return new RedirectResponse($responseUri, 302);
     }
 
     public function postAuth(Request $request)
     {
         $me = $this->validateMe($request->getQueryParameter('me'));
         $redirectUri = $this->validateRedirectUri($request->getQueryParameter('redirect_uri'));
-    
+        $state = $this->validateState($request->getQueryParameter('state'));
+
         // CSRF protection
         if ($request->getHeader('HTTP_REFERER') !== $request->getRequestUri()->getUri()) {
             throw new BadRequestException('CSRF protection triggered');
@@ -316,7 +324,13 @@ class IndieCertService extends Service
             $this->io->getTime()
         );
 
-        return new RedirectResponse(sprintf('%s?code=%s', $redirectUri, $code), 302);
+        if (null === $state) {
+            $responseUri = sprintf('%s?code=%s', $redirectUri, $code);
+        } else {
+            $responseUri = sprintf('%s?code=%s&state=%s', $redirectUri, $code, $state);
+        }
+
+        return new RedirectResponse($responseUri, 302);
     }
 
     public function postVerify(Request $request)
@@ -466,10 +480,21 @@ class IndieCertService extends Service
         if (null === $code) {
             throw new BadRequestException('missing parameter "code"');
         }
-        if (1 !== preg_match('/^[a-zA-Z0-9]+$/', $code)) {
+        if (1 !== preg_match('/^(?:[\x20-\x7E])*$/', $code)) {
             throw new BadRequestException('"code" contains invalid characters');
         }
 
         return $code;
+    }
+
+    public function validateState($state)
+    {
+        if (null !== $state) {
+            if (1 !== preg_match('/^(?:[\x20-\x7E])*$/', $state)) {
+                throw new BadRequestException('"state" contains invalid characters');
+            }
+        }
+
+        return $state;
     }
 }
