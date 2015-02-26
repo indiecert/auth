@@ -1,5 +1,8 @@
 # Changes
 
+## 0.2.1
+- implement state parameter support
+
 ## 0.2.0
 - update to Guzzle 4
 - require PHP >= 5.4
