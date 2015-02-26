@@ -2,6 +2,7 @@
 
 ## 0.2.1
 - implement state parameter support
+- update relying party documentation
 
 ## 0.2.0
 - update to Guzzle 4
