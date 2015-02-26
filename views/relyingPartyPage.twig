@@ -162,11 +162,9 @@ Pragma: no-cache
     <h4>CSRF</h4>
     <p>
 In order to prevent cross site request forgery (CSRF) the relying party MUST
-make sure the
-<a href="https://en.wikipedia.org/wiki/HTTP_referer">HTTP "Referer"</a> equals
-the initial authentication request.
+implement a way to prevent this from happening.
     </p>
-    
+
     <p>
 The attack we try to avoid is the attack where user X tricks user Y to
 authenticate to a relying party using user X's identity and possibly
@@ -174,10 +172,24 @@ unintentionally leak private date to user X's account.
     </p>
 
     <p>
-The relying party may not "keep state", so it MUST check that the HTTP "Referer"
-header begins with <code>{{ authUri|e }}</code>. If the referrer is missing
+There are two ways to prevent CSRF.
+    </p>
+
+<h5>Checking HTTP "Referer"</h5>
+    <p>
+The relying party can compare the <a href="https://en.wikipedia.org/wiki/HTTP_referer">HTTP "Referer"</a> request header on the callback with the authentication URL.
+    </p>
+    <p>
+The HTTP "Referer" header MUST begin with <code>{{ authUri|e }}</code>. If the referrer is missing
 from the HTTP request or does not match the authentication URI the callback
 MUST fail.
+    </p>
+
+<h5>Keeping State</h5>
+    <p>
+In case the relying party keeps state, the <code>state</code> parameter can
+be used in the authentication request. The same state value MUST exist on 
+callback.
     </p>
 
     <div class="footer">
