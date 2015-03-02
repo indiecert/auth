@@ -1,5 +1,10 @@
 # Changes
 
+## 0.2.2
+- simplify TemplateManager
+- fix bug when CSRF protection was triggered when approval was stored with
+  'Try Me'
+
 ## 0.2.1
 - implement state parameter support
 - update relying party documentation

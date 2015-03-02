@@ -22,11 +22,10 @@ use Twig_Environment;
 
 class TemplateManager
 {
-
     /** @var Twig_Environment */
     private $twig;
 
-    public function __construct()
+    public function __construct($cacheDir = null)
     {
         $configTemplateDir = dirname(dirname(dirname(__DIR__))).'/config/views';
         $defaultTemplateDir = dirname(dirname(dirname(__DIR__))).'/views';
@@ -36,93 +35,25 @@ class TemplateManager
             $templateDirs[] = $configTemplateDir;
         }
         $templateDirs[] = $defaultTemplateDir;
+
+        $environmentOptions = array(
+            'strict_variables' => true
+        );
+
+        if (null !== $cacheDir || false === is_dir($cacheDir)) {
+            $environmentOptions['cache'] = $cacheDir;
+        }
+
         $this->twig = new Twig_Environment(
             new Twig_Loader_Filesystem(
                 $templateDirs
-            )
+            ),
+            $environmentOptions
         );
     }
 
-    public function faqPage()
+    public function render($templateName, array $variables = array())
     {
-        return $this->twig->render(
-            'faqPage.twig',
-            array(
-            )
-        );
-    }
-
-    public function welcomePage($redirectUri)
-    {
-        return $this->twig->render(
-            'welcomePage.twig',
-            array(
-                'redirect_uri' => $redirectUri
-            )
-        );
-    }
-
-    public function rpPage($authUri, $verifyPath, $hostName)
-    {
-        return $this->twig->render(
-            'relyingPartyPage.twig',
-            array(
-                'authUri' => $authUri,
-                'verifyPath' => $verifyPath,
-                'hostName' => $hostName
-            )
-        );
-    }
-
-    public function authenticatedPage($me)
-    {
-        return $this->twig->render(
-            'authenticatedPage.twig',
-            array(
-                'me' => $me
-            )
-        );
-    }
-
-    public function enrollPage($certChallenge, $referrer)
-    {
-        return $this->twig->render(
-            'enrollPage.twig',
-            array(
-                'certChallenge' => $certChallenge,
-                'referrer' => $referrer
-            )
-        );
-    }
-
-    public function askConfirmation($me, $host)
-    {
-        return $this->twig->render(
-            'askConfirmation.twig',
-            array(
-                'me' => $me,
-                'host' => $host
-            )
-        );
-    }
-
-    public function noCert()
-    {
-        return $this->twig->render(
-            'noCert.twig',
-            array(
-            )
-        );
-    }
-
-    public function missingFingerprint($me, $certFingerprint)
-    {
-        return $this->twig->render(
-            'missingFingerprint.twig',
-            array(
-                'me' => $me,
-                'certFingerprint' => $certFingerprint
-            )
-        );
+        return $this->twig->render(sprintf('%s.twig', $templateName), $variables);
     }
 }

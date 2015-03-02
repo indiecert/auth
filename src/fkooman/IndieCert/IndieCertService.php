@@ -139,13 +139,18 @@ class IndieCertService extends Service
 
     public function getFaq(Request $request)
     {
-        return $this->templateManager->faqPage();
+        return $this->templateManager->render('faqPage');
     }
 
     public function getWelcome(Request $request)
     {
         $redirectUri = $request->getRequestUri()->getBaseUri() . $request->getAppRoot() . 'cb';
-        return $this->templateManager->welcomePage($redirectUri);
+        return $this->templateManager->render(
+            'welcomePage',
+            array(
+                'redirect_uri' => $redirectUri
+            )
+        );
     }
 
     public function getRp(Request $request)
@@ -153,19 +158,25 @@ class IndieCertService extends Service
         $authUri = $request->getRequestUri()->getBaseUri() . $request->getAppRoot() . 'auth';
         $verifyPath = $request->getAppRoot() . 'verify';
         $hostName = $request->getRequestUri()->getHost();
-        return $this->templateManager->rpPage($authUri, $verifyPath, $hostName);
+        return $this->templateManager->render(
+            'relyingPartyPage',
+            array(
+                'authUri' => $authUri,
+                'verifyPath' => $verifyPath,
+                'hostName' => $hostName
+            )
+        );
     }
 
     public function getCb(Request $request)
     {
         // this is the callback from the 'try it'
-        $redirectUri = $request->getRequestUri()->getBaseUri() . $request->getAppRoot() . 'cb';
-        $verifyUri = $request->getRequestUri()->getBaseUri() . $request->getAppRoot() . 'verify';
-        $authUri = $request->getRequestUri()->getBaseUri() . $request->getAppRoot() . 'auth';
+        $appRootUri = $request->getRequestUri()->getBaseUri() . $request->getAppRoot();
+        $redirectUri = $appRootUri . 'cb';
+        $verifyUri = $appRootUri . 'verify';
 
-        // the referrer MUST be the authUri otherwise, CSRF
-        if (0 !== strpos($request->getHeader('HTTP_REFERER'), $authUri)) {
-            throw new BadRequestException('CSRF protection triggered');
+        if (0 !== strpos($request->getHeader('HTTP_REFERER'), $appRootUri)) {
+            throw new BadRequestException('CSRF protection on callback triggered');
         }
 
         $code = $this->validateCode($request->getQueryParameter('code'));
@@ -183,16 +194,22 @@ class IndieCertService extends Service
         $verifyResponse = $this->client->send($verifyRequest)->json();
         $me = $verifyResponse['me'];
 
-        return $this->templateManager->authenticatedPage(
-            $me
+        return $this->templateManager->render(
+            'authenticatedPage',
+            array(
+                'me' => $me
+            )
         );
     }
 
     public function getEnroll(Request $request)
     {
-        return $this->templateManager->enrollPage(
-            $this->io->getRandomHex(),
-            $request->getHeader('HTTP_REFERER')
+        return $this->templateManager->render(
+            'enrollPage',
+            array(
+                'certChallenge' => $this->io->getRandomHex(),
+                'referrer' => $request->getHeader('HTTP_REFERER')
+            )
         );
     }
 
@@ -233,7 +250,7 @@ class IndieCertService extends Service
 
         $certFingerprint = $this->getCertFingerprint($request->getHeader('SSL_CLIENT_CERT'));
         if (false === $certFingerprint) {
-            return $this->templateManager->noCert();
+            return $this->templateManager->render('noCert');
         }
 
         $pageFetcher = new PageFetcher($this->client);
@@ -242,7 +259,13 @@ class IndieCertService extends Service
         $relMeLinks = $this->extractRelMeLinks($pageResponse->getBody());
 
         if (false === $this->hasFingerprint($relMeLinks, $certFingerprint)) {
-            return $this->templateManager->missingFingerprint($pageResponse->getEffectiveUrl(), $certFingerprint);
+            return $this->templateManager->render(
+                'missingFingerprint',
+                array(
+                    'me' => $pageResponse->getEffectiveUrl(),
+                    'certFingerprint' => $certFingerprint
+                )
+            );
         }
 
         $approval = $this->pdoStorage->getApproval($pageResponse->getEffectiveUrl(), $redirectUri);
@@ -257,9 +280,12 @@ class IndieCertService extends Service
         if (false === $approval) {
             $redirectUriObj = new Uri($redirectUri);
 
-            return $this->templateManager->askConfirmation(
-                $pageResponse->getEffectiveUrl(),
-                $redirectUriObj->getHost()
+            return $this->templateManager->render(
+                'askConfirmation',
+                array(
+                    'me' => $pageResponse->getEffectiveUrl(),
+                    'host' => $redirectUriObj->getHost()
+                )
             );
         }
 
@@ -298,7 +324,7 @@ class IndieCertService extends Service
 
         $certFingerprint = $this->getCertFingerprint($request->getHeader('SSL_CLIENT_CERT'));
         if (false === $certFingerprint) {
-            return $this->templateManager->noCert();
+            return $this->templateManager->render('noCert');
         }
 
         $pageFetcher = new PageFetcher($this->client);
@@ -307,7 +333,13 @@ class IndieCertService extends Service
         $relMeLinks = $this->extractRelMeLinks($pageResponse->getBody());
 
         if (false === $this->hasFingerprint($relMeLinks, $certFingerprint)) {
-            return $this->templateManager->missingFingerprint($pageResponse->getEffectiveUrl(), $certFingerprint);
+            return $this->templateManager->render(
+                'missingFingerprint',
+                array(
+                    'me' => $pageResponse->getEffectiveUrl(),
+                    'certFingerprint' => $certFingerprint
+                )
+            );
         }
 
         // remember
