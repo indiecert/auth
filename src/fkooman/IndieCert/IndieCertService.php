@@ -519,7 +519,7 @@ class IndieCertService extends Service
         return $code;
     }
 
-    public function validateState($state)
+    private function validateState($state)
     {
         if (null !== $state) {
             if (1 !== preg_match('/^(?:[\x20-\x7E])*$/', $state)) {
