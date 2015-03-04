@@ -1,5 +1,8 @@
 # Changes
 
+## 0.2.3
+- update to `ni://` scheme (RFC 6920)
+
 ## 0.2.2
 - simplify TemplateManager
 - fix bug when CSRF protection was triggered when approval was stored with

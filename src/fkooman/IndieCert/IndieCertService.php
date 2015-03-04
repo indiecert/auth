@@ -248,7 +248,10 @@ class IndieCertService extends Service
         $redirectUri = $this->validateRedirectUri($request->getQueryParameter('redirect_uri'));
         $state = $this->validateState($request->getQueryParameter('state'));
 
-        $certFingerprint = $this->getCertFingerprint($request->getHeader('SSL_CLIENT_CERT'));
+        $certFingerprint = $this->getCertFingerprint(
+            $request->getHeader('SSL_CLIENT_CERT'),
+            $request->getRequestUri()->getHost()
+        );
         if (false === $certFingerprint) {
             return $this->templateManager->render('noCert');
         }
@@ -258,12 +261,15 @@ class IndieCertService extends Service
 
         $relMeLinks = $this->extractRelMeLinks($pageResponse->getBody());
 
-        if (false === $this->hasFingerprint($relMeLinks, $certFingerprint)) {
+        $hostName = $request->getRequestUri()->getHost();
+
+        if (false === $this->hasFingerprint($relMeLinks, $certFingerprint, $hostName)) {
             return $this->templateManager->render(
                 'missingFingerprint',
                 array(
                     'me' => $pageResponse->getEffectiveUrl(),
-                    'certFingerprint' => $certFingerprint
+                    'certFingerprint' => $certFingerprint,
+                    'hostName' => $hostName
                 )
             );
         }
@@ -331,13 +337,16 @@ class IndieCertService extends Service
         $pageResponse = $pageFetcher->fetch($me);
 
         $relMeLinks = $this->extractRelMeLinks($pageResponse->getBody());
+    
+        $hostName = $request->getRequestUri()->getHost();
 
-        if (false === $this->hasFingerprint($relMeLinks, $certFingerprint)) {
+        if (false === $this->hasFingerprint($relMeLinks, $certFingerprint, $hostName)) {
             return $this->templateManager->render(
                 'missingFingerprint',
                 array(
                     'me' => $pageResponse->getEffectiveUrl(),
-                    'certFingerprint' => $certFingerprint
+                    'certFingerprint' => $certFingerprint,
+                    'hostName' => $hostName
                 )
             );
         }
@@ -402,11 +411,17 @@ class IndieCertService extends Service
         return $response;
     }
 
-    private function hasFingerprint(array $relMeLinks, $certFingerprint)
+    private function hasFingerprint(array $relMeLinks, $certFingerprint, $hostName = 'indiecert.net')
     {
         $certFingerprints = array();
+
+        $pattern = sprintf(
+            '/^ni:\/\/%s\/sha-256;[a-zA-Z0-9_-]+\?ct=application\/x-x509-user-cert$/',
+             $hostName
+        );
+
         foreach ($relMeLinks as $meLink) {
-            if (preg_match('/^di:sha-256;[a-zA-Z0-9_-]+\?ct=application\/x-x509-user-cert$/', $meLink)) {
+            if (1 === preg_match($pattern, $meLink)) {
                 $certFingerprints[] = $meLink;
             }
         }
@@ -418,13 +433,14 @@ class IndieCertService extends Service
         return true;
     }
 
-    private function getCertFingerprint($clientCert)
+    private function getCertFingerprint($clientCert, $hostName = 'indiecert.net')
     {
         // determine certificate fingerprint
         try {
             $certParser = new CertParser($clientCert);
             return sprintf(
-                'di:sha-256;%s?ct=application/x-x509-user-cert',
+                'ni://%s/sha-256;%s?ct=application/x-x509-user-cert',
+                $hostName,
                 $certParser->getFingerPrint('sha256', true)
             );
         } catch (CertParserException $e) {

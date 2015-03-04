@@ -15,6 +15,10 @@
 IndieCert was unable to find a matching fingerprint on your claimed URL
     </p>
 
+    <p class="warn">
+<strong>NOTE</strong>: the URI scheme changed from <code>di:</code> to <code>ni://{{ hostName|e }}/</code>. If you still use the <code>di:</code> scheme you have to update to the new scheme
+    </p>
+
     <p>
 You claimed the identity <code>{{ me|e }}</code>, but we were unable to
 find the fingerprint of the certificate you are currently authenticated with
