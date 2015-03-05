@@ -1,5 +1,10 @@
 # Changes
 
+## 0.2.4
+- fix call of getCertFingerprint() to also use hostname
+- in case there was no certificate authentication mention that you need a
+  certificate issued by IndieCert (issue #2)
+
 ## 0.2.3
 - update to `ni://` scheme (RFC 6920)
 
