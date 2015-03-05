@@ -328,7 +328,10 @@ class IndieCertService extends Service
             throw new ForbiddenException('user did not approve identity validation');
         }
 
-        $certFingerprint = $this->getCertFingerprint($request->getHeader('SSL_CLIENT_CERT'));
+        $certFingerprint = $this->getCertFingerprint(
+            $request->getHeader('SSL_CLIENT_CERT'),
+            $request->getRequestUri()->getHost()
+        );
         if (false === $certFingerprint) {
             return $this->templateManager->render('noCert');
         }
@@ -411,7 +414,7 @@ class IndieCertService extends Service
         return $response;
     }
 
-    private function hasFingerprint(array $relMeLinks, $certFingerprint, $hostName = 'indiecert.net')
+    private function hasFingerprint(array $relMeLinks, $certFingerprint, $hostName)
     {
         $certFingerprints = array();
 
@@ -433,7 +436,7 @@ class IndieCertService extends Service
         return true;
     }
 
-    private function getCertFingerprint($clientCert, $hostName = 'indiecert.net')
+    private function getCertFingerprint($clientCert, $hostName)
     {
         // determine certificate fingerprint
         try {
