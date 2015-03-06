@@ -1,8 +1,9 @@
 # Changes
 
 ## 0.2.5
-- auth endpoint now returns `application/x-www-form-urlencoded` if the 
-  `Accept` header is set to this format
+- auth endpoint now returns `application/x-www-form-urlencoded` as default
+  response type to token verification, override with `Accept` header if you
+  want `application/json`
 - verify endpoint no longer exists, use "auth" as well for verify endpoint
 
 ## 0.2.4

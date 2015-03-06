@@ -414,21 +414,22 @@ class IndieCertService extends Service
             // FIXME: this MUST be JSON response!
             throw new BadRequestException('code expired');
         }
-
-        if (false !== strpos($request->getHeader('Accept'), 'application/x-www-form-urlencoded')) {
+    
+        // default to "application/x-www-form-urlencoded" for now...
+        if (false !== strpos($request->getHeader('Accept'), 'application/json')) {
+            $response = new JsonResponse();
+            $response->setContent(
+                array(
+                    'me' => $indieCode['me']
+                )
+            );
+        } else {
             $response = new Response(200, 'application/x-www-form-urlencoded');
             $response->setContent(
                 http_build_query(
                     array(
                         'me' => $indieCode['me']
                     )
-                )
-            );
-        } else {
-            $response = new JsonResponse();
-            $response->setContent(
-                array(
-                    'me' => $indieCode['me']
                 )
             );
         }
