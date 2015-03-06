@@ -20,6 +20,7 @@ namespace fkooman\IndieCert;
 use fkooman\Http\Request;
 use fkooman\Http\Response;
 use fkooman\Http\JsonResponse;
+#use fkooman\Http\FormResponse;
 use fkooman\Rest\Service;
 use GuzzleHttp\Client;
 use fkooman\X509\CertParser;
@@ -185,6 +186,7 @@ class IndieCertService extends Service
             'POST',
             $verifyUri,
             array(
+                'headers' => array('Accept' => 'application/json'),
                 'body' => array(
                     'code' => $code,
                     'redirect_uri' => $redirectUri
@@ -413,12 +415,23 @@ class IndieCertService extends Service
             throw new BadRequestException('code expired');
         }
 
-        $response = new JsonResponse();
-        $response->setContent(
-            array(
-                'me' => $indieCode['me']
-            )
-        );
+        if (false !== strpos($request->getHeader('Accept'), 'application/x-www-form-urlencoded')) {
+            $response = new Response(200, 'application/x-www-form-urlencoded');
+            $response->setContent(
+                http_build_query(
+                    array(
+                        'me' => $indieCode['me']
+                    )
+                )
+            );
+        } else {
+            $response = new JsonResponse();
+            $response->setContent(
+                array(
+                    'me' => $indieCode['me']
+                )
+            );
+        }
 
         return $response;
     }

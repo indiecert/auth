@@ -1,6 +1,8 @@
 # Changes
 
 ## 0.2.5
+- auth endpoint now returns `application/x-www-form-urlencoded` if the 
+  `Accept` header is set to this format
 - verify endpoint no longer exists, use "auth" as well for verify endpoint
 
 ## 0.2.4

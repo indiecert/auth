@@ -110,6 +110,7 @@ Now a HTTP <code>POST</code> can be used to obtain the user's home page URL:
 <pre>
 POST {{ verifyPath|e}} HTTP/1.1
 Host: {{ hostName|e }}
+Accept: application/json
 Content-Type: application/x-www-form-urlencoded
 
 redirect_uri=https%3A%2F%2Fexample.org%2Fcallback&amp;code=wW3OLXJZn35d7zFwg9YGmWti
@@ -117,8 +118,8 @@ redirect_uri=https%3A%2F%2Fexample.org%2Fcallback&amp;code=wW3OLXJZn35d7zFwg9YGm
 </blockquote>
 
     <p>
-The response will be returned as JSON, with the <code>me</code> field indicating
-the user's homepage.
+The response will be returned as JSON, with the <code>me</code> field
+indicating the user's homepage.
     </p>
 
 This is the identity that MUST be used by the relying party to identify the
@@ -157,6 +158,15 @@ Pragma: no-cache
 }
 </pre>
 </blockquote>
+
+    <p>
+It is also possible to receive the response in
+<code>application/x-www-form-urlencoded</code> format by using the
+<code>Accept: application/x-www-form-urlencoded</code> header instead of the
+<code>Accept: application/json</code> header. The default is
+<code>application/json</code>.
+
+    </p>
 
     <h3>Security Considerations</h3>
     <h4>CSRF</h4>
