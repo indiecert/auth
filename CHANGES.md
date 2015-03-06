@@ -1,5 +1,8 @@
 # Changes
 
+## 0.2.5
+- verify endpoint no longer exists, use "auth" as well for verify endpoint
+
 ## 0.2.4
 - fix call of getCertFingerprint() to also use hostname
 - in case there was no certificate authentication mention that you need a

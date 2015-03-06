@@ -109,16 +109,16 @@ class IndieCertService extends Service
         );
 
         $this->post(
-            '/auth',
+            '/confirm',
             function (Request $request) {
-                return $this->postAuth($request);
+                return $this->postConfirm($request);
             }
         );
 
         $this->post(
-            '/verify',
+            '/auth',
             function (Request $request) {
-                return $this->postVerify($request);
+                return $this->postAuth($request);
             }
         );
 
@@ -156,7 +156,7 @@ class IndieCertService extends Service
     public function getRp(Request $request)
     {
         $authUri = $request->getRequestUri()->getBaseUri() . $request->getAppRoot() . 'auth';
-        $verifyPath = $request->getAppRoot() . 'verify';
+        $verifyPath = $request->getAppRoot() . 'auth';
         $hostName = $request->getRequestUri()->getHost();
         return $this->templateManager->render(
             'relyingPartyPage',
@@ -173,7 +173,7 @@ class IndieCertService extends Service
         // this is the callback from the 'try it'
         $appRootUri = $request->getRequestUri()->getBaseUri() . $request->getAppRoot();
         $redirectUri = $appRootUri . 'cb';
-        $verifyUri = $appRootUri . 'verify';
+        $verifyUri = $appRootUri . 'auth';
 
         if (0 !== strpos($request->getHeader('HTTP_REFERER'), $appRootUri)) {
             throw new BadRequestException('CSRF protection on callback triggered');
@@ -252,6 +252,7 @@ class IndieCertService extends Service
             $request->getHeader('SSL_CLIENT_CERT'),
             $request->getRequestUri()->getHost()
         );
+
         if (false === $certFingerprint) {
             return $this->templateManager->render('noCert');
         }
@@ -283,12 +284,19 @@ class IndieCertService extends Service
             }
         }
     
+        if (null === $state) {
+            $confirmUri = sprintf('confirm?redirect_uri=%s&me=%s', $redirectUri, $me);
+        } else {
+            $confirmUri = sprintf('confirm?redirect_uri=%s&me=%s&state=%s', $redirectUri, $me, $state);
+        }
+
         if (false === $approval) {
             $redirectUriObj = new Uri($redirectUri);
 
             return $this->templateManager->render(
                 'askConfirmation',
                 array(
+                    'confirmUri' => $confirmUri,
                     'me' => $pageResponse->getEffectiveUrl(),
                     'host' => $redirectUriObj->getHost()
                 )
@@ -313,14 +321,15 @@ class IndieCertService extends Service
         return new RedirectResponse($responseUri, 302);
     }
 
-    public function postAuth(Request $request)
+    public function postConfirm(Request $request)
     {
         $me = $this->validateMe($request->getQueryParameter('me'));
         $redirectUri = $this->validateRedirectUri($request->getQueryParameter('redirect_uri'));
         $state = $this->validateState($request->getQueryParameter('state'));
+        $appRootUri = $request->getRequestUri()->getBaseUri() . $request->getAppRoot();
 
         // CSRF protection
-        if ($request->getHeader('HTTP_REFERER') !== $request->getRequestUri()->getUri()) {
+        if (0 !== strpos($request->getHeader('HTTP_REFERER'), $appRootUri)) {
             throw new BadRequestException('CSRF protection triggered');
         }
         
@@ -377,7 +386,7 @@ class IndieCertService extends Service
         return new RedirectResponse($responseUri, 302);
     }
 
-    public function postVerify(Request $request)
+    public function postAuth(Request $request)
     {
         $code = $this->validateCode($request->getPostParameter('code'));
         if (null === $code) {
