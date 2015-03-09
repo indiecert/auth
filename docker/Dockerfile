@@ -18,7 +18,13 @@ RUN echo '' > /etc/httpd/conf.d/indiecert.conf
 # add httpd config for dev.indiecert.net
 ADD dev.indiecert.net-httpd.conf /etc/httpd/conf.d/dev.indiecert.net.conf
 
-# disable the certificate check for use within the docker image
+# Add CAcert as a valid CA (this is pointless here as we disable certificate
+# check anyway in the next step, but for production we use this)
+ADD CAcert.pem /etc/pki/ca-trust/source/anchors/CAcert.pem
+RUN update-ca-trust
+
+# disable the certificate check for use within the docker image, as there is
+# no trusted certificate for "dev.indiecert.net" so verification will fail...
 RUN sed -i 's/;disableServerCertCheck/disableServerCertCheck/' /etc/indiecert/config.ini
 
 USER apache
