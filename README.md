@@ -22,6 +22,22 @@ other database please first modify the configuration file
     $ sudo -u apache indiecert-init-ca
     $ sudo -u apache indiecert-init-db
 
+# Production Deployment
+In case you want to deploy IndieCert in production, you SHOULD use the RPM 
+packages mentioned above, or build them yourself. 
+
+The default (Apache) configuration will make IndieCert available under the 
+`indiecert` sub folder. If you want to deploy IndieCert on the root of a 
+domain, please check the `Dockerfile` in the `docker/` folder on what steps
+to perform. It shows exactly what you should do on production environments, 
+except disable the certificate check.
+
+You can also run the Docker image in production, provided you mount 
+`/var/lib/indiecert` somewhere in the host before starting the container to be
+able to retain the data when the Docker image updates.
+
+Also, make sure you apply security updates to your host and docker image!
+
 # Development
 We assume that your web server runs under the `apache` user and your user 
 account is called `fkooman` in group `fkooman`.
