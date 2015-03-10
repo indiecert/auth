@@ -20,7 +20,7 @@ namespace fkooman\IndieCert;
 use fkooman\Http\Request;
 use fkooman\Http\Response;
 use fkooman\Http\JsonResponse;
-#use fkooman\Http\FormResponse;
+use fkooman\Http\FormResponse;
 use fkooman\Rest\Service;
 use GuzzleHttp\Client;
 use fkooman\X509\CertParser;
@@ -145,7 +145,7 @@ class IndieCertService extends Service
 
     public function getWelcome(Request $request)
     {
-        $redirectUri = $request->getRequestUri()->getBaseUri() . $request->getAppRoot() . 'cb';
+        $redirectUri = $request->getAbsRoot() . 'cb';
         return $this->templateManager->render(
             'welcomePage',
             array(
@@ -156,8 +156,8 @@ class IndieCertService extends Service
 
     public function getRp(Request $request)
     {
-        $authUri = $request->getRequestUri()->getBaseUri() . $request->getAppRoot() . 'auth';
-        $verifyPath = $request->getAppRoot() . 'auth';
+        $authUri = $request->getAbsRoot() . 'auth';
+        $verifyPath = $request->getRoot() . 'auth';
         $hostName = $request->getRequestUri()->getHost();
         return $this->templateManager->render(
             'relyingPartyPage',
@@ -172,7 +172,7 @@ class IndieCertService extends Service
     public function getCb(Request $request)
     {
         // this is the callback from the 'try it'
-        $appRootUri = $request->getRequestUri()->getBaseUri() . $request->getAppRoot();
+        $appRootUri = $request->getAbsRoot();
         $redirectUri = $appRootUri . 'cb';
         $verifyUri = $appRootUri . 'auth';
 
@@ -250,6 +250,9 @@ class IndieCertService extends Service
         $redirectUri = $this->validateRedirectUri($request->getQueryParameter('redirect_uri'));
         $state = $this->validateState($request->getQueryParameter('state'));
 
+        //var_dump($request->getHeader('SSL_CLIENT_CERT'));
+        //var_dump($_SERVER);
+        //die();
         $certFingerprint = $this->getCertFingerprint(
             $request->getHeader('SSL_CLIENT_CERT'),
             $request->getRequestUri()->getHost()
@@ -328,7 +331,7 @@ class IndieCertService extends Service
         $me = $this->validateMe($request->getQueryParameter('me'));
         $redirectUri = $this->validateRedirectUri($request->getQueryParameter('redirect_uri'));
         $state = $this->validateState($request->getQueryParameter('state'));
-        $appRootUri = $request->getRequestUri()->getBaseUri() . $request->getAppRoot();
+        $appRootUri = $request->getAbsRoot();
 
         // CSRF protection
         if (0 !== strpos($request->getHeader('HTTP_REFERER'), $appRootUri)) {
@@ -399,40 +402,24 @@ class IndieCertService extends Service
         $indieCode = $this->pdoStorage->getIndieCode($code, $redirectUri);
 
         if (false === $indieCode) {
-            //throw new BadRequestException('invalid_request');
-            $response = new JsonResponse(400);
-            $response->setContent(
-                array(
-                    'error' => 'invalid_request'
-                )
-            );
-
-            return $response;
+            throw new BadRequestException('invalid_request');
         }
 
         if ($this->io->getTime() > $indieCode['issue_time'] + 600) {
-            // FIXME: this MUST be JSON response!
             throw new BadRequestException('code expired');
         }
     
         // default to "application/x-www-form-urlencoded" for now...
         if (false !== strpos($request->getHeader('Accept'), 'application/json')) {
             $response = new JsonResponse();
-            $response->setContent(
-                array(
-                    'me' => $indieCode['me']
-                )
-            );
         } else {
-            $response = new Response(200, 'application/x-www-form-urlencoded');
-            $response->setContent(
-                http_build_query(
-                    array(
-                        'me' => $indieCode['me']
-                    )
-                )
-            );
+            $response = new FormResponse();
         }
+        $response->setContent(
+            array(
+                'me' => $indieCode['me']
+            )
+        );
 
         return $response;
     }

@@ -56,13 +56,5 @@ try {
     $service = new IndieCertService($caCrt, $caKey, $pdoStorage, $client);
     $service->run()->sendResponse();
 } catch (Exception $e) {
-    if ($e instanceof HttpException) {
-        $response = $e->getHtmlResponse();
-    } else {
-        // we catch all other (unexpected) exceptions and return a 500
-        error_log($e->getTraceAsString());
-        $e = new InternalServerErrorException($e->getMessage());
-        $response = $e->getHtmlResponse();
-    }
-    $response->sendResponse();
+    IndieCertService::handleException($e)->sendResponse();
 }

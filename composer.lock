@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "f45f5c825482a7fa26b1a58847eac53a",
+    "hash": "3ddd1e63c7b5cd74f432723d647a156b",
     "packages": [
         {
             "name": "fkooman/cert-parser",
@@ -125,16 +125,16 @@
         },
         {
             "name": "fkooman/rest",
-            "version": "0.6.8",
+            "version": "0.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fkooman/php-lib-rest.git",
-                "reference": "a8a74b040ccbdca2cfc2b02c2aacb92661dd3a89"
+                "reference": "5171d6a8517e6461c7aec184b01aa0f9699be5fc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fkooman/php-lib-rest/zipball/a8a74b040ccbdca2cfc2b02c2aacb92661dd3a89",
-                "reference": "a8a74b040ccbdca2cfc2b02c2aacb92661dd3a89",
+                "url": "https://api.github.com/repos/fkooman/php-lib-rest/zipball/5171d6a8517e6461c7aec184b01aa0f9699be5fc",
+                "reference": "5171d6a8517e6461c7aec184b01aa0f9699be5fc",
                 "shasum": ""
             },
             "require": {
@@ -144,6 +144,7 @@
             "suggest": {
                 "fkooman/rest-plugin-basic": "Basic Authentication plugin",
                 "fkooman/rest-plugin-bearer": "Bearer (OAuth) Authentication plugin",
+                "fkooman/rest-plugin-indiecert": "IndieCert Authentication plugin",
                 "fkooman/rest-plugin-mellon": "Mellon (SAML) Authentication plugin"
             },
             "type": "library",
@@ -165,7 +166,7 @@
                 }
             ],
             "description": "Simple PHP library for writing REST services.",
-            "time": "2015-02-17 20:09:02"
+            "time": "2015-03-10 10:25:50"
         },
         {
             "name": "guzzlehttp/guzzle",
