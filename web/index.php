@@ -56,5 +56,8 @@ try {
     $service = new IndieCertService($caCrt, $caKey, $pdoStorage, $client);
     $service->run()->sendResponse();
 } catch (Exception $e) {
+    error_log(
+        $e->getMessage()
+    );
     IndieCertService::handleException($e)->sendResponse();
 }
