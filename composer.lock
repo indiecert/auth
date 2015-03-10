@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "3ddd1e63c7b5cd74f432723d647a156b",
+    "hash": "1202a81a89eb68de15bbf300d21e987e",
     "packages": [
         {
             "name": "fkooman/cert-parser",
@@ -125,16 +125,16 @@
         },
         {
             "name": "fkooman/rest",
-            "version": "0.7.0",
+            "version": "0.7.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fkooman/php-lib-rest.git",
-                "reference": "5171d6a8517e6461c7aec184b01aa0f9699be5fc"
+                "reference": "53d516d9e2ab9a28e8fde02e31960d11cdb9ac9c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fkooman/php-lib-rest/zipball/5171d6a8517e6461c7aec184b01aa0f9699be5fc",
-                "reference": "5171d6a8517e6461c7aec184b01aa0f9699be5fc",
+                "url": "https://api.github.com/repos/fkooman/php-lib-rest/zipball/53d516d9e2ab9a28e8fde02e31960d11cdb9ac9c",
+                "reference": "53d516d9e2ab9a28e8fde02e31960d11cdb9ac9c",
                 "shasum": ""
             },
             "require": {
@@ -166,7 +166,47 @@
                 }
             ],
             "description": "Simple PHP library for writing REST services.",
-            "time": "2015-03-10 10:25:50"
+            "time": "2015-03-10 12:48:40"
+        },
+        {
+            "name": "fkooman/rest-plugin-indieauth",
+            "version": "0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fkooman/php-lib-rest-plugin-indieauth.git",
+                "reference": "70bb87a397ed4b08ad4d0bf77fc5aa66199b7983"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fkooman/php-lib-rest-plugin-indieauth/zipball/70bb87a397ed4b08ad4d0bf77fc5aa66199b7983",
+                "reference": "70bb87a397ed4b08ad4d0bf77fc5aa66199b7983",
+                "shasum": ""
+            },
+            "require": {
+                "ext-openssl": "*",
+                "fkooman/rest": "~0.7.1",
+                "guzzlehttp/guzzle": "~4.0",
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "fkooman\\Rest\\Plugin\\IndieAuth": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "François Kooman",
+                    "email": "fkooman@tuxed.net",
+                    "role": "Developer"
+                }
+            ],
+            "description": "IndieAuth plugin for fkooman/rest",
+            "time": "2015-03-10 17:19:09"
         },
         {
             "name": "guzzlehttp/guzzle",

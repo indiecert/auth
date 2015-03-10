@@ -31,6 +31,7 @@ use fkooman\Http\Exception\UriException;
 use fkooman\Http\Exception\BadRequestException;
 use fkooman\Http\Exception\ForbiddenException;
 use DomDocument;
+use fkooman\Rest\Plugin\UserInfo;
 
 class IndieCertService extends Service
 {
@@ -78,27 +79,31 @@ class IndieCertService extends Service
             '/faq',
             function (Request $request) {
                 return $this->getFaq($request);
-            }
+            },
+            array('skipPlugins' => array('fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication'))
         );
 
         $this->get(
             '/welcome',
             function (Request $request) {
                 return $this->getWelcome($request);
-            }
+            },
+            array('skipPlugins' => array('fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication'))
         );
 
         $this->get(
             '/rp',
             function (Request $request) {
                 return $this->getRp($request);
-            }
+            },
+            array('skipPlugins' => array('fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication'))
         );
 
+        // for this URL you actually need to be authenticated...
         $this->get(
-            '/cb',
-            function (Request $request) {
-                return $this->getCb($request);
+            '/try',
+            function (Request $request, UserInfo $userInfo) {
+                return $this->getTry($request, $userInfo);
             }
         );
 
@@ -106,35 +111,40 @@ class IndieCertService extends Service
             '/auth',
             function (Request $request) {
                 return $this->getAuth($request);
-            }
+            },
+            array('skipPlugins' => array('fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication'))
         );
 
         $this->post(
             '/confirm',
             function (Request $request) {
                 return $this->postConfirm($request);
-            }
+            },
+            array('skipPlugins' => array('fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication'))
         );
 
         $this->post(
             '/auth',
             function (Request $request) {
                 return $this->postAuth($request);
-            }
+            },
+            array('skipPlugins' => array('fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication'))
         );
 
         $this->get(
             '/enroll',
             function (Request $request) {
                 return $this->getEnroll($request);
-            }
+            },
+            array('skipPlugins' => array('fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication'))
         );
 
         $this->post(
             '/enroll',
             function (Request $request) {
                 return $this->postEnroll($request);
-            }
+            },
+            array('skipPlugins' => array('fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication'))
         );
     }
 
@@ -169,37 +179,12 @@ class IndieCertService extends Service
         );
     }
 
-    public function getCb(Request $request)
+    public function getTry(Request $request, UserInfo $userInfo)
     {
-        // this is the callback from the 'try it'
-        $appRootUri = $request->getAbsRoot();
-        $redirectUri = $appRootUri . 'cb';
-        $verifyUri = $appRootUri . 'auth';
-
-        if (0 !== strpos($request->getHeader('HTTP_REFERER'), $appRootUri)) {
-            throw new BadRequestException('CSRF protection on callback triggered');
-        }
-
-        $code = $this->validateCode($request->getQueryParameter('code'));
-                
-        $verifyRequest = $this->client->createRequest(
-            'POST',
-            $verifyUri,
-            array(
-                'headers' => array('Accept' => 'application/json'),
-                'body' => array(
-                    'code' => $code,
-                    'redirect_uri' => $redirectUri
-                )
-            )
-        );
-        $verifyResponse = $this->client->send($verifyRequest)->json();
-        $me = $verifyResponse['me'];
-
         return $this->templateManager->render(
             'authenticatedPage',
             array(
-                'me' => $me
+                'me' => $userInfo->getUserId()
             )
         );
     }

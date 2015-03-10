@@ -21,6 +21,7 @@ use fkooman\Ini\IniReader;
 use fkooman\Http\Exception\HttpException;
 use fkooman\Http\Exception\InternalServerErrorException;
 use fkooman\IndieCert\IndieCertService;
+use fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication;
 use fkooman\IndieCert\PdoStorage;
 use GuzzleHttp\Client;
 
@@ -53,7 +54,11 @@ try {
         )
     );
 
+    $indieAuth = new IndieAuthAuthentication('/try');
+    $indieAuth->setClient($client);
+
     $service = new IndieCertService($caCrt, $caKey, $pdoStorage, $client);
+    $service->registerOnMatchPlugin($indieAuth);
     $service->run()->sendResponse();
 } catch (Exception $e) {
     error_log(

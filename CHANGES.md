@@ -1,5 +1,10 @@
 # Changes
 
+## 0.2.6
+- require `state` parameter in authentication requests
+- actually use `fkooman/rest-plugin-indieauth` to implement distributed
+  IndieAuth on IndieCert :)
+
 ## 0.2.5
 - update `fkooman/rest`
 - auth endpoint now returns `application/x-www-form-urlencoded` as default
