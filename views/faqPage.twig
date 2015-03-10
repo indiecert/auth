@@ -71,19 +71,20 @@ expressed by the URL you claim are bound you need to make the URL available
 over HTTPS. It can <strong>NOT</strong> be a self signed certificate. It must
 be signed by a "trusted" CA. You can use
 <a href="https://startssl.com/">StartSSL</a> to obtain a free certificate or
-wait for <a href="https://letsencrypt.org/">Let’s Encrypt</a>.
+wait for <a href="https://letsencrypt.org/">Let’s Encrypt</a>. For now also
+the <a href="http://www.cacert.org">CAcert</a> CA is supported.
     </p>
 
     <h3>Supported Browsers</h3>
     <p>
 So far, it seems that Firefox and Chrom(e)(ium) work really well, both on the
-desktop and on Android. There is a small issue with Firefox where you need to
-restart the browser after installing the certificate to be able to authenticate
-to the web server with it. I am not sure why this is, and it does not occur
-in Chrom(e)(ium). About Safari, I am not sure. I do not have a Mac so it is a
-bit hard to test. It seems Safari supports the <code>&lt;keygen&gt;</code> tag to
-generate a private key, but it always seems to want to download the certificate
-instead of installing it in Keychain.
+desktop and on Android.
+    </p>
+    <p>
+Safari was tested at some point, but not consistently. It seems Safari supports
+the <code>&lt;keygen&gt;</code> tag to generate a private key, but it always
+seems to want to download the certificate instead of installing it in Keychain.
+It seems possible to then manually install the certificate though.
     </p>
 
     <h3>What about Internet Explorer?</h3>
@@ -91,7 +92,9 @@ instead of installing it in Keychain.
 Well... it is possible to get it to work somehow with an ActiveX control or
 so I've read somewhere. So far I haven't investigated it any further... Of
 course it is possible to generate a certificate in Firefox, export it to
-PKCS#12 format and import it the Windows certificate manager.
+PKCS#12 format and import it the Windows certificate manager. What also works
+is enrolling in Google Chrome on Windows and after that use Internet Explorer,
+Google Chrome will actually install the certificate in Windows.
     </p>
 
     <h3>And my iDevice?</h3>

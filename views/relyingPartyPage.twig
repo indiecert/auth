@@ -20,20 +20,25 @@ with IndieCert.
     <h3>Authentication Request</h3>
     <p>
 The relying party redirects the browser to <code>{{ authUri|e }}</code> to
-initiate the authentication process. Two query parameters MUST be specified:
+initiate the authentication process. These query parameters MUST be specified:
     </p>
 
 <dl>
     <dt><code>me</code></dt>
     <dd>
 the URL to the user's home page, or host name, e.g.: <code>example.org</code>
-or <code>https://www.example.org/user</code>.
+or <code>https://www.example.org/user</code>;
     </dd>
     <dt><code>redirect_uri</code></dt>
     <dd>
 the callback URL belonging to the relying party where the browser will be
 redirected back to after successful authentication and after user approval. It
 MUST be an absolute HTTPS URL, e.g.: <code>https://example.org/callback</code>;
+    </dd>
+    <dt><code>state</code></dt>
+    <dd>
+a randomly generated nonce to be used as a CSRF token which MUST be freshly
+generated for every call and never be repeated.
     </dd>
 </dl>
 
@@ -43,18 +48,18 @@ adding <code>https://</code> and optionally a trailing <code>/</code>. For
 example: <code>example.org</code> will be modified to
 <code>https://example.org/</code>. After (optional) modification of
 <code>me</code>, both <code>me</code> and <code>redirect_uri</code> MUST point
-to HTTPS resources.
+to HTTPS resources. If the URL is a HTTP URI it will be rejected.
     </p>
     
     <h4>Example</h4>
     <p>
-The redirect to the authentication server can be accomplished in a number of
-ways, e.g.: using a redirect:
+The redirect to the authentication server can be accomplished by using a
+redirect:
     </p>
 
 <blockquote>
 <pre>HTTP/1.1 302 Found
-Location: {{ authUri|e }}?redirect_uri=https://example.org/callback&amp;me=https://www.example.org/user
+Location: {{ authUri|e }}?redirect_uri=https://example.org/callback&amp;me=https://www.example.org/user&amp;state=PmctIM3J7O25NDSy
 </pre>
 </blockquote>
 
@@ -65,12 +70,18 @@ or using a <code>&lt;form&gt;</code>:
 <pre>
 &lt;form method="get" action="{{ authUri|e }}"&gt;
     &lt;input type="hidden" name="redirect_uri" value="https://example.org/callback"&gt;
+    &lt;input type="hidden" name="state" value="PmctIM3J7O25NDSy"&gt;
     &lt;input type="text" name="me" id="me" placeholder="yourdomain.com"&gt;
     &lt;input type="submit" value="Sign In"&gt;
 &lt;/form&gt;
 </pre>
 </blockquote>
-
+    <p>
+Note that the <code>state</code> value MUST be generated fresh for every
+authentication request and stored, e.g. in the user session, for later
+validation when handling the authentication response.
+    </p>
+    
     <h3>Authentication Response</h3>
     <p>
 IndieCert will redirect the browser back to the <code>redirect_uri</code>
@@ -83,15 +94,17 @@ IndieCert and approved the authentication.
 <blockquote>
 <pre>
 HTTP/1.1 302 Found
-Location: https://example.org/callback?code=wW3OLXJZn35d7zFwg9YGmWti
+Location: https://example.org/callback?code=wW3OLXJZn35d7zFwg9YGmWti&amp;state=PmctIM3J7O25NDSy
 </pre>
 </blockquote>
  
     <h3>Verification Request</h3>
     <p>
-The <code>code</code> parameter can now be used to request the claimed user
-identity. The <code>code</code> is valid for 10 minutes and can be used
-only once. The following parameters MUST be specified:
+After verifying that the <code>state</code> parameter matches the value sent
+during the authentication request, the <code>code</code> parameter can now be
+used to request the claimed user identity. The <code>code</code> is valid for
+10 minutes and can be used only once. The following parameters MUST be
+specified:
     </p>
 
 <dl>
@@ -118,14 +131,17 @@ redirect_uri=https%3A%2F%2Fexample.org%2Fcallback&amp;code=wW3OLXJZn35d7zFwg9YGm
 </blockquote>
 
     <p>
-The response will be returned as JSON, with the <code>me</code> field
-indicating the user's homepage.
+The response will be returned as <code>application/json</code> or
+<code>application/x-www-form-urlencoded</code> depending on <code>Accept</code>
+header. The default is currently <code>application/x-www-form-urlencoded</code>
+for compatibility with IndieAuth.
     </p>
 
-This is the identity that MUST be used by the relying party to identify the
-user as it could differ from the initial <code>me</code> specified by the user,
-e.g.: <code>https://</code> was added or redirects were followed to reach the
-user's home page.
+    <p>
+The <code>me</code> field is the identity that MUST be used by the relying
+party to identify the user as it MAY differ from the initial <code>me</code>
+specified by the user, e.g.: <code>https://</code> was added or redirects were
+followed to reach the actual user's home page.
     </p>
 
 <blockquote>
@@ -159,46 +175,19 @@ Pragma: no-cache
 </pre>
 </blockquote>
 
-    <p>
-It is also possible to receive the response in
-<code>application/x-www-form-urlencoded</code> format by using the
-<code>Accept: application/x-www-form-urlencoded</code> header instead of the
-<code>Accept: application/json</code> header. For now the default is
-<code>application/x-www-form-urlencoded</code>, but you MUST specify it.
-    </p>
-
     <h3>Security Considerations</h3>
     <h4>CSRF</h4>
     <p>
 In order to prevent cross site request forgery (CSRF) the relying party MUST
-implement a way to prevent this from happening.
+implement a way to prevent CSRF from happening. By using the
+<code>state</code> query parameter on the authentication request, and checking
+it on the callback response, CSRF can be prevented.
     </p>
 
     <p>
-The attack we try to avoid is the attack where user X tricks user Y to
+The CSRF attack we try to avoid is the attack where user X tricks user Y to
 authenticate to a relying party using user X's identity and possibly
 unintentionally leak private date to user X's account.
-    </p>
-
-    <p>
-There are two ways to prevent CSRF.
-    </p>
-
-<h5>Checking HTTP "Referer"</h5>
-    <p>
-The relying party can compare the <a href="https://en.wikipedia.org/wiki/HTTP_referer">HTTP "Referer"</a> request header on the callback with the authentication URL.
-    </p>
-    <p>
-The HTTP "Referer" header MUST begin with <code>{{ authUri|e }}</code>. If the referrer is missing
-from the HTTP request or does not match the authentication URI the callback
-MUST fail.
-    </p>
-
-<h5>Keeping State</h5>
-    <p>
-In case the relying party keeps state, the <code>state</code> parameter can
-be used in the authentication request. The same state value MUST exist on
-callback.
     </p>
 
     <div class="footer">
