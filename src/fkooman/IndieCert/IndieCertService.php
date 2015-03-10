@@ -286,11 +286,7 @@ class IndieCertService extends Service
             }
         }
     
-        if (null === $state) {
-            $confirmUri = sprintf('confirm?redirect_uri=%s&me=%s', $redirectUri, $me);
-        } else {
-            $confirmUri = sprintf('confirm?redirect_uri=%s&me=%s&state=%s', $redirectUri, $me, $state);
-        }
+        $confirmUri = sprintf('confirm?redirect_uri=%s&me=%s&state=%s', $redirectUri, $me, $state);
 
         if (false === $approval) {
             $redirectUriObj = new Uri($redirectUri);
@@ -314,11 +310,7 @@ class IndieCertService extends Service
             $this->io->getTime()
         );
 
-        if (null === $state) {
-            $responseUri = sprintf('%s?code=%s', $redirectUri, $code);
-        } else {
-            $responseUri = sprintf('%s?code=%s&state=%s', $redirectUri, $code, $state);
-        }
+        $responseUri = sprintf('%s?code=%s&state=%s', $redirectUri, $code, $state);
 
         return new RedirectResponse($responseUri, 302);
     }
@@ -379,11 +371,7 @@ class IndieCertService extends Service
             $this->io->getTime()
         );
 
-        if (null === $state) {
-            $responseUri = sprintf('%s?code=%s', $redirectUri, $code);
-        } else {
-            $responseUri = sprintf('%s?code=%s&state=%s', $redirectUri, $code, $state);
-        }
+        $responseUri = sprintf('%s?code=%s&state=%s', $redirectUri, $code, $state);
 
         return new RedirectResponse($responseUri, 302);
     }
@@ -547,10 +535,11 @@ class IndieCertService extends Service
 
     private function validateState($state)
     {
-        if (null !== $state) {
-            if (1 !== preg_match('/^(?:[\x20-\x7E])*$/', $state)) {
-                throw new BadRequestException('"state" contains invalid characters');
-            }
+        if (null === $state) {
+            throw new BadRequestException('missing parameter "state"');
+        }
+        if (1 !== preg_match('/^(?:[\x20-\x7E])*$/', $state)) {
+            throw new BadRequestException('"state" contains invalid characters');
         }
 
         return $state;
