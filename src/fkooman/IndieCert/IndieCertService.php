@@ -250,9 +250,6 @@ class IndieCertService extends Service
         $redirectUri = $this->validateRedirectUri($request->getQueryParameter('redirect_uri'));
         $state = $this->validateState($request->getQueryParameter('state'));
 
-        //var_dump($request->getHeader('SSL_CLIENT_CERT'));
-        //var_dump($_SERVER);
-        //die();
         $certFingerprint = $this->getCertFingerprint(
             $request->getHeader('SSL_CLIENT_CERT'),
             $request->getRequestUri()->getHost()
@@ -402,11 +399,11 @@ class IndieCertService extends Service
         $indieCode = $this->pdoStorage->getIndieCode($code, $redirectUri);
 
         if (false === $indieCode) {
-            throw new BadRequestException('invalid_request');
+            throw new BadRequestException('invalid_request', 'code not found');
         }
 
         if ($this->io->getTime() > $indieCode['issue_time'] + 600) {
-            throw new BadRequestException('code expired');
+            throw new BadRequestException('invalid_request', 'code expired');
         }
     
         // default to "application/x-www-form-urlencoded" for now...
