@@ -37,6 +37,18 @@ You can easily fix this by placing the following fragment in the
 </blockquote>
 
     <p>
+If you also want to use this instance as your IndieAuth provider for relying
+parties supporting "Distributed IndieAuth" you can add the following to your
+HTML page:
+    </p>
+
+<blockquote>
+<pre>
+&lt;link rel="authorization_endpoint" href="{{ authorizationEndpoint|e }}"&gt;
+</pre>
+</blockquote>
+
+    <p>
 When you are done doing that you can <a href="">reload</a> this page and you should be
 redirected to the service that was requesting authentication and be logged in.
     </p>

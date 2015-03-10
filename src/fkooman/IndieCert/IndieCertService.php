@@ -250,6 +250,7 @@ class IndieCertService extends Service
         $relMeLinks = $this->extractRelMeLinks($pageResponse->getBody());
 
         $hostName = $request->getRequestUri()->getHost();
+        $authorizationEndpoint = $request->getAbsRoot() . 'auth';
 
         if (false === $this->hasFingerprint($relMeLinks, $certFingerprint, $hostName)) {
             return $this->templateManager->render(
@@ -257,7 +258,8 @@ class IndieCertService extends Service
                 array(
                     'me' => $pageResponse->getEffectiveUrl(),
                     'certFingerprint' => $certFingerprint,
-                    'hostName' => $hostName
+                    'hostName' => $hostName,
+                    'authorizationEndpoint' => $authorizationEndpoint
                 )
             );
         }

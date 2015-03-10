@@ -1,6 +1,7 @@
 # Changes
 
 ## 0.2.6
+- show `authorization_endpoint` example on missing fingerprint page
 - require `state` parameter in authentication requests
 - actually use `fkooman/rest-plugin-indieauth` to implement distributed
   IndieAuth on IndieCert :)
