@@ -1,6 +1,7 @@
 # Changes
 
 ## 0.2.5
+- update `fkooman/rest`
 - auth endpoint now returns `application/x-www-form-urlencoded` as default
   response type to token verification, override with `Accept` header if you
   want `application/json`
