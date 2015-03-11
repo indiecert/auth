@@ -1,5 +1,11 @@
 # Changes
 
+## 0.2.7
+- change try endpoint to success endpoint
+- update FAQ page
+- require the `me` field on welcomePage, also change placeholder to 
+  `example.org` as the domain is reserved for this exact purpose
+
 ## 0.2.6
 - show `authorization_endpoint` example on missing fingerprint page
 - require `state` parameter in authentication requests
