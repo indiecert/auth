@@ -57,7 +57,7 @@ try {
     );
 
     $request = Request::fromIncomingRequest(new IncomingRequest());
-    $indieAuth = new IndieAuthAuthentication('/try', $request->getAbsRoot() . 'auth');
+    $indieAuth = new IndieAuthAuthentication('/success', $request->getAbsRoot() . 'auth');
     $indieAuth->setClient($client);
     $indieAuth->setDiscovery(false);
 

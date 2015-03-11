@@ -101,9 +101,9 @@ class IndieCertService extends Service
 
         // for this URL you actually need to be authenticated...
         $this->get(
-            '/try',
+            '/success',
             function (Request $request, UserInfo $userInfo) {
-                return $this->getTry($request, $userInfo);
+                return $this->getSuccess($request, $userInfo);
             }
         );
 
@@ -179,7 +179,7 @@ class IndieCertService extends Service
         );
     }
 
-    public function getTry(Request $request, UserInfo $userInfo)
+    public function getSuccess(Request $request, UserInfo $userInfo)
     {
         return $this->templateManager->render(
             'authenticatedPage',
