@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "f9dcbb316acd8def015d9eec5686b612",
+    "hash": "3a259f48448444448f45a4e9aa3f6a67",
     "packages": [
         {
             "name": "fkooman/cert-parser",
@@ -125,16 +125,16 @@
         },
         {
             "name": "fkooman/rest",
-            "version": "0.7.1",
+            "version": "0.7.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fkooman/php-lib-rest.git",
-                "reference": "53d516d9e2ab9a28e8fde02e31960d11cdb9ac9c"
+                "reference": "8d59f0ffb59727eb27b8467614da8538b21acd5c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fkooman/php-lib-rest/zipball/53d516d9e2ab9a28e8fde02e31960d11cdb9ac9c",
-                "reference": "53d516d9e2ab9a28e8fde02e31960d11cdb9ac9c",
+                "url": "https://api.github.com/repos/fkooman/php-lib-rest/zipball/8d59f0ffb59727eb27b8467614da8538b21acd5c",
+                "reference": "8d59f0ffb59727eb27b8467614da8538b21acd5c",
                 "shasum": ""
             },
             "require": {
@@ -144,8 +144,9 @@
             "suggest": {
                 "fkooman/rest-plugin-basic": "Basic Authentication plugin",
                 "fkooman/rest-plugin-bearer": "Bearer (OAuth) Authentication plugin",
-                "fkooman/rest-plugin-indiecert": "IndieCert Authentication plugin",
-                "fkooman/rest-plugin-mellon": "Mellon (SAML) Authentication plugin"
+                "fkooman/rest-plugin-indieauth": "IndieAuth Authentication plugin",
+                "fkooman/rest-plugin-mellon": "Mellon (SAML) Authentication plugin",
+                "fkooman/rest-plugin-simplesaml": "simpleSAMLphp (SAML) Authentication plugin"
             },
             "type": "library",
             "autoload": {
@@ -166,7 +167,7 @@
                 }
             ],
             "description": "Simple PHP library for writing REST services.",
-            "time": "2015-03-10 12:48:40"
+            "time": "2015-03-13 10:20:48"
         },
         {
             "name": "fkooman/rest-plugin-indieauth",
