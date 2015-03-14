@@ -27,7 +27,7 @@ initiate the authentication process. These query parameters MUST be specified:
     <dt><code>me</code></dt>
     <dd>
 the URL to the user's home page, or host name, e.g.: <code>example.org</code>
-or <code>https://www.example.org/user</code>;
+or <code>https://www.example.org/john/</code>;
     </dd>
     <dt><code>redirect_uri</code></dt>
     <dd>
@@ -38,17 +38,18 @@ MUST be an absolute HTTPS URL, e.g.: <code>https://example.org/callback</code>;
     <dt><code>state</code></dt>
     <dd>
 a randomly generated nonce to be used as a CSRF token which MUST be freshly
-generated for every call and never be repeated.
+generated for every call and MUST NEVER be repeated.
     </dd>
 </dl>
 
     <p>
 If the <code>me</code> field is not a valid HTTPS URI it will be modified by
-adding <code>https://</code> and optionally a trailing <code>/</code>. For
-example: <code>example.org</code> will be modified to
-<code>https://example.org/</code>. After (optional) modification of
-<code>me</code>, both <code>me</code> and <code>redirect_uri</code> MUST point
-to HTTPS resources. If the URL is a HTTP URI it will be rejected.
+adding <code>https://</code> to the front and optionally a
+trailing <code>/</code> if it is just a domain. For example:
+<code>example.org</code> will be modified to <code>https://example.org/</code>.
+After (optional) modification of <code>me</code>, both <code>me</code> and
+<code>redirect_uri</code> MUST point to absolute HTTPS resources. If the URL is
+a HTTP URI or otherwise invalid it will be rejected.
     </p>
     
     <h4>Example</h4>
@@ -59,7 +60,7 @@ redirect:
 
 <blockquote>
 <pre>HTTP/1.1 302 Found
-Location: {{ authUri|e }}?redirect_uri=https://example.org/callback&amp;me=https://www.example.org/user&amp;state=PmctIM3J7O25NDSy
+Location: {{ authUri|e }}?me=https://www.example.org/john/&amp;redirect_uri=https://example.org/callback&amp;state=PmctIM3J7O25NDSy
 </pre>
 </blockquote>
 
@@ -71,7 +72,7 @@ or using a <code>&lt;form&gt;</code>:
 &lt;form method="get" action="{{ authUri|e }}"&gt;
     &lt;input type="hidden" name="redirect_uri" value="https://example.org/callback"&gt;
     &lt;input type="hidden" name="state" value="PmctIM3J7O25NDSy"&gt;
-    &lt;input type="text" name="me" id="me" placeholder="yourdomain.com"&gt;
+    &lt;input type="text" name="me" id="me" placeholder="example.org"&gt;
     &lt;input type="submit" value="Sign In"&gt;
 &lt;/form&gt;
 </pre>
@@ -79,7 +80,7 @@ or using a <code>&lt;form&gt;</code>:
     <p>
 Note that the <code>state</code> value MUST be generated fresh for every
 authentication request and stored, e.g. in the user session, for later
-validation when handling the authentication response.
+validation when handling the authentication response to the callback.
     </p>
     
     <h3>Authentication Response</h3>
@@ -102,14 +103,18 @@ Location: https://example.org/callback?code=wW3OLXJZn35d7zFwg9YGmWti&amp;state=P
     <p>
 After verifying that the <code>state</code> parameter matches the value sent
 during the authentication request, the <code>code</code> parameter can now be
-used to request the claimed user identity. The <code>code</code> is valid for
+used to verify the claimed user identity. The <code>code</code> is valid for
 10 minutes and can be used only once. The following parameters MUST be
 specified:
     </p>
 
 <dl>
     <dt><code>code</code></dt>
-    <dd>the code obtained in the authentication response query parameter <code>code</code>;</dd>
+    <dd>
+the code obtained in the authentication response query parameter
+<code>code</code>;
+    </dd>
+
     <dt><code>redirect_uri</code></dt>
     <dd>
 the URL the browser was redirected back to after the successful authentication,
@@ -117,7 +122,7 @@ e.g.: <code>https://example.org/callback</code>.
     </dd>
 </dl>
 <p>
-Now a HTTP <code>POST</code> can be used to obtain the user's home page URL:
+Now a HTTPS <code>POST</code> can be used to obtain the user's home page URL:
     </p>
 <blockquote>
 <pre>
@@ -126,33 +131,35 @@ Host: {{ hostName|e }}
 Accept: application/json
 Content-Type: application/x-www-form-urlencoded
 
-redirect_uri=https%3A%2F%2Fexample.org%2Fcallback&amp;code=wW3OLXJZn35d7zFwg9YGmWti
+code=wW3OLXJZn35d7zFwg9YGmWti&amp;redirect_uri=https%3A%2F%2Fexample.org%2Fcallback
 </pre>
 </blockquote>
 
     <p>
 The response will be returned as <code>application/json</code> or
 <code>application/x-www-form-urlencoded</code> depending on <code>Accept</code>
-header. The default is currently <code>application/x-www-form-urlencoded</code>
-for compatibility with IndieAuth.
+header. The default is currently <code>application/x-www-form-urlencoded</code>.
     </p>
 
     <p>
-The <code>me</code> field is the identity that MUST be used by the relying
-party to identify the user as it MAY differ from the initial <code>me</code>
-specified by the user, e.g.: <code>https://</code> was added or redirects were
-followed to reach the actual user's home page.
+The <code>me</code> field in the response is the identity that MUST be used by
+the relying party to identify the user as it MAY differ from the initial
+<code>me</code> specified by the user, e.g.: <code>https://</code> was added,
+or the default path <code>/</code> was added.
+    </p>
+    <p>
+The examples below are using the <code>application/json</code> format.
     </p>
 
 <blockquote>
 <pre>
 HTTP/1.1 200 OK
-Content-Type: application/json;charset=utf-8
+Content-Type: application/json
 Cache-Control: no-store
 Pragma: no-cache
 
 {
-    "me": "https://www.example.org/user/"
+    "me": "https://www.example.org/john/"
 }
 </pre>
 </blockquote>
@@ -165,7 +172,7 @@ not valid the following response can be expected:
 <blockquote>
 <pre>
 HTTP/1.1 400 Bad Request
-Content-Type: application/json;charset=utf-8
+Content-Type: application/json
 Cache-Control: no-store
 Pragma: no-cache
 
@@ -178,16 +185,14 @@ Pragma: no-cache
     <h3>Security Considerations</h3>
     <h4>CSRF</h4>
     <p>
-In order to prevent cross site request forgery (CSRF) the relying party MUST
-implement a way to prevent CSRF from happening. By using the
-<code>state</code> query parameter on the authentication request, and checking
-it on the callback response, CSRF can be prevented.
+The CSRF attack we try to prevent is the attack where user X tricks user Y to
+authenticate to a relying party using an account under user X's control. The
+danger is unintentionally leaking private date to the account under X's
+control, e.g. private pictures.
     </p>
-
     <p>
-The CSRF attack we try to avoid is the attack where user X tricks user Y to
-authenticate to a relying party using user X's identity and possibly
-unintentionally leak private date to user X's account.
+Using and validating the <code>state</code> in the authentication request and
+response is sufficient to prevent this CSRF.
     </p>
 
     <div class="footer">
