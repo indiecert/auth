@@ -1,5 +1,10 @@
 # Changes
 
+## 0.2.8
+- update relying party instructions
+- change the default httpd config to allow all certificates
+- fix HSTS header
+
 ## 0.2.7
 - change try endpoint to success endpoint
 - update FAQ page
