@@ -27,11 +27,11 @@ use fkooman\X509\CertParser;
 use fkooman\X509\CertParserException;
 use fkooman\Http\Uri;
 use fkooman\Http\RedirectResponse;
-use fkooman\Http\Exception\UriException;
 use fkooman\Http\Exception\BadRequestException;
 use fkooman\Http\Exception\ForbiddenException;
 use DomDocument;
 use fkooman\Rest\Plugin\UserInfo;
+use InvalidArgumentException;
 
 class IndieCertService extends Service
 {
@@ -236,8 +236,7 @@ class IndieCertService extends Service
         $state = $this->validateState($request->getQueryParameter('state'));
 
         $certFingerprint = $this->getCertFingerprint(
-            $request->getHeader('SSL_CLIENT_CERT'),
-            $request->getRequestUri()->getHost()
+            $request->getHeader('SSL_CLIENT_CERT')
         );
 
         if (false === $certFingerprint) {
@@ -249,26 +248,24 @@ class IndieCertService extends Service
 
         $relMeLinks = $this->extractRelMeLinks($pageResponse->getBody());
 
-        $hostName = $request->getRequestUri()->getHost();
         $authorizationEndpoint = $request->getAbsRoot() . 'auth';
 
-        if (false === $this->hasFingerprint($relMeLinks, $certFingerprint, $hostName)) {
+        if (false === $this->hasFingerprint($relMeLinks, $certFingerprint)) {
             return $this->templateManager->render(
                 'missingFingerprint',
                 array(
-                    'me' => $pageResponse->getEffectiveUrl(),
+                    'me' => $me,
                     'certFingerprint' => $certFingerprint,
-                    'hostName' => $hostName,
                     'authorizationEndpoint' => $authorizationEndpoint
                 )
             );
         }
 
-        $approval = $this->pdoStorage->getApproval($pageResponse->getEffectiveUrl(), $redirectUri);
+        $approval = $this->pdoStorage->getApproval($me, $redirectUri);
         if (false !== $approval) {
             // check if not expired
             if ($this->io->getTime() >= $approval['expires_at']) {
-                $this->pdoStorage->deleteApproval($pageResponse->getEffectiveUrl(), $redirectUri);
+                $this->pdoStorage->deleteApproval($me, $redirectUri);
                 $approval = false;
             }
         }
@@ -282,7 +279,7 @@ class IndieCertService extends Service
                 'askConfirmation',
                 array(
                     'confirmUri' => $confirmUri,
-                    'me' => $pageResponse->getEffectiveUrl(),
+                    'me' => $me,
                     'host' => $redirectUriObj->getHost()
                 )
             );
@@ -292,7 +289,7 @@ class IndieCertService extends Service
         $code = $this->io->getRandomHex();
         $this->pdoStorage->storeIndieCode(
             $code,
-            $pageResponse->getEffectiveUrl(),
+            $me,
             $redirectUri,
             $this->io->getTime()
         );
@@ -331,29 +328,26 @@ class IndieCertService extends Service
 
         $relMeLinks = $this->extractRelMeLinks($pageResponse->getBody());
     
-        $hostName = $request->getRequestUri()->getHost();
-
-        if (false === $this->hasFingerprint($relMeLinks, $certFingerprint, $hostName)) {
+        if (false === $this->hasFingerprint($relMeLinks, $certFingerprint)) {
             return $this->templateManager->render(
                 'missingFingerprint',
                 array(
-                    'me' => $pageResponse->getEffectiveUrl(),
+                    'me' => $me,
                     'certFingerprint' => $certFingerprint,
-                    'hostName' => $hostName
                 )
             );
         }
 
         // remember
         if (null !== $request->getPostParameter('remember')) {
-            $this->pdoStorage->storeApproval($pageResponse->getEffectiveUrl(), $redirectUri, $this->io->getTime() + 3600*24*7);
+            $this->pdoStorage->storeApproval($me, $redirectUri, $this->io->getTime() + 3600*24*7);
         }
 
         // create indiecode
         $code = $this->io->getRandomHex();
         $this->pdoStorage->storeIndieCode(
             $code,
-            $pageResponse->getEffectiveUrl(),
+            $me,
             $redirectUri,
             $this->io->getTime()
         );
@@ -396,14 +390,11 @@ class IndieCertService extends Service
         return $response;
     }
 
-    private function hasFingerprint(array $relMeLinks, $certFingerprint, $hostName)
+    private function hasFingerprint(array $relMeLinks, $certFingerprint)
     {
         $certFingerprints = array();
 
-        $pattern = sprintf(
-            '/^ni:\/\/%s\/sha-256;[a-zA-Z0-9_-]+\?ct=application\/x-x509-user-cert$/',
-             $hostName
-        );
+        $pattern = '/^ni:\/\/\/sha-256;[a-zA-Z0-9_-]+\?ct=application\/x-x509-user-cert$/';
 
         foreach ($relMeLinks as $meLink) {
             if (1 === preg_match($pattern, $meLink)) {
@@ -418,14 +409,13 @@ class IndieCertService extends Service
         return true;
     }
 
-    private function getCertFingerprint($clientCert, $hostName)
+    private function getCertFingerprint($clientCert)
     {
         // determine certificate fingerprint
         try {
             $certParser = new CertParser($clientCert);
             return sprintf(
-                'ni://%s/sha-256;%s?ct=application/x-x509-user-cert',
-                $hostName,
+                'ni:///sha-256;%s?ct=application/x-x509-user-cert',
                 $certParser->getFingerPrint('sha256', true)
             );
         } catch (CertParserException $e) {
@@ -463,7 +453,7 @@ class IndieCertService extends Service
         if (null === $me) {
             throw new BadRequestException('missing parameter "me"');
         }
-        if (0 !== strpos($me, 'http')) {
+        if (0 !== stripos($me, 'http')) {
             $me = sprintf('https://%s', $me);
         }
         try {
@@ -477,13 +467,9 @@ class IndieCertService extends Service
             if (null !== $uriObj->getFragment()) {
                 throw new BadRequestException('"me" cannot contain fragment');
             }
-            // if we have no path add '/'
-            if (null === $uriObj->getPath()) {
-                $me .= '/';
-            }
 
-            return $me;
-        } catch (UriException $e) {
+            return $uriObj->getUri();
+        } catch (InvalidArgumentException $e) {
             throw new BadRequestException('"me" is an invalid uri');
         }
     }
@@ -502,8 +488,8 @@ class IndieCertService extends Service
                 throw new BadRequestException('"redirect_uri" cannot contain fragment');
             }
 
-            return $redirectUri;
-        } catch (UriException $e) {
+            return $uriObj->getUri();
+        } catch (InvalidArgumentException $e) {
             throw new BadRequestException('"redirect_uri" is an invalid uri');
         }
     }

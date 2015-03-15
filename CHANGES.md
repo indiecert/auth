@@ -1,5 +1,13 @@
 # Changes
 
+## 0.2.9
+- update `fkooman/rest`
+- update `fkooman/rest-plugin-indieauth`
+- no longer make IndieCert specific `ni://<domain>/` URIs, just use
+  `ni:///`
+- use the provided `me` now as the identifier instead of following all
+  redirects and using the cannonical URL
+
 ## 0.2.8
 - update relying party instructions
 - change the default httpd config to allow all certificates
