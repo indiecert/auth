@@ -15,10 +15,6 @@
 IndieCert was unable to find a matching fingerprint on your claimed URL
     </p>
 
-    <p class="warn">
-<strong>NOTE</strong>: the URI scheme changed from <code>di:</code> to <code>ni:///</code>. If you still use the <code>di:</code> scheme you have to update to the new scheme
-    </p>
-
     <p>
 You claimed the identity <code>{{ me|e }}</code>, but we were unable to
 find the fingerprint of the certificate you are currently authenticated with
@@ -39,7 +35,7 @@ You can easily fix this by placing the following fragment in the
     <p>
 If you also want to use this instance as your IndieAuth provider for relying
 parties supporting "Distributed IndieAuth" you can add the following to your
-HTML page:
+HTML page as well:
     </p>
 
 <blockquote>
@@ -49,7 +45,7 @@ HTML page:
 </blockquote>
 
     <p>
-When you are done doing that you can <a href="">reload</a> this page and you should be
+When done, you can <a href="">reload</a> this page and you should be
 redirected to the service that was requesting authentication and be logged in.
     </p>
 

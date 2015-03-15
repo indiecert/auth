@@ -1,6 +1,7 @@
 # Changes
 
 ## 0.2.9
+- update text on various pages
 - update `fkooman/rest`
 - update `fkooman/rest-plugin-indieauth`
 - no longer make IndieCert specific `ni://<domain>/` URIs, just use
