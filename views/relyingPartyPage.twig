@@ -30,63 +30,63 @@ initiate the authentication process. These query parameters MUST be specified:
     </p>
 
 <dl>
+    <dt><code>client_id</code></dt>
+    <dd>
+The identifier for the relying party. This is the (base) URL under which the
+relying party runs, e.g.: <code>https://app.example.org/</code>;
+    </dd>
     <dt><code>me</code></dt>
     <dd>
-the URL to the user's home page, or host name, e.g.: <code>example.org</code>
-or <code>https://www.example.org/john/</code>;
+the URL to the user's home page, e.g.: <code>https://john.example.com/</code>;
     </dd>
     <dt><code>redirect_uri</code></dt>
     <dd>
 the callback URL belonging to the relying party where the browser will be
 redirected back to after successful authentication and after user approval. It
-MUST be an absolute HTTPS URL, e.g.: <code>https://example.org/callback</code>;
+MUST be an absolute HTTPS URL, e.g.: <code>https://app.example.org/callback</code>;
     </dd>
     <dt><code>state</code></dt>
     <dd>
 a randomly generated nonce to be used as a CSRF token which MUST be freshly
-generated for every call and MUST NEVER be repeated.
+generated for every call and MUST NOT be repeated.
     </dd>
 </dl>
 
     <p>
-If the <code>me</code> field is not a valid HTTPS URI it will be modified by
-adding <code>https://</code> to the front and optionally a
-trailing <code>/</code> if it is just a domain. For example:
-<code>example.org</code> will be modified to <code>https://example.org/</code>.
-After (optional) modification of <code>me</code>, both <code>me</code> and
-<code>redirect_uri</code> MUST point to absolute HTTPS resources. If the URL is
-a HTTP URI or otherwise invalid it will be rejected.
+The relying party can choose to accept a "naked domain" for the <code>me</code>
+parameter, but it MUST be normalized before sending it to the IndieCert
+service using the following steps:
+    </p>
+
+    <ol>
+    <li>Make sure <code>me</code> starts with <code>https://</code> (case
+sensitive);</li>
+    <li>Make sure the domain part of <code>me</code> is all lower case;</li>
+    <li>Make sure a "naked" domain has a path, if no path is set add a
+trailing <code>/</code>;
+    </ol>
+
+    <p>
+For example: <code>john.EXAMPLE.com</code> MUST be modified to
+<code>https://john.example.com/</code>. URLs starting with <code>http://</code>
+MUST be rejected.
     </p>
     
     <h4>Example</h4>
     <p>
-The redirect to the authentication server can be accomplished by using a
-redirect:
+The following example shows a redirect to the IndieCert service:
     </p>
 
 <blockquote>
 <pre>HTTP/1.1 302 Found
-Location: {{ authUri|e }}?me=https://www.example.org/john/&amp;redirect_uri=https://example.org/callback&amp;state=PmctIM3J7O25NDSy
+Location: {{ authUri|e }}?client_id=https://app.example.org/&amp;me=https://john.example.com/&amp;redirect_uri=https://app.example.org/callback&amp;state=PmctIM3J7O25NDSy
 </pre>
 </blockquote>
 
     <p>
-or using a <code>&lt;form&gt;</code>:
-    </p>
-<blockquote>
-<pre>
-&lt;form method="get" action="{{ authUri|e }}"&gt;
-    &lt;input type="hidden" name="redirect_uri" value="https://example.org/callback"&gt;
-    &lt;input type="hidden" name="state" value="PmctIM3J7O25NDSy"&gt;
-    &lt;input type="text" name="me" id="me" placeholder="example.org"&gt;
-    &lt;input type="submit" value="Sign In"&gt;
-&lt;/form&gt;
-</pre>
-</blockquote>
-    <p>
-Note that the <code>state</code> value MUST be generated fresh for every
-authentication request and stored, e.g. in the user session, for later
-validation when handling the authentication response to the callback.
+Note that both <code>state</code> and <code>me</code> values MUST be retained
+for later use when verifying the <code>code</code> parameter received with
+the authentication response callback.
     </p>
     
     <h3>Authentication Response</h3>
@@ -101,20 +101,26 @@ IndieCert and approved the authentication.
 <blockquote>
 <pre>
 HTTP/1.1 302 Found
-Location: https://example.org/callback?code=wW3OLXJZn35d7zFwg9YGmWti&amp;state=PmctIM3J7O25NDSy
+Location: https://app.example.org/callback?code=wW3OLXJZn35d7zFwg9YGmWti&amp;state=PmctIM3J7O25NDSy
 </pre>
 </blockquote>
  
     <h3>Verification Request</h3>
     <p>
-After verifying that the <code>state</code> parameter matches the value sent
-during the authentication request, the <code>code</code> parameter can now be
-used to verify the claimed user identity. The <code>code</code> is valid for
-10 minutes and can be used only once. The following parameters MUST be
-specified:
+The relying party MUST verify that the <code>state</code> parameter matches the
+value sent during the authentication request, the <code>code</code> parameter
+can now be used to verify the claimed user identity. The <code>code</code> is
+valid for 10 minutes and can be used only once. The following parameters MUST
+be specified:
     </p>
 
 <dl>
+    <dt><code>client_id</code></dt>
+    <dd>
+The identifier for the relying party. This is the (base) URL under which the
+relying party runs, e.g.: <code>https://app.example.org/</code>;
+    </dd>
+
     <dt><code>code</code></dt>
     <dd>
 the code obtained in the authentication response query parameter
@@ -124,11 +130,12 @@ the code obtained in the authentication response query parameter
     <dt><code>redirect_uri</code></dt>
     <dd>
 the URL the browser was redirected back to after the successful authentication,
-e.g.: <code>https://example.org/callback</code>.
+e.g.: <code>https://app.example.org/callback</code>.
     </dd>
 </dl>
 <p>
-Now a HTTPS <code>POST</code> can be used to obtain the user's home page URL:
+Now a HTTPS <code>POST</code> can be used to verify the <code>me</code> field
+provided by the user:
     </p>
 <blockquote>
 <pre>
@@ -137,24 +144,23 @@ Host: {{ hostName|e }}
 Accept: application/json
 Content-Type: application/x-www-form-urlencoded
 
-code=wW3OLXJZn35d7zFwg9YGmWti&amp;redirect_uri=https%3A%2F%2Fexample.org%2Fcallback
+client_id=https%3A%2F%2Fapp.example.org%2F&amp;code=wW3OLXJZn35d7zFwg9YGmWti&amp;redirect_uri=https%3A%2F%2Fapp.example.org%2Fcallback
 </pre>
 </blockquote>
 
     <p>
 The response will be returned as <code>application/json</code> or
 <code>application/x-www-form-urlencoded</code> depending on <code>Accept</code>
-header. The default is currently <code>application/x-www-form-urlencoded</code>.
+header. The default is <code>application/x-www-form-urlencoded</code>.
     </p>
 
     <p>
-The <code>me</code> field in the response is the identity that MUST be used by
-the relying party to identify the user as it MAY differ from the initial
-<code>me</code> specified by the user, e.g.: <code>https://</code> was added,
-or the default path <code>/</code> was added.
+The <code>me</code> field in the response MUST match the <code>me</code>
+normalized <code>me</code> from the authentication request.
     </p>
+
     <p>
-The examples below are using the <code>application/json</code> format.
+An example response (using <code>application/json</code>):
     </p>
 
 <blockquote>
@@ -165,7 +171,7 @@ Cache-Control: no-store
 Pragma: no-cache
 
 {
-    "me": "https://www.example.org/john/"
+    "me": "https://john.example.com/"
 }
 </pre>
 </blockquote>
@@ -191,7 +197,7 @@ Pragma: no-cache
     <h3>Security Considerations</h3>
     <h4>CSRF</h4>
     <p>
-The CSRF attack we try to prevent is the attack where user X tricks user Y to
+The CSRF attack we MUST prevent is the attack where user X tricks user Y to
 authenticate to a relying party using an account under user X's control. The
 danger is unintentionally leaking private date to the account under X's
 control, e.g. private pictures.
