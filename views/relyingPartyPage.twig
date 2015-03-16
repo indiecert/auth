@@ -14,7 +14,8 @@
     <h2>Relying Party</h2>
     <p>
 Here you can read how to integrate your service as a <em>relying party</em>
-with IndieCert.
+with IndieCert. You can also support
+<a href="#distributed">Distributed IndieAuth</a>.
     </p>
 
     <p class="info">
@@ -193,6 +194,26 @@ Pragma: no-cache
 }
 </pre>
 </blockquote>
+
+    <h3 id="distributed">Distributed IndieAuth</h3>
+    <p>
+For "Distributed IndieAuth" to work, an additional step needs to be taking by
+the relying party. It needs to first retrieve the user's home page and look for
+the link relation <code>authorization_endpoint</code> and use that instead
+of <code>{{ authUri|e }}</code>. It MUST be a HTTPS URL. For example, the
+user may have the following on their home page:
+    </p>
+
+<blockquote>
+<pre>
+&lt;link rel="authorization_endpoint" href="https://indieauth.com/auth"&gt;
+</pre>
+</blockquote>
+
+    <p>
+After determining the <code>authorization_endpoint</code> the protocol flow
+is exactly the same.
+    </p>
 
     <h3>Security Considerations</h3>
     <h4>CSRF</h4>
