@@ -1,5 +1,8 @@
 # Changes
 
+## 0.3.0
+- update the FAQ and relying party documentation
+
 ## 0.2.9
 - update text on various pages
 - update `fkooman/rest`
