@@ -294,7 +294,7 @@ class IndieCertService extends Service
             $this->io->getTime()
         );
 
-        $responseUri = sprintf('%s?code=%s&state=%s', $redirectUri, $code, $state);
+        $responseUri = sprintf('%s?me=%s&code=%s&state=%s', $redirectUri, $me, $code, $state);
 
         return new RedirectResponse($responseUri, 302);
     }
@@ -352,7 +352,7 @@ class IndieCertService extends Service
             $this->io->getTime()
         );
 
-        $responseUri = sprintf('%s?code=%s&state=%s', $redirectUri, $code, $state);
+        $responseUri = sprintf('%s?me=%s&code=%s&state=%s', $redirectUri, $me, $code, $state);
 
         return new RedirectResponse($responseUri, 302);
     }

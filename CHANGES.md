@@ -1,5 +1,8 @@
 # Changes
 
+## 0.3.1
+- add `me` to callback parameters after successful authentication
+
 ## 0.3.0
 - update the FAQ and relying party documentation
 
