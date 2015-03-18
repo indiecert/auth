@@ -10,13 +10,13 @@ RUN yum copr enable -y fkooman/php-relmeauth
 RUN yum install -y mod_ssl indiecert; yum clean all
 
 # generate the server certificate
-RUN openssl req -subj '/CN=dev.indiecert.net' -new -x509 -nodes -out /etc/pki/tls/certs/dev.indiecert.net.crt -keyout /etc/pki/tls/private/dev.indiecert.net.key
+RUN openssl req -subj '/CN=indiecert.example.org' -new -x509 -nodes -out /etc/pki/tls/certs/indiecert.example.org.crt -keyout /etc/pki/tls/private/indiecert.example.org.key
 
-# empty the existing indiecert httpd config as it conflicts with dev.indiecert.net
+# empty the existing indiecert httpd config as it conflicts with indiecert.example.org
 RUN echo '' > /etc/httpd/conf.d/indiecert.conf
 
-# add httpd config for dev.indiecert.net
-ADD dev.indiecert.net-httpd.conf /etc/httpd/conf.d/dev.indiecert.net.conf
+# add httpd config for indiecert.example.org
+ADD indiecert.example.org-httpd.conf /etc/httpd/conf.d/indiecert.example.org.conf
 
 # Add CAcert as a valid CA (this is pointless here as we disable certificate
 # check anyway in the next step, but for production we use this)
@@ -24,7 +24,7 @@ ADD CAcert.pem /etc/pki/ca-trust/source/anchors/CAcert.pem
 RUN update-ca-trust
 
 # disable the certificate check for use within the docker image, as there is
-# no trusted certificate for "dev.indiecert.net" so verification will fail...
+# no trusted certificate for "indiecert.example.org" so verification will fail...
 RUN sed -i 's/;disableServerCertCheck/disableServerCertCheck/' /etc/indiecert/config.ini
 
 USER apache
