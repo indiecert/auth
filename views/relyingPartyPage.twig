@@ -198,10 +198,11 @@ Pragma: no-cache
     <h3 id="distributed">Distributed IndieAuth</h3>
     <p>
 For "Distributed IndieAuth" to work, an additional step needs to be taking by
-the relying party. It needs to first retrieve the user's home page and look for
-the link relation <code>authorization_endpoint</code> and use that instead
-of <code>{{ authUri|e }}</code>. It MUST be a HTTPS URL. For example, the
-user may have the following on their home page:
+the relying party. It needs to first retrieve the user's home page, enforce
+that it a HTTPS URL, follow redirects and also ensure that all redirects are
+HTTPS URLs. Then look for the link relation <code>authorization_endpoint</code>
+and use that instead of <code>{{ authUri|e }}</code>. It MUST be a HTTPS URL.
+For example, the user may have the following on their home page:
     </p>
 
 <blockquote>
@@ -226,6 +227,35 @@ control, e.g. private pictures.
     <p>
 Using and validating the <code>state</code> in the authentication request and
 response is sufficient to prevent this CSRF.
+    </p>
+
+    <h3 id="compat">Compatibility Issues</h3>
+    <p>
+There are a number of issues when using
+<code>https://indieauth.com/auth</code> you have to be aware of, in the case of
+"Distributed IndieAuth":
+    </p>
+
+    <ol>
+    <li>
+When verifiying a code, <code>https://indieauth.com/auth</code> needs you to
+also provide the <code>state</code> as a POST parameter
+(<a href="https://github.com/aaronpk/IndieAuth.com/issues/81">issue</a>);
+    </li>
+    <li>
+Currently <code>https://indieauth.com/auth</code> does not support the
+<code>Accept</code> header to make it return <code>application/json</code>
+(<a href="https://github.com/aaronpk/IndieAuth.com/issues/83">issue</a>);
+    </li>
+    </ol>
+
+    <p>
+To make <code>https://indiecert.net/auth</code> compatible with
+"Distributed IndieAuth" compatible relying parties the <code>me</code>
+parameter is added to the callback URL. This is not needed as the relying
+party should know the <code>me</code> value already as it was bound to the
+<code>state</code> value on the initial request
+(<a href="https://github.com/aaronpk/IndieAuth.com/issues/85">issue</a>).
     </p>
 
     <div class="footer">
