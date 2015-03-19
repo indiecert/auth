@@ -1,5 +1,8 @@
 # Changes
 
+## 0.3.2
+- update FAQ, relying party documentation and Docker
+
 ## 0.3.1
 - add `me` to callback parameters after successful authentication
 

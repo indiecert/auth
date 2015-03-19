@@ -2,7 +2,7 @@
 %global github_name      indiecert
 
 Name:       indiecert
-Version:    0.3.1
+Version:    0.3.2
 Release:    1%{?dist}
 Summary:    Authentication service using client certificates
 
@@ -109,6 +109,9 @@ fi
 %doc README.md agpl-3.0.txt composer.json config/
 
 %changelog
+* Thu Mar 19 2015 François Kooman <fkooman@tuxed.net> - 0.3.2-1
+- update to 0.3.2
+
 * Tue Mar 17 2015 François Kooman <fkooman@tuxed.net> - 0.3.1-1
 - update to 0.3.1
 
