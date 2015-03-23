@@ -1,5 +1,8 @@
 # Changes
 
+## 0.3.3
+- update FAQ and welcome page text
+
 ## 0.3.2
 - update FAQ, relying party documentation and Docker
 
