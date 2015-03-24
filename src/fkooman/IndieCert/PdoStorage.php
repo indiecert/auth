@@ -150,6 +150,32 @@ class PdoStorage
         return $this->db->lastInsertId();
     }
 
+    public function deleteExpiredApprovals($currentTime)
+    {
+        $stmt = $this->db->prepare(
+            sprintf(
+                'DELETE FROM %s WHERE expires_at < :current_time',
+                $this->prefix.'indie_approvals'
+            )
+        );
+
+        $stmt->bindValue(':current_time', $currentTime, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
+    public function deleteExpiredCodes($currentTime)
+    {
+        $stmt = $this->db->prepare(
+            sprintf(
+                'DELETE FROM %s WHERE issue_time + 600 < :current_time',
+                $this->prefix.'indie_codes'
+            )
+        );
+
+        $stmt->bindValue(':current_time', $currentTime, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
     public static function createTableQueries($prefix)
     {
         $query = array();

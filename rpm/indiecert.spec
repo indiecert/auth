@@ -58,6 +58,7 @@ includes a CA and an easy way to enroll clients.
 
 sed -i "s|dirname(__DIR__)|'%{_datadir}/indiecert'|" bin/indiecert-init-ca
 sed -i "s|dirname(__DIR__)|'%{_datadir}/indiecert'|" bin/indiecert-init-db
+sed -i "s|dirname(__DIR__)|'%{_datadir}/indiecert'|" bin/indiecert-housekeeping
 
 %build
 
@@ -99,6 +100,7 @@ fi
 %config(noreplace) %{_sysconfdir}/indiecert
 %{_bindir}/indiecert-init-ca
 %{_bindir}/indiecert-init-db
+%{_bindir}/indiecert-housekeeping
 %dir %{_datadir}/indiecert
 %{_datadir}/indiecert/src
 %{_datadir}/indiecert/vendor
