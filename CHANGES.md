@@ -1,5 +1,8 @@
 # Changes
 
+## 0.3.4
+- update `fkooman/rest`
+
 ## 0.3.3
 - update FAQ and welcome page text
 
