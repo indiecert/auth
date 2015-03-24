@@ -2,6 +2,7 @@
 
 ## 0.3.4
 - update `fkooman/rest`
+- update `fkooman/rest-plugin-indieauth`
 
 ## 0.3.3
 - update FAQ and welcome page text

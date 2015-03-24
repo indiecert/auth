@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "637fa1b9cabd38e0a872496aeafc019b",
+    "hash": "d010a68d0a9b1967e80b0d28c123e7d9",
     "packages": [
         {
             "name": "fkooman/cert-parser",
@@ -171,23 +171,23 @@
         },
         {
             "name": "fkooman/rest-plugin-indieauth",
-            "version": "0.1.3",
+            "version": "0.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fkooman/php-lib-rest-plugin-indieauth.git",
-                "reference": "551e477b94bd50c16a225e0d7c7d44cee80a59e5"
+                "reference": "2f02225c3d95838e362678022862740ee606d6e6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fkooman/php-lib-rest-plugin-indieauth/zipball/551e477b94bd50c16a225e0d7c7d44cee80a59e5",
-                "reference": "551e477b94bd50c16a225e0d7c7d44cee80a59e5",
+                "url": "https://api.github.com/repos/fkooman/php-lib-rest-plugin-indieauth/zipball/2f02225c3d95838e362678022862740ee606d6e6",
+                "reference": "2f02225c3d95838e362678022862740ee606d6e6",
                 "shasum": ""
             },
             "require": {
                 "ext-openssl": "*",
-                "fkooman/rest": "~0.7.4",
+                "fkooman/rest": "~0.7.5",
                 "guzzlehttp/guzzle": "~4.0",
-                "php": ">=5.3.3"
+                "php": ">=5.4.0"
             },
             "type": "library",
             "autoload": {
@@ -207,7 +207,7 @@
                 }
             ],
             "description": "IndieAuth plugin for fkooman/rest",
-            "time": "2015-03-15 16:33:37"
+            "time": "2015-03-24 14:44:08"
         },
         {
             "name": "guzzlehttp/guzzle",

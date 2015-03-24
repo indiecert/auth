@@ -48,7 +48,8 @@ over HTTPS!
     </p>
 
     <form method="post" action="indieauth/auth">
-        https://<input type="text" name="me" id="me" placeholder="example.org" required>
+        https://<input required type="text" name="me" placeholder="example.org">
+        <input type="hidden" name="redirect_to" value="/success">
         <input type="submit" value="Sign In">
     </form>
 

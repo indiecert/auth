@@ -15,7 +15,7 @@ Source2:    indiecert-autoload.php
 
 BuildArch:  noarch
 
-Requires:   php >= 5.4.0
+Requires:   php >= 5.4
 Requires:   php-openssl
 Requires:   php-pdo
 Requires:   httpd
@@ -28,8 +28,8 @@ Requires:   php-composer(fkooman/ini) >= 0.2.0
 Requires:   php-composer(fkooman/ini) < 0.3.0
 Requires:   php-composer(fkooman/rest) >= 0.7.5
 Requires:   php-composer(fkooman/rest) < 0.8.0
-Requires:   php-composer(fkooman/rest-plugin-indieauth) >= 0.1.3
-Requires:   php-composer(fkooman/rest-plugin-indieauth) < 0.2.0
+Requires:   php-composer(fkooman/rest-plugin-indieauth) >= 0.2.1
+Requires:   php-composer(fkooman/rest-plugin-indieauth) < 0.3.0
 Requires:   php-composer(fkooman/cert-parser) >= 0.1.8
 Requires:   php-composer(fkooman/cert-parser) < 0.2.0
 
