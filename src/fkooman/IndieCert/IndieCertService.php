@@ -244,9 +244,8 @@ class IndieCertService extends Service
         }
 
         $pageFetcher = new PageFetcher($this->client);
-        $pageResponse = $pageFetcher->fetch($me);
-
-        $relMeLinks = $this->extractRelMeLinks($pageResponse->getBody());
+        $htmlResponse = $pageFetcher->fetch($me);
+        $relMeLinks = $this->extractRelMeLinks($htmlResponse);
 
         $authorizationEndpoint = $request->getAbsRoot() . 'auth';
 
@@ -324,9 +323,9 @@ class IndieCertService extends Service
         }
 
         $pageFetcher = new PageFetcher($this->client);
-        $pageResponse = $pageFetcher->fetch($me);
+        $htmlResponse = $pageFetcher->fetch($me);
 
-        $relMeLinks = $this->extractRelMeLinks($pageResponse->getBody());
+        $relMeLinks = $this->extractRelMeLinks($htmlResponse);
     
         if (false === $this->hasFingerprint($relMeLinks, $certFingerprint)) {
             return $this->templateManager->render(

@@ -54,6 +54,6 @@ class PageFetcher
             }
         }
 
-        return new PageResponse($response->getEffectiveUrl(), $response->getBody());
+        return $response->getBody();
     }
 }

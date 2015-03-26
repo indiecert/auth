@@ -3,6 +3,7 @@
 ## 0.3.5
 - include `indiecert-housekeeping` script to remove expired approvals
   where the user never came back and codes that were never claimed
+- remove `PageResponse` class, no need anymore 
 
 ## 0.3.4
 - update `fkooman/rest`
