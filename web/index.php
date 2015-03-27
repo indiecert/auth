@@ -51,7 +51,7 @@ try {
         array(
             'defaults' => array(
                 'verify' => !$disableServerCertCheck,
-                'timeout' => 5
+                'timeout' => 10
             )
         )
     );
