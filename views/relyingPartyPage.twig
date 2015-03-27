@@ -73,11 +73,11 @@
             The following example shows a redirect to the IndieCert service:
         </p>
 
-        <blockquote>
-        <pre>HTTP/1.1 302 Found
-        Location: {{ authUri|e }}?client_id=https://app.example.org/&amp;me=https://john.example.com/&amp;redirect_uri=https://app.example.org/callback&amp;state=PmctIM3J7O25NDSy
-        </pre>
-        </blockquote>
+<blockquote>
+<pre>HTTP/1.1 302 Found
+Location: {{ authUri|e }}?client_id=https://app.example.org/&amp;me=https://john.example.com/&amp;redirect_uri=https://app.example.org/callback&amp;state=PmctIM3J7O25NDSy
+</pre>
+</blockquote>
 
         <p>
             Note that both <code>state</code> and <code>me</code> values MUST be retained
@@ -94,12 +94,12 @@
 
         <h4>Example</h4>
 
-        <blockquote>
-        <pre>
-        HTTP/1.1 302 Found
-        Location: https://app.example.org/callback?code=wW3OLXJZn35d7zFwg9YGmWti&amp;state=PmctIM3J7O25NDSy
-        </pre>
-        </blockquote>
+<blockquote>
+<pre>
+HTTP/1.1 302 Found
+Location: https://app.example.org/callback?code=wW3OLXJZn35d7zFwg9YGmWti&amp;state=PmctIM3J7O25NDSy
+</pre>
+</blockquote>
      
         <h3>Verification Request</h3>
         <p>
@@ -133,16 +133,17 @@
             Now a HTTPS <code>POST</code> can be used to verify the <code>me</code> field
             provided by the user:
         </p>
-        <blockquote>
-        <pre>
-        POST {{ verifyPath|e}} HTTP/1.1
-        Host: {{ hostName|e }}
-        Accept: application/json
-        Content-Type: application/x-www-form-urlencoded
 
-        client_id=https%3A%2F%2Fapp.example.org%2F&amp;code=wW3OLXJZn35d7zFwg9YGmWti&amp;redirect_uri=https%3A%2F%2Fapp.example.org%2Fcallback
-        </pre>
-        </blockquote>
+<blockquote>
+<pre>
+POST {{ verifyPath|e}} HTTP/1.1
+Host: {{ hostName|e }}
+Accept: application/json
+Content-Type: application/x-www-form-urlencoded
+
+client_id=https%3A%2F%2Fapp.example.org%2F&amp;code=wW3OLXJZn35d7zFwg9YGmWti&amp;redirect_uri=https%3A%2F%2Fapp.example.org%2Fcallback
+</pre>
+</blockquote>
 
         <p>
             The response will be returned as <code>application/json</code> or
@@ -159,36 +160,36 @@
             An example response (using <code>application/json</code>):
         </p>
 
-        <blockquote>
-        <pre>
-        HTTP/1.1 200 OK
-        Content-Type: application/json
-        Cache-Control: no-store
-        Pragma: no-cache
+<blockquote>
+<pre>
+HTTP/1.1 200 OK
+Content-Type: application/json
+Cache-Control: no-store
+Pragma: no-cache
 
-        {
-            "me": "https://john.example.com/"
-        }
-        </pre>
-        </blockquote>
+{
+"me": "https://john.example.com/"
+}
+</pre>
+</blockquote>
 
         <p>
             In case there was a failure in verifying the code, e.g. it was already used, or
             not valid the following response can be expected:
         </p>
 
-        <blockquote>
-        <pre>
-        HTTP/1.1 400 Bad Request
-        Content-Type: application/json
-        Cache-Control: no-store
-        Pragma: no-cache
+<blockquote>
+<pre>
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+Cache-Control: no-store
+Pragma: no-cache
 
-        {
-            "error":"invalid_request"
-        }
-        </pre>
-        </blockquote>
+{
+    "error":"invalid_request"
+}
+</pre>
+</blockquote>
 
         <h3 id="distributed">Distributed IndieAuth</h3>
         <p>
@@ -200,11 +201,11 @@
             For example, the user may have the following on their home page:
         </p>
 
-        <blockquote>
-        <pre>
-        &lt;link rel="authorization_endpoint" href="https://indieauth.com/auth"&gt;
-        </pre>
-        </blockquote>
+<blockquote>
+<pre>
+&lt;link rel="authorization_endpoint" href="https://indieauth.com/auth"&gt;
+</pre>
+</blockquote>
 
         <p>
             After determining the <code>authorization_endpoint</code> the protocol flow

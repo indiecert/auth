@@ -235,8 +235,16 @@ class IndieCertService extends Service
     public function getAuth(Request $request)
     {
         $me = $this->validateMe($request->getQueryParameter('me'));
-        $redirectUri = $this->validateRedirectUri($request->getQueryParameter('redirect_uri'));
+        $clientId = $this->validateUri($request->getQueryParameter('client_id'));
+        $redirectUri = $this->validateUri($request->getQueryParameter('redirect_uri'));
         $state = $this->validateState($request->getQueryParameter('state'));
+
+        $clientIdUriObj = new Uri($clientId);
+        $redirectUriObj = new Uri($redirectUri);
+
+        if ($clientIdUriObj->getHost() !== $redirectUriObj->getHost()) {
+            throw new BadRequestException('client_id must have same host as redirect_uri');
+        }
 
         $certFingerprint = $this->getCertFingerprint(
             $request->getHeader('SSL_CLIENT_CERT')
@@ -272,17 +280,21 @@ class IndieCertService extends Service
             }
         }
     
-        $confirmUri = sprintf('confirm?redirect_uri=%s&me=%s&state=%s', $redirectUri, $me, $state);
-
         if (false === $approval) {
-            $redirectUriObj = new Uri($redirectUri);
+            $confirmUri = sprintf(
+                'confirm?redirect_uri=%s&me=%s&state=%s',
+                $redirectUri,
+                $me,
+                $state
+            );
 
             return $this->templateManager->render(
                 'askConfirmation',
                 array(
                     'confirmUri' => $confirmUri,
                     'me' => $me,
-                    'host' => $redirectUriObj->getHost()
+                    'clientId' => $clientId,
+                    'redirectUri' => $redirectUri
                 )
             );
         }
@@ -293,7 +305,7 @@ class IndieCertService extends Service
     public function postConfirm(Request $request)
     {
         $me = $this->validateMe($request->getQueryParameter('me'));
-        $redirectUri = $this->validateRedirectUri($request->getQueryParameter('redirect_uri'));
+        $redirectUri = $this->validateUri($request->getQueryParameter('redirect_uri'));
         $state = $this->validateState($request->getQueryParameter('state'));
         $appRootUri = $request->getAbsRoot();
 
@@ -323,7 +335,7 @@ class IndieCertService extends Service
         if (null === $code) {
             throw new BadRequestException('missing code');
         }
-        $redirectUri = $this->validateRedirectUri($request->getPostParameter('redirect_uri'));
+        $redirectUri = $this->validateUri($request->getPostParameter('redirect_uri'));
 
         $indieCode = $this->pdoStorage->getIndieCode($code, $redirectUri);
 
@@ -450,7 +462,7 @@ class IndieCertService extends Service
         }
     }
 
-    private function validateRedirectUri($redirectUri)
+    private function validateUri($redirectUri)
     {
         if (null === $redirectUri) {
             throw new BadRequestException('missing parameter "redirect_uri"');

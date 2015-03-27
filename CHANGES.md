@@ -1,5 +1,10 @@
 # Changes
 
+## 0.3.7
+- fix blockquotes in templates
+- validate that `client_id` host matches `redirect_uri` host
+- show `client_id` instead of `redirect_uri` host in confirmation dialog
+
 ## 0.3.6
 - Implement Twig template caching
 - Use separate footer and header template include

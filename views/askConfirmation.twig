@@ -8,7 +8,7 @@
         <a class="header" href="welcome"><h1>IndieCert</h1></a>
 
         <p>
-            <strong>{{ host|e }}</strong> wants to confirm your identity
+            <strong title="{{ redirectUri|e }}">{{ clientId|e }}</strong> wants to verify your claimed identity
             <strong>{{ me|e }}</strong>.
         </p>
 
