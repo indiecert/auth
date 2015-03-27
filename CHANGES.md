@@ -5,6 +5,7 @@
   where the user never came back and codes that were never claimed
 - remove `PageResponse` class, no need anymore 
 - some refactoring to reduce code duplication
+- increase timeout when fetching pages to 10 seconds
 
 ## 0.3.4
 - update `fkooman/rest`
