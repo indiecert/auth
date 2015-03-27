@@ -295,7 +295,7 @@ class IndieCertService extends Service
         $appRootUri = $request->getAbsRoot();
 
         // CSRF protection
-        if (0 !== strpos($request->getHeader('HTTP_REFERER'), $appRootUri)) {
+        if (0 !== strpos($request->getHeader('HTTP_REFERER'), $appRootUri . 'auth')) {
             throw new BadRequestException('CSRF protection triggered');
         }
         
