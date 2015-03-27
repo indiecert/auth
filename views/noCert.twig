@@ -1,38 +1,30 @@
 <!DOCTYPE html>
 
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>IndieCert</title>
-  <link rel="stylesheet" type="text/css" href="css/style.css">
-</head>
+{% include 'head.html' %}
 <body>
     <div id="container">
-    <a class="header" href="welcome"><h1>IndieCert</h1></a>
-    <p class="warn">
-You reached this page because you do not yet have a client certificate
-installed in your browser/operating system or declined to authenticate with it
-to IndieCert.
-    </p>
+        <a class="header" href="welcome"><h1>IndieCert</h1></a>
+        <p class="warn">
+            You reached this page because you do not yet have a client certificate
+            installed in your browser/operating system or declined to authenticate with it
+            to IndieCert.
+        </p>
 
-    <p>
-If you want you can generate a new client certificate <a href="enroll">here</a>!
-Follow the instructions provided there to get going. If you already have a
-client certificate restart your browser<span class="sup">1</span> and
-try again!
-    </p>
+        <p>
+            If you want you can generate a new client certificate <a href="enroll">here</a>!
+            Follow the instructions provided there to get going. If you already have a
+            client certificate restart your browser<span class="sup">1</span> and
+            try again!
+        </p>
 
-    <div class="footnotes">
-        <span class="sup">1</span>
-Some browser will require you to restart, or use "Private Browsing" to forget
-that you did not want to authenticate to a site using a client certificate...
-    </div>
+        <div class="footnotes">
+            <span class="sup">1</span>
+                Some browser will require you to restart, or use "Private Browsing" to forget
+                that you did not want to authenticate to a site using a client certificate...
+        </div>
 
-    <div class="footer">
-        <a href="faq">FAQ</a> | IndieCert
-    </div>
-
-    </div>
+        {% include 'footer.html' %}
+    </div> <!-- /container -->
 </body>
 </html>

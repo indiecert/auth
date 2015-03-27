@@ -19,6 +19,7 @@ namespace fkooman\IndieCert;
 
 use Twig_Loader_Filesystem;
 use Twig_Environment;
+use RuntimeException;
 
 class TemplateManager
 {
@@ -40,7 +41,12 @@ class TemplateManager
             'strict_variables' => true
         );
 
-        if (null !== $cacheDir || false === is_dir($cacheDir)) {
+        if (null !== $cacheDir) {
+            if (false === is_dir($cacheDir)) {
+                if (false === @mkdir($cacheDir)) {
+                    throw new RuntimeException('unable to create template cache directory');
+                }
+            }
             $environmentOptions['cache'] = $cacheDir;
         }
 

@@ -53,7 +53,7 @@ class IndieCertService extends Service
     /** @var fkooman\IndieCert\TemplateManager */
     private $templateManager;
 
-    public function __construct($caCrt, $caKey, PdoStorage $pdoStorage, Client $client = null, IO $io = null)
+    public function __construct($caCrt, $caKey, PdoStorage $pdoStorage, Client $client = null, IO $io = null, TemplateManager $templateManager = null)
     {
         parent::__construct();
 
@@ -70,8 +70,11 @@ class IndieCertService extends Service
             $io = new IO();
         }
         $this->io = $io;
-
-        $this->templateManager = new TemplateManager();
+    
+        if (null === $templateManager) {
+            $templateManager = new TemplateManager();
+        }
+        $this->templateManager = $templateManager;
 
         $this->setDefaultRoute('/welcome');
 

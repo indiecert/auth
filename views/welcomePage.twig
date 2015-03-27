@@ -1,67 +1,59 @@
 <!DOCTYPE html>
 
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>IndieCert</title>
-  <link rel="stylesheet" type="text/css" href="css/style.css">
-</head>
+{% include 'head.html' %}
 <body>
     <div id="container">
-    <a class="header" href="welcome"><h1>IndieCert</h1></a>
-    <p class="warn">
-This is an <strong>EXPERIMENTAL</strong> service. No warranty!
-    </p>
+        <a class="header" href="welcome"><h1>IndieCert</h1></a>
+        <p class="warn">
+            This is an <strong>EXPERIMENTAL</strong> service. No warranty!
+        </p>
 
-    <p>
-IndieCert is a service to authenticate to services around the web using your
-home page URL as an identity without requiring a password! IndieCert uses
-client certificates installed in the user's browser. Client certificates
-provide superior security. Until now it has been cumbersome to deploy client
-certificates outside managed corporate environments. This service, or your
-instance of it, improves on this by making it easier to deploy client
-certificates and support multiple (mobile) devices.
-    </p>
-    <p>
-IndieCert aims to be compatible with the
-(<a href="https://indiewebcamp.com/distributed-indieauth">distributed</a>)
-<a href="https://indieauth.com">IndieAuth</a> protocol.
-    </p>
-    <p class="info">
-You can check out the <a href="faq">Frequently Asked Questions</a>!
-    </p>
-    <p>
-All <a href="https://github.com/fkooman/indiecert">code</a> is available under
-the <a href="https://gnu.org/licenses/agpl.html">AGPLv3</a> license. There are
-also Docker
-<a href="https://github.com/fkooman/indiecert/tree/master/docker">instructions</a>
-for easily running your own instance!
-    </p>
+        <p>
+            IndieCert is a service to authenticate to services around the web using your
+            home page URL as an identity without requiring a password! IndieCert uses
+            client certificates installed in the user's browser. Client certificates
+            provide superior security. Until now it has been cumbersome to deploy client
+            certificates outside managed corporate environments. This service, or your
+            instance of it, improves on this by making it easier to deploy client
+            certificates and support multiple (mobile) devices.
+        </p>
+        <p>
+            IndieCert aims to be compatible with the
+            (<a href="https://indiewebcamp.com/distributed-indieauth">distributed</a>)
+            <a href="https://indieauth.com">IndieAuth</a> protocol.
+        </p>
+        <p class="info">
+            You can check out the <a href="faq">Frequently Asked Questions</a>!
+        </p>
+        <p>
+            All <a href="https://github.com/fkooman/indiecert">code</a> is available under
+            the <a href="https://gnu.org/licenses/agpl.html">AGPLv3</a> license. There are
+            also Docker
+            <a href="https://github.com/fkooman/indiecert/tree/master/docker">instructions</a>
+            for easily running your own instance!
+        </p>
 
-    <h2>Try It!</h2>
-    <p>
-You will be guided through generating a client certificate if you don't already
-have one and adding the fingerprint to your home page. Please enter a domain
-name or URL to a page you can modify. It <strong>MUST</strong> be reachable
-over HTTPS!
-    </p>
+        <h2>Try It!</h2>
+        <p>
+            You will be guided through generating a client certificate if you don't already
+            have one and adding the fingerprint to your home page. Please enter a domain
+            name or URL to a page you can modify. It <strong>MUST</strong> be reachable
+            over HTTPS!
+        </p>
 
-    <form class="try" method="post" action="indieauth/auth">
-        https://<input required type="text" name="me" placeholder="example.org">
-        <input type="hidden" name="redirect_to" value="/success">
-        <input type="submit" value="Sign In">
-    </form>
+        <form class="try" method="post" action="indieauth/auth">
+            https://<input required type="text" name="me" placeholder="example.org">
+            <input type="hidden" name="redirect_to" value="/success">
+            <input type="submit" value="Sign In">
+        </form>
 
-    <h2>Relying Party?</h2>
-    <p>
-Check out the relying party <a href="rp">instructions</a>!
-    </p>
-    
-    <div class="footer">
-        <a href="faq">FAQ</a> | IndieCert
-    </div>
-
-    </div>
+        <h2>Relying Party?</h2>
+        <p>
+            Check out the relying party <a href="rp">instructions</a>!
+        </p>
+        
+        {% include 'footer.html' %}
+    </div> <!-- /container -->
 </body>
 </html>

@@ -1,266 +1,259 @@
 <!DOCTYPE html>
 
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>IndieCert</title>
-  <link rel="stylesheet" type="text/css" href="css/style.css">
-</head>
+{% include 'head.html' %}
 <body>
     <div id="container">
-    <a class="header" href="welcome"><h1>IndieCert</h1></a>
+        <a class="header" href="welcome"><h1>IndieCert</h1></a>
 
-    <h2>Relying Party</h2>
-    <p>
-Here you can read how to integrate your service as a <em>relying party</em>
-with IndieCert. You can also support
-<a href="#distributed">Distributed IndieAuth</a>.
-    </p>
+        <h2>Relying Party</h2>
+        <p>
+            Here you can read how to integrate your service as a <em>relying party</em>
+            with IndieCert. You can also support
+            <a href="#distributed">Distributed IndieAuth</a>.
+        </p>
 
-    <p class="info">
-A client implementation written in PHP supporting both IndieCert, IndieAuth and
-"Distributed IndieAuth" is available
-<a href="https://github.com/fkooman/php-lib-rest-plugin-indieauth">here</a>.
-    </p>
+        <p class="info">
+            A client implementation written in PHP supporting both IndieCert, IndieAuth and
+            "Distributed IndieAuth" is available
+            <a href="https://github.com/fkooman/php-lib-rest-plugin-indieauth">here</a>.
+        </p>
 
-    <h3>Authentication Request</h3>
-    <p>
-The relying party redirects the browser to <code>{{ authUri|e }}</code> to
-initiate the authentication process. These query parameters MUST be specified:
-    </p>
+        <h3>Authentication Request</h3>
+        <p>
+            The relying party redirects the browser to <code>{{ authUri|e }}</code> to
+            initiate the authentication process. These query parameters MUST be specified:
+        </p>
 
-<dl>
-    <dt><code>client_id</code></dt>
-    <dd>
-The identifier for the relying party. This is the (base) URL under which the
-relying party runs, e.g.: <code>https://app.example.org/</code>;
-    </dd>
-    <dt><code>me</code></dt>
-    <dd>
-the URL to the user's home page, e.g.: <code>https://john.example.com/</code>;
-    </dd>
-    <dt><code>redirect_uri</code></dt>
-    <dd>
-the callback URL belonging to the relying party where the browser will be
-redirected back to after successful authentication and after user approval. It
-MUST be an absolute HTTPS URL, e.g.: <code>https://app.example.org/callback</code>;
-    </dd>
-    <dt><code>state</code></dt>
-    <dd>
-a randomly generated nonce to be used as a CSRF token which MUST be freshly
-generated for every call and MUST NOT be repeated.
-    </dd>
-</dl>
+        <dl>
+            <dt><code>client_id</code></dt>
+            <dd>
+        The identifier for the relying party. This is the (base) URL under which the
+        relying party runs, e.g.: <code>https://app.example.org/</code>;
+            </dd>
+            <dt><code>me</code></dt>
+            <dd>
+        the URL to the user's home page, e.g.: <code>https://john.example.com/</code>;
+            </dd>
+            <dt><code>redirect_uri</code></dt>
+            <dd>
+        the callback URL belonging to the relying party where the browser will be
+        redirected back to after successful authentication and after user approval. It
+        MUST be an absolute HTTPS URL, e.g.: <code>https://app.example.org/callback</code>;
+            </dd>
+            <dt><code>state</code></dt>
+            <dd>
+        a randomly generated nonce to be used as a CSRF token which MUST be freshly
+        generated for every call and MUST NOT be repeated.
+            </dd>
+        </dl>
 
-    <p>
-The relying party can choose to accept a "naked domain" for the <code>me</code>
-parameter, but it MUST be normalized before sending it to the IndieCert
-service using the following steps:
-    </p>
+        <p>
+            The relying party can choose to accept a "naked domain" for the <code>me</code>
+            parameter, but it MUST be normalized before sending it to the IndieCert
+            service using the following steps:
+        </p>
 
-    <ol>
-    <li>Make sure <code>me</code> starts with <code>https://</code> (case
-sensitive);</li>
-    <li>Make sure the domain part of <code>me</code> is all lower case;</li>
-    <li>Make sure a "naked" domain has a path, if no path is set add a
-trailing <code>/</code>;
-    </ol>
+        <ol>
+            <li>Make sure <code>me</code> starts with <code>https://</code> (case
+        sensitive);</li>
+            <li>Make sure the domain part of <code>me</code> is all lower case;</li>
+            <li>Make sure a "naked" domain has a path, if no path is set add a
+        trailing <code>/</code>;
+        </ol>
 
-    <p>
-For example: <code>john.EXAMPLE.com</code> MUST be modified to
-<code>https://john.example.com/</code>. URLs starting with <code>http://</code>
-MUST be rejected.
-    </p>
-    
-    <h4>Example</h4>
-    <p>
-The following example shows a redirect to the IndieCert service:
-    </p>
+        <p>
+            For example: <code>john.EXAMPLE.com</code> MUST be modified to
+            <code>https://john.example.com/</code>. URLs starting with <code>http://</code>
+            MUST be rejected.
+        </p>
+        
+        <h4>Example</h4>
+        <p>
+            The following example shows a redirect to the IndieCert service:
+        </p>
 
-<blockquote>
-<pre>HTTP/1.1 302 Found
-Location: {{ authUri|e }}?client_id=https://app.example.org/&amp;me=https://john.example.com/&amp;redirect_uri=https://app.example.org/callback&amp;state=PmctIM3J7O25NDSy
-</pre>
-</blockquote>
+        <blockquote>
+        <pre>HTTP/1.1 302 Found
+        Location: {{ authUri|e }}?client_id=https://app.example.org/&amp;me=https://john.example.com/&amp;redirect_uri=https://app.example.org/callback&amp;state=PmctIM3J7O25NDSy
+        </pre>
+        </blockquote>
 
-    <p>
-Note that both <code>state</code> and <code>me</code> values MUST be retained
-for later use when verifying the <code>code</code> parameter received with
-the authentication response callback.
-    </p>
-    
-    <h3>Authentication Response</h3>
-    <p>
-IndieCert will redirect the browser back to the <code>redirect_uri</code>
-specified in the authentication request after the user is authenticated at
-IndieCert and approved the authentication.
-    </p>
+        <p>
+            Note that both <code>state</code> and <code>me</code> values MUST be retained
+            for later use when verifying the <code>code</code> parameter received with
+            the authentication response callback.
+        </p>
+        
+        <h3>Authentication Response</h3>
+        <p>
+            IndieCert will redirect the browser back to the <code>redirect_uri</code>
+            specified in the authentication request after the user is authenticated at
+            IndieCert and approved the authentication.
+        </p>
 
-    <h4>Example</h4>
+        <h4>Example</h4>
 
-<blockquote>
-<pre>
-HTTP/1.1 302 Found
-Location: https://app.example.org/callback?code=wW3OLXJZn35d7zFwg9YGmWti&amp;state=PmctIM3J7O25NDSy
-</pre>
-</blockquote>
- 
-    <h3>Verification Request</h3>
-    <p>
-The relying party MUST verify that the <code>state</code> parameter matches the
-value sent during the authentication request, the <code>code</code> parameter
-can now be used to verify the claimed user identity. The <code>code</code> is
-valid for 10 minutes and can be used only once. The following parameters MUST
-be specified:
-    </p>
+        <blockquote>
+        <pre>
+        HTTP/1.1 302 Found
+        Location: https://app.example.org/callback?code=wW3OLXJZn35d7zFwg9YGmWti&amp;state=PmctIM3J7O25NDSy
+        </pre>
+        </blockquote>
+     
+        <h3>Verification Request</h3>
+        <p>
+            The relying party MUST verify that the <code>state</code> parameter matches the
+            value sent during the authentication request, the <code>code</code> parameter
+            can now be used to verify the claimed user identity. The <code>code</code> is
+            valid for 10 minutes and can be used only once. The following parameters MUST
+            be specified:
+        </p>
 
-<dl>
-    <dt><code>client_id</code></dt>
-    <dd>
-The identifier for the relying party. This is the (base) URL under which the
-relying party runs, e.g.: <code>https://app.example.org/</code>;
-    </dd>
+        <dl>
+            <dt><code>client_id</code></dt>
+            <dd>
+        The identifier for the relying party. This is the (base) URL under which the
+        relying party runs, e.g.: <code>https://app.example.org/</code>;
+            </dd>
 
-    <dt><code>code</code></dt>
-    <dd>
-the code obtained in the authentication response query parameter
-<code>code</code>;
-    </dd>
+            <dt><code>code</code></dt>
+            <dd>
+        the code obtained in the authentication response query parameter
+        <code>code</code>;
+            </dd>
 
-    <dt><code>redirect_uri</code></dt>
-    <dd>
-the URL the browser was redirected back to after the successful authentication,
-e.g.: <code>https://app.example.org/callback</code>.
-    </dd>
-</dl>
-<p>
-Now a HTTPS <code>POST</code> can be used to verify the <code>me</code> field
-provided by the user:
-    </p>
-<blockquote>
-<pre>
-POST {{ verifyPath|e}} HTTP/1.1
-Host: {{ hostName|e }}
-Accept: application/json
-Content-Type: application/x-www-form-urlencoded
+            <dt><code>redirect_uri</code></dt>
+            <dd>
+        the URL the browser was redirected back to after the successful authentication,
+        e.g.: <code>https://app.example.org/callback</code>.
+            </dd>
+        </dl>
+        <p>
+            Now a HTTPS <code>POST</code> can be used to verify the <code>me</code> field
+            provided by the user:
+        </p>
+        <blockquote>
+        <pre>
+        POST {{ verifyPath|e}} HTTP/1.1
+        Host: {{ hostName|e }}
+        Accept: application/json
+        Content-Type: application/x-www-form-urlencoded
 
-client_id=https%3A%2F%2Fapp.example.org%2F&amp;code=wW3OLXJZn35d7zFwg9YGmWti&amp;redirect_uri=https%3A%2F%2Fapp.example.org%2Fcallback
-</pre>
-</blockquote>
+        client_id=https%3A%2F%2Fapp.example.org%2F&amp;code=wW3OLXJZn35d7zFwg9YGmWti&amp;redirect_uri=https%3A%2F%2Fapp.example.org%2Fcallback
+        </pre>
+        </blockquote>
 
-    <p>
-The response will be returned as <code>application/json</code> or
-<code>application/x-www-form-urlencoded</code> depending on <code>Accept</code>
-header. The default is <code>application/x-www-form-urlencoded</code>.
-    </p>
+        <p>
+            The response will be returned as <code>application/json</code> or
+            <code>application/x-www-form-urlencoded</code> depending on <code>Accept</code>
+            header. The default is <code>application/x-www-form-urlencoded</code>.
+        </p>
 
-    <p>
-The <code>me</code> field in the response MUST match the <code>me</code>
-normalized <code>me</code> from the authentication request.
-    </p>
+        <p>
+            The <code>me</code> field in the response MUST match the <code>me</code>
+            normalized <code>me</code> from the authentication request.
+        </p>
 
-    <p>
-An example response (using <code>application/json</code>):
-    </p>
+        <p>
+            An example response (using <code>application/json</code>):
+        </p>
 
-<blockquote>
-<pre>
-HTTP/1.1 200 OK
-Content-Type: application/json
-Cache-Control: no-store
-Pragma: no-cache
+        <blockquote>
+        <pre>
+        HTTP/1.1 200 OK
+        Content-Type: application/json
+        Cache-Control: no-store
+        Pragma: no-cache
 
-{
-    "me": "https://john.example.com/"
-}
-</pre>
-</blockquote>
+        {
+            "me": "https://john.example.com/"
+        }
+        </pre>
+        </blockquote>
 
-    <p>
-In case there was a failure in verifying the code, e.g. it was already used, or
-not valid the following response can be expected:
-    </p>
+        <p>
+            In case there was a failure in verifying the code, e.g. it was already used, or
+            not valid the following response can be expected:
+        </p>
 
-<blockquote>
-<pre>
-HTTP/1.1 400 Bad Request
-Content-Type: application/json
-Cache-Control: no-store
-Pragma: no-cache
+        <blockquote>
+        <pre>
+        HTTP/1.1 400 Bad Request
+        Content-Type: application/json
+        Cache-Control: no-store
+        Pragma: no-cache
 
-{
-    "error":"invalid_request"
-}
-</pre>
-</blockquote>
+        {
+            "error":"invalid_request"
+        }
+        </pre>
+        </blockquote>
 
-    <h3 id="distributed">Distributed IndieAuth</h3>
-    <p>
-For "Distributed IndieAuth" to work, an additional step needs to be taking by
-the relying party. It needs to first retrieve the user's home page, enforce
-that it a HTTPS URL, follow redirects and also ensure that all redirects are
-HTTPS URLs. Then look for the link relation <code>authorization_endpoint</code>
-and use that instead of <code>{{ authUri|e }}</code>. It MUST be a HTTPS URL.
-For example, the user may have the following on their home page:
-    </p>
+        <h3 id="distributed">Distributed IndieAuth</h3>
+        <p>
+            For "Distributed IndieAuth" to work, an additional step needs to be taking by
+            the relying party. It needs to first retrieve the user's home page, enforce
+            that it a HTTPS URL, follow redirects and also ensure that all redirects are
+            HTTPS URLs. Then look for the link relation <code>authorization_endpoint</code>
+            and use that instead of <code>{{ authUri|e }}</code>. It MUST be a HTTPS URL.
+            For example, the user may have the following on their home page:
+        </p>
 
-<blockquote>
-<pre>
-&lt;link rel="authorization_endpoint" href="https://indieauth.com/auth"&gt;
-</pre>
-</blockquote>
+        <blockquote>
+        <pre>
+        &lt;link rel="authorization_endpoint" href="https://indieauth.com/auth"&gt;
+        </pre>
+        </blockquote>
 
-    <p>
-After determining the <code>authorization_endpoint</code> the protocol flow
-is exactly the same.
-    </p>
+        <p>
+            After determining the <code>authorization_endpoint</code> the protocol flow
+            is exactly the same.
+        </p>
 
-    <h3>Security Considerations</h3>
-    <h4>CSRF</h4>
-    <p>
-The CSRF attack we MUST prevent is the attack where user X tricks user Y to
-authenticate to a relying party using an account under user X's control. The
-danger is unintentionally leaking private date to the account under X's
-control, e.g. private pictures.
-    </p>
-    <p>
-Using and validating the <code>state</code> in the authentication request and
-response is sufficient to prevent this CSRF.
-    </p>
+        <h3>Security Considerations</h3>
+        <h4>CSRF</h4>
+        <p>
+            The CSRF attack we MUST prevent is the attack where user X tricks user Y to
+            authenticate to a relying party using an account under user X's control. The
+            danger is unintentionally leaking private date to the account under X's
+            control, e.g. private pictures.
+        </p>
+        <p>
+            Using and validating the <code>state</code> in the authentication request and
+            response is sufficient to prevent this CSRF.
+        </p>
 
-    <h3 id="compat">Compatibility Issues</h3>
-    <p>
-There are a number of issues when using
-<code>https://indieauth.com/auth</code> you have to be aware of, in the case of
-"Distributed IndieAuth":
-    </p>
+        <h3 id="compat">Compatibility Issues</h3>
+        <p>
+            There are a number of issues when using
+            <code>https://indieauth.com/auth</code> you have to be aware of, in the case of
+            "Distributed IndieAuth":
+        </p>
 
-    <ol>
-    <li>
-When verifiying a code, <code>https://indieauth.com/auth</code> needs you to
-also provide the <code>state</code> as a POST parameter
-(<a href="https://github.com/aaronpk/IndieAuth.com/issues/81">issue</a>);
-    </li>
-    <li>
-Currently <code>https://indieauth.com/auth</code> does not support the
-<code>Accept</code> header to make it return <code>application/json</code>
-(<a href="https://github.com/aaronpk/IndieAuth.com/issues/83">issue</a>);
-    </li>
-    </ol>
+        <ol>
+        <li>
+            When verifiying a code, <code>https://indieauth.com/auth</code> needs you to
+            also provide the <code>state</code> as a POST parameter
+            (<a href="https://github.com/aaronpk/IndieAuth.com/issues/81">issue</a>);
+        </li>
+        <li>
+            Currently <code>https://indieauth.com/auth</code> does not support the
+            <code>Accept</code> header to make it return <code>application/json</code>
+            (<a href="https://github.com/aaronpk/IndieAuth.com/issues/83">issue</a>);
+        </li>
+        </ol>
 
-    <p>
-To make <code>https://indiecert.net/auth</code> compatible with
-"Distributed IndieAuth" compatible relying parties the <code>me</code>
-parameter is added to the callback URL. This is not needed as the relying
-party should know the <code>me</code> value already as it was bound to the
-<code>state</code> value on the initial request
-(<a href="https://github.com/aaronpk/IndieAuth.com/issues/85">issue</a>).
-    </p>
+        <p>
+            To make <code>https://indiecert.net/auth</code> compatible with
+            "Distributed IndieAuth" compatible relying parties the <code>me</code>
+            parameter is added to the callback URL. This is not needed as the relying
+            party should know the <code>me</code> value already as it was bound to the
+            <code>state</code> value on the initial request
+            (<a href="https://github.com/aaronpk/IndieAuth.com/issues/85">issue</a>).
+        </p>
 
-    <div class="footer">
-        <a href="faq">FAQ</a> | IndieCert
-    </div>
-    </div>
+        {% include 'footer.html' %}
+    </div> <!-- /container -->
 </body>
 </html>

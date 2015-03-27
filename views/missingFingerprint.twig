@@ -1,57 +1,50 @@
 <!DOCTYPE html>
 
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>IndieCert</title>
-  <link rel="stylesheet" type="text/css" href="css/style.css">
-</head>
+{% include 'head.html' %}
 <body>
     <div id="container">
-    <a class="header" href="welcome"><h1>IndieCert</h1></a>
+        <a class="header" href="welcome"><h1>IndieCert</h1></a>
 
-    <p class="warn">
-IndieCert was unable to find a matching fingerprint on your claimed URL
-    </p>
+        <p class="warn">
+            IndieCert was unable to find a matching fingerprint on your claimed URL
+        </p>
 
-    <p>
-You claimed the identity <code>{{ me|e }}</code>, but we were unable to
-find the fingerprint of the certificate you are currently authenticated with
-on this page.
-    </p>
+        <p>
+            You claimed the identity <code>{{ me|e }}</code>, but we were unable to
+            find the fingerprint of the certificate you are currently authenticated with
+            on this page.
+        </p>
 
-    <p>
-You can easily fix this by placing the following fragment in the
-<code>&lt;head&gt;</code> section of your HTML page:
-    </p>
+        <p>
+            You can easily fix this by placing the following fragment in the
+            <code>&lt;head&gt;</code> section of your HTML page:
+        </p>
 
-<blockquote>
-<pre>
-&lt;link rel="me" href="{{ certFingerprint|e }}"&gt;
-</pre>
-</blockquote>
+        <blockquote>
+        <pre>
+        &lt;link rel="me" href="{{ certFingerprint|e }}"&gt;
+        </pre>
+        </blockquote>
 
-    <p>
-If you also want to use this instance as your IndieAuth provider for relying
-parties supporting "Distributed IndieAuth" you can add the following to your
-HTML page as well:
-    </p>
+        <p>
+            If you also want to use this instance as your IndieAuth provider for relying
+            parties supporting "Distributed IndieAuth" you can add the following to your
+            HTML page as well:
+        </p>
 
-<blockquote>
-<pre>
-&lt;link rel="authorization_endpoint" href="{{ authorizationEndpoint|e }}"&gt;
-</pre>
-</blockquote>
+        <blockquote>
+        <pre>
+        &lt;link rel="authorization_endpoint" href="{{ authorizationEndpoint|e }}"&gt;
+        </pre>
+        </blockquote>
 
-    <p>
-When done, you can <a href="">reload</a> this page and you should be
-redirected to the service that was requesting authentication and be logged in.
-    </p>
+        <p>
+            When done, you can <a href="">reload</a> this page and you should be
+            redirected to the service that was requesting authentication and be logged in.
+        </p>
 
-    <div class="footer">
-        <a href="faq">FAQ</a> | IndieCert
-    </div>
-    </div>
+        {% include 'footer.html' %}
+    </div> <!-- /container -->
 </body>
 </html>

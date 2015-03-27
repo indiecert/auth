@@ -1,28 +1,20 @@
 <!DOCTYPE html>
 
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>IndieCert</title>
-  <link rel="stylesheet" type="text/css" href="css/style.css">
-</head>
+{% include 'head.html' %}
 <body>
     <div id="container">
-    <a class="header" href="welcome"><h1>IndieCert</h1></a>
+        <a class="header" href="welcome"><h1>IndieCert</h1></a>
 
-    <p class="info">
-You are now successfully authenticated as <strong>{{ me|e }}</strong>!
-    </p>
+        <p class="info">
+            You are now successfully authenticated as <strong>{{ me|e }}</strong>!
+        </p>
 
-    <p>
-    Log me <a href="indieauth/logout">out</a>!
-    </p>
+        <p>
+            Log me <a href="indieauth/logout">out</a>!
+        </p>
 
-    <div class="footer">
-        <a href="faq">FAQ</a> | IndieCert
-    </div>
-
-    </div>
+        {% include 'footer.html' %}
+    </div> <!-- /container -->
 </body>
 </html>

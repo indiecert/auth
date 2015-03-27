@@ -26,6 +26,7 @@ use fkooman\IndieCert\PdoStorage;
 use GuzzleHttp\Client;
 use fkooman\Http\Request;
 use fkooman\Http\IncomingRequest;
+use fkooman\IndieCert\TemplateManager;
 
 try {
     $iniReader = IniReader::fromFile(
@@ -56,12 +57,14 @@ try {
         )
     );
 
+    $templateManager = new TemplateManager($iniReader->v('templateCache', false, null));
+
     $request = Request::fromIncomingRequest(new IncomingRequest());
     $indieAuth = new IndieAuthAuthentication($request->getAbsRoot() . 'auth');
     $indieAuth->setClient($client);
     $indieAuth->setDiscovery(false);
 
-    $service = new IndieCertService($caCrt, $caKey, $pdoStorage, $client);
+    $service = new IndieCertService($caCrt, $caKey, $pdoStorage, $client, null, $templateManager);
     $service->registerOnMatchPlugin($indieAuth);
     $service->run($request)->sendResponse();
 } catch (Exception $e) {

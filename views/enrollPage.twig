@@ -1,51 +1,44 @@
 <!DOCTYPE html>
 
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>IndieCert</title>
-  <link rel="stylesheet" type="text/css" href="css/style.css">
-</head>
+{% include 'head.html' %}
 <body>
     <div id="container">
-    <a class="header" href="welcome"><h1>IndieCert</h1></a>
-    <p>
-Here you can generate a new client certificate to be able to use IndieCert.
-    </p>
-    <p>
-The following browsers and platforms were tested and are working:
-    </p>
-    <ul>
-        <li>Firefox (Linux, Android)</li>
-        <li>Chromium (Linux)</li>
-        <li>Chrome (Android)</li>
-    </ul>
-    <p>
-Press the "Generate" button below to start the certificate generation process.
-    </p>
-After this has completed you should get a notification by your browser that a
-client certificate was successfully installed.
-    </p>
+        <a class="header" href="welcome"><h1>IndieCert</h1></a>
+        <p>
+            Here you can generate a new client certificate to be able to use IndieCert.
+        </p>
+        <p>
+            The following browsers and platforms were tested and are working:
+        </p>
+        <ul>
+            <li>Firefox (Linux, Android)</li>
+            <li>Chromium (Linux)</li>
+            <li>Chrome (Android)</li>
+        </ul>
+        <p>
+            Press the "Generate" button below to start the certificate generation process.
+        </p>
+            After this has completed you should get a notification by your browser that a
+            client certificate was successfully installed.
+        </p>
 
-    <form method="post">
-        <keygen name="spkac" challenge="{{ certChallenge|e }}" keytype="RSA">
-        <input type="submit" value="Generate">
-    </form>
+        <form method="post">
+            <keygen name="spkac" challenge="{{ certChallenge|e }}" keytype="RSA">
+            <input type="submit" value="Generate">
+        </form>
 
-    <p>
-{% if referrer %}
-After the certificate is successfully installed you can continue the login
-process by clicking <a href="{{ referrer|e }}">here</a>.
-{% else %}
-After the certificate is sucessfully installed you should be able to login to
-services supporting IndieCert!
-{% endif %}
-    </p>
+        <p>
+            {% if referrer %}
+                After the certificate is successfully installed you can continue the login
+                process by clicking <a href="{{ referrer|e }}">here</a>.
+            {% else %}
+                After the certificate is sucessfully installed you should be able to login to
+                services supporting IndieCert!
+            {% endif %}
+        </p>
 
-    <div class="footer">
-        <a href="faq">FAQ</a> | IndieCert
-    </div>
-    </div>
+        {% include 'footer.html' %}
+    </div> <!-- /container -->
 </body>
 </html>
