@@ -284,18 +284,7 @@ class IndieCertService extends Service
             );
         }
 
-        // create indiecode
-        $code = $this->io->getRandomHex();
-        $this->pdoStorage->storeIndieCode(
-            $code,
-            $me,
-            $redirectUri,
-            $this->io->getTime()
-        );
-
-        $responseUri = sprintf('%s?me=%s&code=%s&state=%s', $redirectUri, $me, $code, $state);
-
-        return new RedirectResponse($responseUri, 302);
+        return $this->indieCodeRedirect($me, $redirectUri, $state);
     }
 
     public function postConfirm(Request $request)
@@ -314,46 +303,15 @@ class IndieCertService extends Service
             throw new ForbiddenException('user did not approve identity validation');
         }
 
-        $certFingerprint = $this->getCertFingerprint(
-            $request->getHeader('SSL_CLIENT_CERT'),
-            $request->getRequestUri()->getHost()
-        );
-        if (false === $certFingerprint) {
-            return $this->templateManager->render('noCert');
-        }
+        // because of the referrer check we know the browser came from the
+        // 'auth' URI and that certificate was already checked before...
 
-        $pageFetcher = new PageFetcher($this->client);
-        $htmlResponse = $pageFetcher->fetch($me);
-
-        $relMeLinks = $this->extractRelMeLinks($htmlResponse);
-    
-        if (false === $this->hasFingerprint($relMeLinks, $certFingerprint)) {
-            return $this->templateManager->render(
-                'missingFingerprint',
-                array(
-                    'me' => $me,
-                    'certFingerprint' => $certFingerprint,
-                )
-            );
-        }
-
-        // remember
+        // store approval if requested
         if (null !== $request->getPostParameter('remember')) {
             $this->pdoStorage->storeApproval($me, $redirectUri, $this->io->getTime() + 3600*24*7);
         }
 
-        // create indiecode
-        $code = $this->io->getRandomHex();
-        $this->pdoStorage->storeIndieCode(
-            $code,
-            $me,
-            $redirectUri,
-            $this->io->getTime()
-        );
-
-        $responseUri = sprintf('%s?me=%s&code=%s&state=%s', $redirectUri, $me, $code, $state);
-
-        return new RedirectResponse($responseUri, 302);
+        return $this->indieCodeRedirect($me, $redirectUri, $state);
     }
 
     public function postAuth(Request $request)
@@ -387,6 +345,22 @@ class IndieCertService extends Service
         );
 
         return $response;
+    }
+
+    public function indieCodeRedirect($me, $redirectUri, $state)
+    {
+        // create indiecode
+        $code = $this->io->getRandomHex();
+        $this->pdoStorage->storeIndieCode(
+            $code,
+            $me,
+            $redirectUri,
+            $this->io->getTime()
+        );
+
+        $responseUri = sprintf('%s?me=%s&code=%s&state=%s', $redirectUri, $me, $code, $state);
+
+        return new RedirectResponse($responseUri, 302);
     }
 
     private function hasFingerprint(array $relMeLinks, $certFingerprint)
