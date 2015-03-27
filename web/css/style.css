@@ -82,6 +82,12 @@ p.warn a {
     color: #000;
 }
 
+form.try {
+    border: 1px solid #bbb;
+    padding: 1em;
+    background-color: #eee;
+}
+
 div.footer {
     border-top: 1px solid #888;
     padding: 0.5em;
