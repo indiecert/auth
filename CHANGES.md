@@ -1,9 +1,12 @@
 # Changes
 
 ## 0.3.7
+- increase font size of code blocks
+- fix minor JSON formatting issue in RP page
 - fix blockquotes in templates
 - validate that `client_id` host matches `redirect_uri` host
 - show `client_id` instead of `redirect_uri` host in confirmation dialog
+- update the askConfirmation dialog
 
 ## 0.3.6
 - Implement Twig template caching

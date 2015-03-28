@@ -90,6 +90,15 @@ form.try {
     background-color: #eee;
 }
 
+table.askConfirmation {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table.askConfirmation th, td {
+    padding: 0.5em 0;
+}
+
 div.footer {
     border-top: 1px solid #888;
     padding: 0.5em;

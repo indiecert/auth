@@ -8,9 +8,13 @@
         <a class="header" href="welcome"><h1>IndieCert</h1></a>
 
         <p>
-            <code title="{{ redirectUri|e }}">{{ clientId|e }}</code> wants to verify your claimed identity
-            <code>{{ me|e }}</code>.
+            A website is wants to verify your identity!
         </p>
+
+        <table class="askConfirmation">
+            <tr><th>Website</th><td><code title="{{ redirectUri|e }}">{{ clientId|e }}</code></td></tr>
+            <tr><th>Your Identity</th><td><code>{{ me|e }}</code></td></tr>
+        </table>
 
         <form method="post" action="{{ confirmUri|e }}">
             <label for="remember">Remember approval for 1 week</label>
