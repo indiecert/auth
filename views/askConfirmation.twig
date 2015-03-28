@@ -8,8 +8,8 @@
         <a class="header" href="welcome"><h1>IndieCert</h1></a>
 
         <p>
-            <strong title="{{ redirectUri|e }}">{{ clientId|e }}</strong> wants to verify your claimed identity
-            <strong>{{ me|e }}</strong>.
+            <code title="{{ redirectUri|e }}">{{ clientId|e }}</code> wants to verify your claimed identity
+            <code>{{ me|e }}</code>.
         </p>
 
         <form method="post" action="{{ confirmUri|e }}">
