@@ -1,5 +1,8 @@
 # Changes
 
+## 0.3.8
+- update supported browser list on enroll page
+
 ## 0.3.7
 - increase font size of code blocks
 - fix minor JSON formatting issue in RP page
