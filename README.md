@@ -52,8 +52,7 @@ account is called `fkooman` in group `fkooman`.
     $ sudo chown -R apache.apache data
     $ sudo semanage fcontext -a -t httpd_sys_rw_content_t '/var/www/indiecert/data(/.*)?'
     $ sudo restorecon -R /var/www/indiecert/data
-    $ cd config
-    $ cp config.ini.default config.ini
+    $ cp config/config.ini.default config/config.ini
 
 Now to initialize the CA and database:
 
