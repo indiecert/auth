@@ -2,6 +2,9 @@
 
 ## 0.3.8
 - update supported browser list on enroll page
+- remove the reject button from confirm screen, not approving is
+  reject enough
+- change position of checkbox
 
 ## 0.3.7
 - increase font size of code blocks

@@ -313,10 +313,6 @@ class IndieCertService extends Service
         if (0 !== strpos($request->getHeader('HTTP_REFERER'), $appRootUri . 'auth')) {
             throw new BadRequestException('CSRF protection triggered');
         }
-        
-        if ('approve' !== $request->getPostParameter('approval')) {
-            throw new ForbiddenException('user did not approve identity validation');
-        }
 
         // because of the referrer check we know the browser came from the
         // 'auth' URI and that certificate was already checked before...
