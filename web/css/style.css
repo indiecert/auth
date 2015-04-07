@@ -50,10 +50,6 @@ button.approve {
     color: green;
 }
 
-button.reject {
-    color: #c00;
-}
-
 a.header {
     text-decoration: none;
     color: #000;
@@ -85,9 +81,8 @@ p.warn a {
 }
 
 form.try {
-    border: 1px solid #bbb;
-    padding: 1em;
     background-color: #eee;
+    padding: 1em;
 }
 
 table.askConfirmation {
