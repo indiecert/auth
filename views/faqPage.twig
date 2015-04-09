@@ -126,13 +126,17 @@
             See the relying party instructions <a href="rp">here</a>.
         </p>
 
-        <h3>How secure is this? What if the IndieCert server gets compromised?</h3>
+        <h3>How secure is this? What if an IndieCert authentication server gets compromised?</h3>
         <p>
-            The worst case scenario is that anyone can claim any identity, so you can take
-            over someone's account. The idea is for this service to be distributed, running
-            on different implementations, so the impact of a compromise will be reduced.
-            Recovery from compromise will require a regeneration of the CA and require all
-            users to enroll again to the service to generate a new client certificate.
+            All users that chose, through configuring this service as their
+            designated IndieAuth authentication service, can in that case be
+            impersonated at all relying parties using "Distributed IndieAuth".
+        </p>
+        <p>
+            The client certificate's private key installed in the user's
+            browser cannot be compromised by this, so it can still be used
+            later on when the service recovers or the user decides to trust
+            another instance.
         </p>
 
         <h3>Can I run my own instance?</h3>
