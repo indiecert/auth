@@ -126,17 +126,33 @@
             See the relying party instructions <a href="rp">here</a>.
         </p>
 
-        <h3>How secure is this? What if an IndieCert authentication server gets compromised?</h3>
+        <h3>How secure is this?</h3>
         <p>
-            All users that chose, through configuring this service as their
-            designated IndieAuth authentication service, can in that case be
-            impersonated at all relying parties using "Distributed IndieAuth".
+            What happens in case the IndieCert instance you are using is 
+            compromised.
         </p>
+        <h4>"Distributed IndieAuth"</h4>
+        <p>
+            In case you are using this instance as "Distributed IndieAuth" 
+            endpoint, by specifying this instance in 
+            <code>authorization_endpoint</code> on your home page, all relying
+            parties that use "Distributed IndieAuth" will be vulnerable to 
+            impersonation of your account by the attacker.
+        </p>
+
+        <h4>As Default Server</h4>
+        <p>
+            If a relying party uses this instance as the default, without 
+            supporting "Distributed IndieAuth", all accounts are vulnerable at
+            the relying party.
+        </p>
+
+        <h4>Certificates</h4>
         <p>
             The client certificate's private key installed in the user's
-            browser cannot be compromised by this, so it can still be used
-            later on when the service recovers or the user decides to trust
-            another instance.
+            browser cannot be compromised by a compromised IndieCert instance, 
+            so it can still be used later on when the service recovers or the 
+            user decides to trust another instance.
         </p>
 
         <h3>Can I run my own instance?</h3>
