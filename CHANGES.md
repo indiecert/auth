@@ -1,5 +1,9 @@
 # Changes
 
+## 0.3.9
+- use normalize.css to get consistency between browsers and style form elements
+- style the form buttons and the "try me" form a little to look better
+
 ## 0.3.8
 - update supported browser list on enroll page
 - remove the reject button from confirm screen, not approving is

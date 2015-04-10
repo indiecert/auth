@@ -14,9 +14,9 @@
             Your identity is <code>{{ me|e }}</code>.
         </p>
 
-        <p>
-            <a href="indieauth/logout">Logout</a>
-        </p>
+        <form method="GET" action="indieauth/logout">
+            <input type="submit" value="Logout">
+        </form>
 
         {% include 'footer.html' %}
     </div> <!-- /container -->

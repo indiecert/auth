@@ -18,8 +18,8 @@
 
         <form method="post" action="{{ confirmUri|e }}">
             <input type="checkbox" id="remember" name="remember" />
-            <label for="remember">Remember for 1 week</label>
-            <button class="approve" type="submit">Approve</button>
+            <label class="remember" for="remember">Remember for 1 week</label>
+            <input type="submit" value="Approve">
         </form>
 
         {% include 'footer.html' %}
