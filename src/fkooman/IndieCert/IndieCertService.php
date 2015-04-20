@@ -235,8 +235,8 @@ class IndieCertService extends Service
     public function getAuth(Request $request)
     {
         $me = $this->validateMe($request->getQueryParameter('me'));
-        $clientId = $this->validateUri($request->getQueryParameter('client_id'));
-        $redirectUri = $this->validateUri($request->getQueryParameter('redirect_uri'));
+        $clientId = $this->validateUri($request->getQueryParameter('client_id'), 'client_id');
+        $redirectUri = $this->validateUri($request->getQueryParameter('redirect_uri'), 'redirect_uri');
         $state = $this->validateState($request->getQueryParameter('state'));
 
         $clientIdUriObj = new Uri($clientId);
@@ -305,7 +305,7 @@ class IndieCertService extends Service
     public function postConfirm(Request $request)
     {
         $me = $this->validateMe($request->getQueryParameter('me'));
-        $redirectUri = $this->validateUri($request->getQueryParameter('redirect_uri'));
+        $redirectUri = $this->validateUri($request->getQueryParameter('redirect_uri'), 'redirect_uri');
         $state = $this->validateState($request->getQueryParameter('state'));
         $appRootUri = $request->getAbsRoot();
 
@@ -331,7 +331,7 @@ class IndieCertService extends Service
         if (null === $code) {
             throw new BadRequestException('missing code');
         }
-        $redirectUri = $this->validateUri($request->getPostParameter('redirect_uri'));
+        $redirectUri = $this->validateUri($request->getPostParameter('redirect_uri'), 'redirect_uri');
 
         $indieCode = $this->pdoStorage->getIndieCode($code, $redirectUri);
 
@@ -458,23 +458,31 @@ class IndieCertService extends Service
         }
     }
 
-    private function validateUri($redirectUri)
+    private function validateUri($uri, $fieldName)
     {
-        if (null === $redirectUri) {
-            throw new BadRequestException('missing parameter "redirect_uri"');
+        if (null === $uri) {
+            throw new BadRequestException(
+                sprintf('missing parameter "%s"', $fieldName)
+            );
         }
         try {
-            $uriObj = new Uri($redirectUri);
+            $uriObj = new Uri($uri);
             if ('https' !== $uriObj->getScheme()) {
-                throw new BadRequestException('"redirect_uri" must be https uri');
+                throw new BadRequestException(
+                    sprintf('"%s" must be https uri', $fieldName)
+                );
             }
             if (null !== $uriObj->getFragment()) {
-                throw new BadRequestException('"redirect_uri" cannot contain fragment');
+                throw new BadRequestException(
+                    sprintf('"%s" cannot contain fragment', $fieldName)
+                );
             }
 
             return $uriObj->getUri();
         } catch (InvalidArgumentException $e) {
-            throw new BadRequestException('"redirect_uri" is an invalid uri');
+            throw new BadRequestException(
+                sprintf('"%s" is an invalid uri', $fieldName)
+            );
         }
     }
 
