@@ -3,7 +3,7 @@
 ## 0.3.11
 - fix typo in confirmation screen
 - do not show misleading `redirect_uri` errors when the error is actually
-  in the `client_id`
+  in the `client_id` (issue #12)
 
 ## 0.3.10
 - update `fkooman/rest` and `fkooman/rest-plugin-indieauth`
