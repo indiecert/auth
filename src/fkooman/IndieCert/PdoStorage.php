@@ -129,14 +129,24 @@ class PdoStorage
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function deleteApproval($me, $redirectUri)
+    public function deleteApproval($me, $redirectUri, $scope)
     {
-        $stmt = $this->db->prepare(
-            sprintf(
-                'DELETE FROM %s WHERE me = :me AND redirect_uri = :redirect_uri',
-                $this->prefix.'indie_approvals'
-            )
-        );
+        if (null === $scope) {
+            $stmt = $this->db->prepare(
+                sprintf(
+                    'DELETE FROM %s WHERE me = :me AND redirect_uri = :redirect_uri AND scope IS NULL',
+                    $this->prefix.'indie_approvals'
+                )
+            );
+        } else {
+            $stmt = $this->db->prepare(
+                sprintf(
+                    'DELETE FROM %s WHERE me = :me AND redirect_uri = :redirect_uri AND scope = :scope',
+                    $this->prefix.'indie_approvals'
+                )
+            );
+            $stmt->bindValue(':scope', $scope, PDO::PARAM_STR);
+        }
         $stmt->bindValue(':me', $me, PDO::PARAM_STR);
         $stmt->bindValue(':redirect_uri', $redirectUri, PDO::PARAM_STR);
         $stmt->execute();

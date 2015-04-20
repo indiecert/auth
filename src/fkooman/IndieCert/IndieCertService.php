@@ -237,8 +237,9 @@ class IndieCertService extends Service
         $me = $this->validateMe($request->getQueryParameter('me'));
         $clientId = $this->validateUri($request->getQueryParameter('client_id'), 'client_id');
         $redirectUri = $this->validateUri($request->getQueryParameter('redirect_uri'), 'redirect_uri');
+        $scope = $this->validateScope($request->getQueryParameter('scope'));
         $state = $this->validateState($request->getQueryParameter('state'));
-
+        
         $clientIdUriObj = new Uri($clientId);
         $redirectUriObj = new Uri($redirectUri);
 
@@ -271,22 +272,32 @@ class IndieCertService extends Service
             );
         }
 
-        $approval = $this->pdoStorage->getApproval($me, $redirectUri);
+        $approval = $this->pdoStorage->getApproval($me, $redirectUri, $scope);
         if (false !== $approval) {
             // check if not expired
             if ($this->io->getTime() >= $approval['expires_at']) {
-                $this->pdoStorage->deleteApproval($me, $redirectUri);
+                $this->pdoStorage->deleteApproval($me, $redirectUri, $scope);
                 $approval = false;
             }
         }
     
         if (false === $approval) {
-            $confirmUri = sprintf(
-                'confirm?redirect_uri=%s&me=%s&state=%s',
-                $redirectUri,
-                $me,
-                $state
-            );
+            if (null === $scope) {
+                $confirmUri = sprintf(
+                    'confirm?redirect_uri=%s&me=%s&state=%s',
+                    $redirectUri,
+                    $me,
+                    $state
+                );
+            } else {
+                $confirmUri = sprintf(
+                    'confirm?redirect_uri=%s&me=%s&scope=%s&state=%s',
+                    $redirectUri,
+                    $me,
+                    $scope,
+                    $state
+                );
+            }
 
             return $this->templateManager->render(
                 'askConfirmation',
@@ -294,18 +305,20 @@ class IndieCertService extends Service
                     'confirmUri' => $confirmUri,
                     'me' => $me,
                     'clientId' => $clientId,
-                    'redirectUri' => $redirectUri
+                    'redirectUri' => $redirectUri,
+                    'scope' => $scope
                 )
             );
         }
 
-        return $this->indieCodeRedirect($me, $redirectUri, $state);
+        return $this->indieCodeRedirect($me, $redirectUri, $scope, $state);
     }
 
     public function postConfirm(Request $request)
     {
         $me = $this->validateMe($request->getQueryParameter('me'));
         $redirectUri = $this->validateUri($request->getQueryParameter('redirect_uri'), 'redirect_uri');
+        $scope = $this->validateScope($request->getQueryParameter('scope'));
         $state = $this->validateState($request->getQueryParameter('state'));
         $appRootUri = $request->getAbsRoot();
 
@@ -319,10 +332,10 @@ class IndieCertService extends Service
 
         // store approval if requested
         if (null !== $request->getPostParameter('remember')) {
-            $this->pdoStorage->storeApproval($me, $redirectUri, $this->io->getTime() + 3600*24*7);
+            $this->pdoStorage->storeApproval($me, $redirectUri, $scope, $this->io->getTime() + 3600*24*7);
         }
 
-        return $this->indieCodeRedirect($me, $redirectUri, $state);
+        return $this->indieCodeRedirect($me, $redirectUri, $scope, $state);
     }
 
     public function postAuth(Request $request)
@@ -358,7 +371,7 @@ class IndieCertService extends Service
         return $response;
     }
 
-    public function indieCodeRedirect($me, $redirectUri, $state)
+    public function indieCodeRedirect($me, $redirectUri, $scope, $state)
     {
         // create indiecode
         $code = $this->io->getRandomHex();
@@ -366,6 +379,7 @@ class IndieCertService extends Service
             $code,
             $me,
             $redirectUri,
+            $scope,
             $this->io->getTime()
         );
 
@@ -496,6 +510,12 @@ class IndieCertService extends Service
         }
 
         return $code;
+    }
+
+    private function validateScope($scope)
+    {
+        // FIXME: implement validation, sorting and normalizing
+        return $scope;
     }
 
     private function validateState($state)
