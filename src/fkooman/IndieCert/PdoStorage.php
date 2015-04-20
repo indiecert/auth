@@ -34,17 +34,18 @@ class PdoStorage
         $this->prefix = $prefix;
     }
 
-    public function storeIndieCode($code, $me, $redirectUri, $issueTime)
+    public function storeIndieCode($code, $me, $redirectUri, $scope, $issueTime)
     {
         $stmt = $this->db->prepare(
             sprintf(
-                'INSERT INTO %s (code, me, redirect_uri, issue_time) VALUES(:code, :me, :redirect_uri, :issue_time)',
+                'INSERT INTO %s (code, me, redirect_uri, scope, issue_time) VALUES(:code, :me, :redirect_uri, :scope, :issue_time)',
                 $this->prefix.'indie_codes'
             )
         );
         $stmt->bindValue(':code', $code, PDO::PARAM_STR);
         $stmt->bindValue(':me', $me, PDO::PARAM_STR);
         $stmt->bindValue(':redirect_uri', $redirectUri, PDO::PARAM_STR);
+        $stmt->bindValue(':scope', $scope, PDO::PARAM_STR|PDO::PARAM_NULL);
         $stmt->bindValue(':issue_time', $issueTime, PDO::PARAM_INT);
         $stmt->execute();
 
@@ -84,16 +85,17 @@ class PdoStorage
         return false;
     }
 
-    public function storeApproval($me, $redirectUri, $expiresAt)
+    public function storeApproval($me, $redirectUri, $scope, $expiresAt)
     {
         $stmt = $this->db->prepare(
             sprintf(
-                'INSERT INTO %s (me, redirect_uri, expires_at) VALUES(:me, :redirect_uri, :expires_at)',
+                'INSERT INTO %s (me, redirect_uri, scope, expires_at) VALUES(:me, :redirect_uri, :scope, :expires_at)',
                 $this->prefix.'indie_approvals'
             )
         );
         $stmt->bindValue(':me', $me, PDO::PARAM_STR);
         $stmt->bindValue(':redirect_uri', $redirectUri, PDO::PARAM_STR);
+        $stmt->bindValue(':scope', $scope, PDO::PARAM_STR|PDO::PARAM_NULL);
         $stmt->bindValue(':expires_at', $expiresAt, PDO::PARAM_INT);
         $stmt->execute();
 
@@ -102,14 +104,25 @@ class PdoStorage
         }
     }
 
-    public function getApproval($me, $redirectUri)
+    public function getApproval($me, $redirectUri, $scope)
     {
-        $stmt = $this->db->prepare(
-            sprintf(
-                'SELECT * FROM %s WHERE me = :me AND redirect_uri = :redirect_uri',
-                $this->prefix.'indie_approvals'
-            )
-        );
+        if (null === $scope) {
+            $stmt = $this->db->prepare(
+                sprintf(
+                    'SELECT * FROM %s WHERE me = :me AND redirect_uri = :redirect_uri AND scope IS NULL',
+                    $this->prefix.'indie_approvals'
+                )
+            );
+        } else {
+            $stmt = $this->db->prepare(
+                sprintf(
+                    'SELECT * FROM %s WHERE me = :me AND redirect_uri = :redirect_uri AND scope = :scope',
+                    $this->prefix.'indie_approvals'
+                )
+            );
+            $stmt->bindValue(':scope', $scope, PDO::PARAM_STR);
+        }
+
         $stmt->bindValue(':me', $me, PDO::PARAM_STR);
         $stmt->bindValue(':redirect_uri', $redirectUri, PDO::PARAM_STR);
         $stmt->execute();
@@ -184,6 +197,7 @@ class PdoStorage
             'CREATE TABLE IF NOT EXISTS %s (
                 me VARCHAR(255) NOT NULL,
                 redirect_uri VARCHAR(255) NOT NULL,
+                scope VARCHAR(255) DEFAULT NULL,
                 expires_at INT NOT NULL
             )',
             $prefix.'indie_approvals'
@@ -194,6 +208,7 @@ class PdoStorage
                 code VARCHAR(255) NOT NULL,
                 me VARCHAR(255) NOT NULL,
                 redirect_uri VARCHAR(255) NOT NULL,
+                scope VARCHAR(255) DEFAULT NULL,
                 issue_time INT NOT NULL,
                 PRIMARY KEY (code)
             )',
