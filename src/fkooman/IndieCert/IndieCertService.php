@@ -419,9 +419,9 @@ class IndieCertService extends Service
                 $accessToken = $this->io->getRandomHex();
                 $this->pdoStorage->storeAccessToken(
                     $accessToken,
-                    $me,
+                    $indieCode['me'],
                     $clientId,
-                    $scope,
+                    $indieCode['scope'],
                     $this->io->getTime()
                 );
                 $responseData['access_token'] = $accessToken;
