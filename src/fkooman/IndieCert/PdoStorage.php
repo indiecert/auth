@@ -108,6 +108,23 @@ class PdoStorage
         }
     }
 
+    public function getAccessToken($me, $clientId, $scope)
+    {
+        $stmt = $this->db->prepare(
+            sprintf(
+                'SELECT * FROM %s WHERE me = :me AND client_id = :client_id AND scope = :scope',
+                $this->prefix.'indie_access_tokens'
+            )
+        );
+        $stmt->bindValue(':me', $me, PDO::PARAM_STR);
+        $stmt->bindValue(':client_id', $clientId, PDO::PARAM_STR);
+        $stmt->bindValue(':scope', $scope, PDO::PARAM_STR);
+        $stmt->execute();
+
+        // FIXME: return false if non available!
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     public function storeApproval($me, $clientId, $redirectUri, $scope, $expiresAt)
     {
         $stmt = $this->db->prepare(

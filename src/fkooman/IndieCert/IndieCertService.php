@@ -351,6 +351,13 @@ class IndieCertService extends Service
         $clientId = $this->validateUri($request->getPostParameter('client_id'), 'client_id');
         $redirectUri = $this->validateUri($request->getPostParameter('redirect_uri'), 'redirect_uri');
 
+        $clientIdUriObj = new Uri($clientId);
+        $redirectUriObj = new Uri($redirectUri);
+
+        if ($clientIdUriObj->getHost() !== $redirectUriObj->getHost()) {
+            throw new BadRequestException('client_id must have same host as redirect_uri');
+        }
+
         $indieCode = $this->pdoStorage->getIndieCode($code, $clientId, $redirectUri);
 
         if (false === $indieCode) {
@@ -367,11 +374,19 @@ class IndieCertService extends Service
         } else {
             $response = new FormResponse();
         }
-        $response->setContent(
-            array(
-                'me' => $indieCode['me']
-            )
+
+        $responseData = array(
+            'me' => $indieCode['me'],
         );
+
+        if (null !== $indieCode['scope']) {
+            // add scope and access token to response
+            $responseData['scope'] = $indieCode['scope'];
+            $accessToken = $this->pdoStorage->getAccessToken($indieCode['me'], $clientId, $indieCode['scope']);
+            $responseData['access_token'] = $accessToken['access_token'];
+        }
+            
+        $response->setContent($responseData);
 
         return $response;
     }
@@ -390,15 +405,24 @@ class IndieCertService extends Service
         );
 
         if (null !== $scope) {
-            // store access token
-            $accessToken = $this->io->getRandomHex();
-            $this->pdoStorage->storeAccessToken(
-                $accessToken,
+            $accessToken = $this->pdoStorage->getAccessToken(
                 $me,
                 $clientId,
-                $scope,
-                $this->io->getTime()
+                $scope
             );
+
+            // see if we already have an access token
+            if (false === $accessToken) {
+                // generate and store access token
+                $accessToken = $this->io->getRandomHex();
+                $this->pdoStorage->storeAccessToken(
+                    $accessToken,
+                    $me,
+                    $clientId,
+                    $scope,
+                    $this->io->getTime()
+                );
+            }
         }
 
         $responseUri = sprintf('%s?me=%s&code=%s&state=%s', $redirectUri, $me, $code, $state);
