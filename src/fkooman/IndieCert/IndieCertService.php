@@ -532,8 +532,19 @@ class IndieCertService extends Service
 
     private function validateScope($scope)
     {
-        // FIXME: implement validation, sorting and normalizing
-        return $scope;
+        // allow scope to be missing
+        if (null === $scope) {
+            return null;
+        }
+
+        // but if it is there, it needs to be a valid scope and also
+        // 'normalized'
+        try {
+            $scopeObj = new Scope($scope);
+            return $scopeObj->toString();
+        } catch (InvalidArgumentException $e) {
+            throw new BadRequestException('"scope" is invalid', $e->getMessage());
+        }
     }
 
     private function validateState($state)
