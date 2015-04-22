@@ -29,6 +29,7 @@ use fkooman\Http\Uri;
 use fkooman\Http\RedirectResponse;
 use fkooman\Http\Exception\BadRequestException;
 use fkooman\Http\Exception\ForbiddenException;
+use fkooman\Http\Exception\UnauthorizedException;
 use DomDocument;
 use fkooman\Rest\Plugin\UserInfo;
 use InvalidArgumentException;
@@ -453,8 +454,62 @@ class IndieCertService extends Service
 
     private function getToken(Request $request)
     {
-        // FIXME: validate token by checking the Bearer token
-        return false;
+        $authHeader = $request->getHeader('Authorization');
+        if (null === $authHeader) {
+            throw new UnauthorizedException(
+                'invalid_request',
+                'missing authorization header',
+                'Bearer',
+                array(
+                    'realm' => 'IndieCert',
+                    'error' => 'invalid_request',
+                    'error_description' => 'missing authorization header'
+                )
+            );
+        }
+        if (0 !== strpos($authHeader, 'Bearer ')) {
+            throw new UnauthorizedException(
+                'invalid_request',
+                'not a bearer authorization header',
+                'Bearer',
+                array(
+                    'realm' => 'IndieCert',
+                    'error' => 'invalid_request',
+                    'error_description' => 'not a bearer authorization header'
+                )
+            );
+        }
+        
+        $accessToken = $this->pdoStorage->getAccessToken(substr($authHeader, 7));
+        if (false === $accessToken) {
+            throw new UnauthorizedException(
+                'invalid_token',
+                'access token not found',
+                'Bearer',
+                array(
+                    'realm' => 'IndieCert',
+                    'error' => 'invalid_token',
+                    'error_description' => 'access token not found'
+                )
+            );
+        }
+
+        // default to "application/x-www-form-urlencoded" for now...
+        if (false !== strpos($request->getHeader('Accept'), 'application/json')) {
+            $response = new JsonResponse();
+        } else {
+            $response = new FormResponse();
+        }
+
+        $response->setContent(
+            array(
+                'me' => $accessToken['me'],
+                'scope' => $accessToken['scope'],
+                'client_id' => $accessToken['client_id']
+                //'issued_at' => $accessToken['issue_time']
+            )
+        );
+        return $response;
     }
 
     private function hasFingerprint(array $relMeLinks, $certFingerprint)
