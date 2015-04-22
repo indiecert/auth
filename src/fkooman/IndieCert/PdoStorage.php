@@ -55,7 +55,7 @@ class PdoStorage
         }
     }
 
-    public function getIndieCode($code, $clientId, $redirectUri)
+    public function getCode($code, $clientId, $redirectUri, $usedFor)
     {
         $stmt = $this->db->prepare(
             sprintf(
@@ -69,10 +69,12 @@ class PdoStorage
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
+        // mark it as used for codeUse
         $stmt = $this->db->prepare(
             sprintf(
-                'DELETE FROM %s WHERE code = :code AND client_id = :client_id AND redirect_uri = :redirect_uri',
-                $this->prefix.'indie_codes'
+                'UPDATE %s SET %s = 1 WHERE code = :code AND client_id = :client_id AND redirect_uri = :redirect_uri',
+                $this->prefix.'indie_codes',
+                $usedFor
             )
         );
         $stmt->bindValue(':code', $code, PDO::PARAM_STR);
@@ -81,7 +83,7 @@ class PdoStorage
         $stmt->execute();
 
         if (1 === $stmt->rowCount()) {
-            // code was deleted, return the result
+            // row was updated, return the result
             return $result;
         }
 
@@ -107,18 +109,16 @@ class PdoStorage
             throw new PdoStorageException('unable to add');
         }
     }
-
-    public function getAccessToken($me, $clientId, $scope)
+    
+    public function getAccessToken($accessToken)
     {
         $stmt = $this->db->prepare(
             sprintf(
-                'SELECT * FROM %s WHERE me = :me AND client_id = :client_id AND scope = :scope',
+                'SELECT * FROM %s WHERE access_token = :access_token',
                 $this->prefix.'indie_access_tokens'
             )
         );
-        $stmt->bindValue(':me', $me, PDO::PARAM_STR);
-        $stmt->bindValue(':client_id', $clientId, PDO::PARAM_STR);
-        $stmt->bindValue(':scope', $scope, PDO::PARAM_STR);
+        $stmt->bindValue(':access_token', $accessToken, PDO::PARAM_STR);
         $stmt->execute();
 
         // FIXME: return false if non available!
@@ -265,6 +265,8 @@ class PdoStorage
                 redirect_uri VARCHAR(255) NOT NULL,
                 scope VARCHAR(255) DEFAULT NULL,
                 issue_time INT NOT NULL,
+                used_for_auth INT DEFAULT 0,
+                used_for_token INT DEFAULT 0,
                 PRIMARY KEY (code)
             )',
             $prefix.'indie_codes'

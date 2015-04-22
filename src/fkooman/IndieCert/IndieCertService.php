@@ -135,6 +135,22 @@ class IndieCertService extends Service
         );
 
         $this->get(
+            '/token',
+            function (Request $request) {
+                return $this->getToken($request);
+            },
+            array('skipPlugins' => array('fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication'))
+        );
+    
+        $this->post(
+            '/token',
+            function (Request $request) {
+                return $this->postToken($request);
+            },
+            array('skipPlugins' => array('fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication'))
+        );
+        
+        $this->get(
             '/enroll',
             function (Request $request) {
                 return $this->getEnroll($request);
@@ -343,6 +359,16 @@ class IndieCertService extends Service
 
     public function postAuth(Request $request)
     {
+        return $this->postAuthToken($request, 'used_for_auth');
+    }
+
+    public function postToken(Request $request)
+    {
+        return $this->postAuthToken($request, 'used_for_token');
+    }
+    
+    private function postAuthToken(Request $request, $usedFor)
+    {
         $code = $this->validateCode($request->getPostParameter('code'));
 
         if (null === $code) {
@@ -358,10 +384,15 @@ class IndieCertService extends Service
             throw new BadRequestException('client_id must have same host as redirect_uri');
         }
 
-        $indieCode = $this->pdoStorage->getIndieCode($code, $clientId, $redirectUri);
+        $indieCode = $this->pdoStorage->getCode($code, $clientId, $redirectUri, $usedFor);
 
         if (false === $indieCode) {
             throw new BadRequestException('invalid_request', 'code not found');
+        }
+
+        // the db return value is a string, not an integer, so not using !== here
+        if (0 != $indieCode[$usedFor]) {
+            throw new BadRequestException('invalid_request', 'code already used');
         }
 
         if ($this->io->getTime() > $indieCode['issue_time'] + 600) {
@@ -380,12 +411,23 @@ class IndieCertService extends Service
         );
 
         if (null !== $indieCode['scope']) {
-            // add scope and access token to response
+            // add granted scope to response
             $responseData['scope'] = $indieCode['scope'];
-            $accessToken = $this->pdoStorage->getAccessToken($indieCode['me'], $clientId, $indieCode['scope']);
-            $responseData['access_token'] = $accessToken['access_token'];
+
+            if ('used_for_token' === $usedFor) {
+                // generate access token and add it to the response
+                $accessToken = $this->io->getRandomHex();
+                $this->pdoStorage->storeAccessToken(
+                    $accessToken,
+                    $me,
+                    $clientId,
+                    $scope,
+                    $this->io->getTime()
+                );
+                $responseData['access_token'] = $accessToken;
+            }
         }
-            
+
         $response->setContent($responseData);
 
         return $response;
@@ -404,30 +446,15 @@ class IndieCertService extends Service
             $this->io->getTime()
         );
 
-        if (null !== $scope) {
-            $accessToken = $this->pdoStorage->getAccessToken(
-                $me,
-                $clientId,
-                $scope
-            );
-
-            // see if we already have an access token
-            if (false === $accessToken) {
-                // generate and store access token
-                $accessToken = $this->io->getRandomHex();
-                $this->pdoStorage->storeAccessToken(
-                    $accessToken,
-                    $me,
-                    $clientId,
-                    $scope,
-                    $this->io->getTime()
-                );
-            }
-        }
-
         $responseUri = sprintf('%s?me=%s&code=%s&state=%s', $redirectUri, $me, $code, $state);
 
         return new RedirectResponse($responseUri, 302);
+    }
+
+    private function getToken(Request $request)
+    {
+        // FIXME: validate token by checking the Bearer token
+        return false;
     }
 
     private function hasFingerprint(array $relMeLinks, $certFingerprint)
