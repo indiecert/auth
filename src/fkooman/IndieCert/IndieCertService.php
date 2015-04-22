@@ -272,11 +272,11 @@ class IndieCertService extends Service
             );
         }
 
-        $approval = $this->pdoStorage->getApproval($me, $redirectUri, $scope);
+        $approval = $this->pdoStorage->getApproval($me, $clientId, $redirectUri, $scope);
         if (false !== $approval) {
             // check if not expired
             if ($this->io->getTime() >= $approval['expires_at']) {
-                $this->pdoStorage->deleteApproval($me, $redirectUri, $scope);
+                $this->pdoStorage->deleteApproval($me, $clientId, $redirectUri, $scope);
                 $approval = false;
             }
         }
@@ -284,14 +284,16 @@ class IndieCertService extends Service
         if (false === $approval) {
             if (null === $scope) {
                 $confirmUri = sprintf(
-                    'confirm?redirect_uri=%s&me=%s&state=%s',
+                    'confirm?client_id=%s&redirect_uri=%s&me=%s&state=%s',
+                    $clientId,
                     $redirectUri,
                     $me,
                     $state
                 );
             } else {
                 $confirmUri = sprintf(
-                    'confirm?redirect_uri=%s&me=%s&scope=%s&state=%s',
+                    'confirm?client_id=%s&redirect_uri=%s&me=%s&scope=%s&state=%s',
+                    $clientId,
                     $redirectUri,
                     $me,
                     $scope,
@@ -311,12 +313,13 @@ class IndieCertService extends Service
             );
         }
 
-        return $this->indieCodeRedirect($me, $redirectUri, $scope, $state);
+        return $this->indieCodeRedirect($me, $clientId, $redirectUri, $scope, $state);
     }
 
     public function postConfirm(Request $request)
     {
         $me = $this->validateMe($request->getQueryParameter('me'));
+        $clientId = $this->validateUri($request->getQueryParameter('client_id'), 'client_id');
         $redirectUri = $this->validateUri($request->getQueryParameter('redirect_uri'), 'redirect_uri');
         $scope = $this->validateScope($request->getQueryParameter('scope'));
         $state = $this->validateState($request->getQueryParameter('state'));
@@ -332,21 +335,23 @@ class IndieCertService extends Service
 
         // store approval if requested
         if (null !== $request->getPostParameter('remember')) {
-            $this->pdoStorage->storeApproval($me, $redirectUri, $scope, $this->io->getTime() + 3600*24*7);
+            $this->pdoStorage->storeApproval($me, $clientId, $redirectUri, $scope, $this->io->getTime() + 3600*24*7);
         }
 
-        return $this->indieCodeRedirect($me, $redirectUri, $scope, $state);
+        return $this->indieCodeRedirect($me, $clientId, $redirectUri, $scope, $state);
     }
 
     public function postAuth(Request $request)
     {
         $code = $this->validateCode($request->getPostParameter('code'));
+
         if (null === $code) {
             throw new BadRequestException('missing code');
         }
+        $clientId = $this->validateUri($request->getPostParameter('client_id'), 'client_id');
         $redirectUri = $this->validateUri($request->getPostParameter('redirect_uri'), 'redirect_uri');
 
-        $indieCode = $this->pdoStorage->getIndieCode($code, $redirectUri);
+        $indieCode = $this->pdoStorage->getIndieCode($code, $clientId, $redirectUri);
 
         if (false === $indieCode) {
             throw new BadRequestException('invalid_request', 'code not found');
@@ -371,17 +376,30 @@ class IndieCertService extends Service
         return $response;
     }
 
-    public function indieCodeRedirect($me, $redirectUri, $scope, $state)
+    public function indieCodeRedirect($me, $clientId, $redirectUri, $scope, $state)
     {
         // create indiecode
         $code = $this->io->getRandomHex();
         $this->pdoStorage->storeIndieCode(
             $code,
             $me,
+            $clientId,
             $redirectUri,
             $scope,
             $this->io->getTime()
         );
+
+        if (null !== $scope) {
+            // store access token
+            $accessToken = $this->io->getRandomHex();
+            $this->pdoStorage->storeAccessToken(
+                $accessToken,
+                $me,
+                $clientId,
+                $scope,
+                $this->io->getTime()
+            );
+        }
 
         $responseUri = sprintf('%s?me=%s&code=%s&state=%s', $redirectUri, $me, $code, $state);
 
