@@ -10,18 +10,14 @@ class CertManager
     const FORMAT_PEM = 0;
     const FORMAT_DER = 1;
 
-    /** @var fkooman\Cert\PdoStorage */
-    private $db;
-
     /** @var string */
     private $caCrt;
 
     /** @var string */
     private $caKey;
 
-    public function __construct(PdoStorage $db, $caCrt, $caKey)
+    public function __construct($caCrt, $caKey)
     {
-        $this->db = $db;
         $this->caCrt = $caCrt;
         $this->caKey = $caKey;
     }
@@ -58,7 +54,7 @@ class CertManager
         );
     }
 
-    public function generateClientCertificate($spkac, $commonName, $saveFormat = CertManager::FORMAT_PEM)
+    public function generateClientCertificate($spkac, $commonName, $serialNumber, $saveFormat = CertManager::FORMAT_PEM)
     {
         $caPrivateKey = new Crypt_RSA();
         $caPrivateKey->loadKey($this->caKey);
@@ -77,8 +73,7 @@ class CertManager
         $x509 = new File_X509();
         // FIXME: add Subject Key Identifier?
 
-        $serialNumber = $this->db->storeCertificate($commonName);
-        $x509->setSerialNumber($serialNumber, 10);
+        $x509->setSerialNumber($serialNumber, 16);
 
         $result = $x509->sign($issuer, $subject, 'sha256WithRSAEncryption');
 

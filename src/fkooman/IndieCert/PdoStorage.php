@@ -198,24 +198,6 @@ class PdoStorage
         }
     }
 
-    public function storeCertificate($commonName)
-    {
-        $stmt = $this->db->prepare(
-            sprintf(
-                'INSERT INTO %s (common_name) VALUES(:common_name)',
-                $this->prefix.'indie_certificates'
-            )
-        );
-        $stmt->bindValue(':common_name', $commonName, PDO::PARAM_STR);
-        $stmt->execute();
-
-        if (1 !== $stmt->rowCount()) {
-            throw new PdoStorageException('unable to add');
-        }
-        
-        return $this->db->lastInsertId();
-    }
-
     public function deleteExpiredApprovals($currentTime)
     {
         $stmt = $this->db->prepare(
@@ -284,13 +266,6 @@ class PdoStorage
             $prefix.'indie_access_tokens'
         );
 
-        $query[] = sprintf(
-            'CREATE TABLE IF NOT EXISTS %s (
-                common_name VARCHAR(255) NOT NULL
-            )',
-            $prefix.'indie_certificates'
-        );
-
         return $query;
     }
 
@@ -301,7 +276,7 @@ class PdoStorage
             $this->db->query($q);
         }
 
-        $tables = array('indie_approvals', 'indie_codes', 'indie_access_tokens', 'indie_certificates');
+        $tables = array('indie_approvals', 'indie_codes', 'indie_access_tokens');
         foreach ($tables as $t) {
             // make sure the tables are empty
             $this->db->query(

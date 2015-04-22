@@ -237,11 +237,12 @@ class IndieCertService extends Service
 
         // determine serialNumber
         $commonName = $this->io->getRandomHex();
+        $serialNumber = $this->io->getRandomHex();
 
         // we want to keep a list of CN/serial for book keeping and revocation
         
-        $certManager = new CertManager($this->pdoStorage, $this->caCrt, $this->caKey);
-        $clientCert = $certManager->generateClientCertificate($spkac, $commonName, $format);
+        $certManager = new CertManager($this->caCrt, $this->caKey);
+        $clientCert = $certManager->generateClientCertificate($spkac, $commonName, $serialNumber, $format);
 
         $response = new Response(200, 'application/x-x509-user-cert');
         $response->setContent($clientCert);
