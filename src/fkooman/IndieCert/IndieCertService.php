@@ -374,7 +374,7 @@ class IndieCertService extends Service
         $code = InputValidation::validateCode($request->getPostParameter('code'));
 
         if (null === $code) {
-            throw new BadRequestException('missing code');
+            throw new BadRequestException('invalid_request', 'missing code');
         }
         $clientId = InputValidation::validateUri($request->getPostParameter('client_id'), 'client_id');
         $redirectUri = InputValidation::validateUri($request->getPostParameter('redirect_uri'), 'redirect_uri');
@@ -383,7 +383,7 @@ class IndieCertService extends Service
         $redirectUriObj = new Uri($redirectUri);
 
         if ($clientIdUriObj->getHost() !== $redirectUriObj->getHost()) {
-            throw new BadRequestException('client_id must have same host as redirect_uri');
+            throw new BadRequestException('invalid_request', 'client_id must have same host as redirect_uri');
         }
 
         $indieCode = $this->pdoStorage->getCode($code, $clientId, $redirectUri, $usedFor);
