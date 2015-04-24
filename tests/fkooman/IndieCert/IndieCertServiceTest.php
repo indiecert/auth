@@ -143,4 +143,85 @@ class IndieCertServiceTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals(array('me' => 'https://me.example/'), $response->getContent());
     }
+
+    public function testAuthRequestScope()
+    {
+        $requestUri = new Uri('https://indiecert.example/auth');
+        $requestUri->setQuery(
+            http_build_query(
+                array(
+                    'me' => 'https://me.example/',
+                    'client_id' => 'https://www.client.example/client/',
+                    'redirect_uri' => 'https://www.client.example/client/callback',
+                    'state' => '12345',
+                    'scope' => 'post'
+                )
+            )
+        );
+        $request = new Request($requestUri->getUri(), 'GET');
+        $request->setRoot('/');
+        $request->setPathInfo('/auth');
+        $request->setHeaders(
+            array(
+                'SSL_CLIENT_CERT' => file_get_contents($this->dataDir.'/2edb5c8c336b954ae2b85cb5db974ce6.pem')
+            )
+        );
+
+        $response = $this->service->run($request);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(file_get_contents($this->dataDir.'/askAuthorizationScope.html'), $response->getContent());
+    }
+
+    public function testAuthRequestConfirmScope()
+    {
+        $requestUri = new Uri('https://indiecert.example/auth');
+        $requestUri->setQuery(
+            http_build_query(
+                array(
+                    'me' => 'https://me.example/',
+                    'client_id' => 'https://www.client.example/client/',
+                    'redirect_uri' => 'https://www.client.example/client/callback',
+                    'state' => '12345',
+                    'scope' => 'post'
+                )
+            )
+        );
+        $request = new Request($requestUri->getUri(), 'POST');
+        $request->setPathInfo('/confirm');
+        $request->setRoot('/');
+        $request->setHeaders(
+            array(
+                'HTTP_REFERER' => 'https://indiecert.example/auth?me=https://me.example/&client_id=https://www.client.example/client/&redirect_uri=https://www.client.example/client/callback&state=12345'
+            )
+        );
+        $request->setPostParameters(array('x' => 'a'));
+        $request->setHeaders(
+            array(
+                'SSL_CLIENT_CERT' => file_get_contents($this->dataDir.'/2edb5c8c336b954ae2b85cb5db974ce6.pem')
+            )
+        );
+
+        $response = $this->service->run($request);
+        $this->assertEquals(302, $response->getStatusCode());
+        $this->assertEquals(
+            'https://www.client.example/client/callback?me=https://me.example/&code=1234abcd&state=12345',
+            $response->getHeader('Location')
+        );
+
+        // now there must be a code!
+        $request = new Request('https://indiecert.example/auth', 'POST');
+        $request->setRoot('/');
+        $request->setPathInfo('/auth');
+        $request->setPostParameters(
+            array(
+                'code' => '1234abcd',
+                'client_id' => 'https://www.client.example/client/',
+                'redirect_uri' => 'https://www.client.example/client/callback',
+                'state' => '12345'
+            )
+        );
+        $response = $this->service->run($request);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(array('me' => 'https://me.example/', 'scope' => 'post'), $response->getContent());
+    }
 }

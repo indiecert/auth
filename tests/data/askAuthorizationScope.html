@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IndieCert</title>
+  <link rel="stylesheet" type="text/css" href="css/normalize.css">
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<body>
+    <div id="container">
+
+        <a class="header" href="welcome"><h1>IndieCert</h1></a>
+
+        <p>
+            A website wants to verify your identity!
+        </p>
+
+        <table class="askConfirmation">
+            <tr><th>Website</th><td><code title="https://www.client.example/client/callback">https://www.client.example/client/</code></td></tr>
+            <tr><th>Your Identity</th><td><code>https://me.example/</code></td></tr>
+                            <tr><th>Scope</th><td><code>post</code></td></tr>
+                    </table>
+
+        <form method="post" action="confirm?client_id=https://www.client.example/client/&amp;redirect_uri=https://www.client.example/client/callback&amp;me=https://me.example/&amp;scope=post&amp;state=12345">
+            <input type="checkbox" id="remember" name="remember" />
+            <label class="remember" for="remember">Remember for 1 week</label>
+            <input type="submit" value="Approve">
+        </form>
+
+        <div class="footer">
+    IndieCert | <a href="faq">FAQ</a> | <a href="https://github.com/fkooman/indiecert">Source</a>
+</div>
+    </div> <!-- /container -->
+</body>
+</html>

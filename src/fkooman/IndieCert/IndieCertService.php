@@ -252,11 +252,11 @@ class IndieCertService extends Service
 
     public function getAuth(Request $request)
     {
-        $me = $this->validateMe($request->getQueryParameter('me'));
-        $clientId = $this->validateUri($request->getQueryParameter('client_id'), 'client_id');
-        $redirectUri = $this->validateUri($request->getQueryParameter('redirect_uri'), 'redirect_uri');
-        $scope = $this->validateScope($request->getQueryParameter('scope'));
-        $state = $this->validateState($request->getQueryParameter('state'));
+        $me = InputValidation::validateMe($request->getQueryParameter('me'));
+        $clientId = InputValidation::validateUri($request->getQueryParameter('client_id'), 'client_id');
+        $redirectUri = InputValidation::validateUri($request->getQueryParameter('redirect_uri'), 'redirect_uri');
+        $scope = InputValidation::validateScope($request->getQueryParameter('scope'));
+        $state = InputValidation::validateState($request->getQueryParameter('state'));
         
         $clientIdUriObj = new Uri($clientId);
         $redirectUriObj = new Uri($redirectUri);
@@ -336,11 +336,11 @@ class IndieCertService extends Service
 
     public function postConfirm(Request $request)
     {
-        $me = $this->validateMe($request->getQueryParameter('me'));
-        $clientId = $this->validateUri($request->getQueryParameter('client_id'), 'client_id');
-        $redirectUri = $this->validateUri($request->getQueryParameter('redirect_uri'), 'redirect_uri');
-        $scope = $this->validateScope($request->getQueryParameter('scope'));
-        $state = $this->validateState($request->getQueryParameter('state'));
+        $me = InputValidation::validateMe($request->getQueryParameter('me'));
+        $clientId = InputValidation::validateUri($request->getQueryParameter('client_id'), 'client_id');
+        $redirectUri = InputValidation::validateUri($request->getQueryParameter('redirect_uri'), 'redirect_uri');
+        $scope = InputValidation::validateScope($request->getQueryParameter('scope'));
+        $state = InputValidation::validateState($request->getQueryParameter('state'));
         $appRootUri = $request->getAbsRoot();
 
         // CSRF protection
@@ -371,13 +371,13 @@ class IndieCertService extends Service
     
     private function postAuthToken(Request $request, $usedFor)
     {
-        $code = $this->validateCode($request->getPostParameter('code'));
+        $code = InputValidation::validateCode($request->getPostParameter('code'));
 
         if (null === $code) {
             throw new BadRequestException('missing code');
         }
-        $clientId = $this->validateUri($request->getPostParameter('client_id'), 'client_id');
-        $redirectUri = $this->validateUri($request->getPostParameter('redirect_uri'), 'redirect_uri');
+        $clientId = InputValidation::validateUri($request->getPostParameter('client_id'), 'client_id');
+        $redirectUri = InputValidation::validateUri($request->getPostParameter('redirect_uri'), 'redirect_uri');
 
         $clientIdUriObj = new Uri($clientId);
         $redirectUriObj = new Uri($redirectUri);
@@ -569,100 +569,5 @@ class IndieCertService extends Service
         }
 
         return $relMeLinks;
-    }
-
-    private function validateMe($me)
-    {
-        if (null === $me) {
-            throw new BadRequestException('missing parameter "me"');
-        }
-        if (0 !== stripos($me, 'http')) {
-            $me = sprintf('https://%s', $me);
-        }
-        try {
-            $uriObj = new Uri($me);
-            if ('https' !== $uriObj->getScheme()) {
-                throw new BadRequestException('"me" must be https uri');
-            }
-            if (null !== $uriObj->getQuery()) {
-                throw new BadRequestException('"me" cannot contain query parameters');
-            }
-            if (null !== $uriObj->getFragment()) {
-                throw new BadRequestException('"me" cannot contain fragment');
-            }
-
-            return $uriObj->getUri();
-        } catch (InvalidArgumentException $e) {
-            throw new BadRequestException('"me" is an invalid uri');
-        }
-    }
-
-    private function validateUri($uri, $fieldName)
-    {
-        if (null === $uri) {
-            throw new BadRequestException(
-                sprintf('missing parameter "%s"', $fieldName)
-            );
-        }
-        try {
-            $uriObj = new Uri($uri);
-            if ('https' !== $uriObj->getScheme()) {
-                throw new BadRequestException(
-                    sprintf('"%s" must be https uri', $fieldName)
-                );
-            }
-            if (null !== $uriObj->getFragment()) {
-                throw new BadRequestException(
-                    sprintf('"%s" cannot contain fragment', $fieldName)
-                );
-            }
-
-            return $uriObj->getUri();
-        } catch (InvalidArgumentException $e) {
-            throw new BadRequestException(
-                sprintf('"%s" is an invalid uri', $fieldName)
-            );
-        }
-    }
-
-    private function validateCode($code)
-    {
-        if (null === $code) {
-            throw new BadRequestException('missing parameter "code"');
-        }
-        if (1 !== preg_match('/^(?:[\x20-\x7E])*$/', $code)) {
-            throw new BadRequestException('"code" contains invalid characters');
-        }
-
-        return $code;
-    }
-
-    private function validateScope($scope)
-    {
-        // allow scope to be missing
-        if (null === $scope) {
-            return null;
-        }
-
-        // but if it is there, it needs to be a valid scope and also
-        // 'normalized'
-        try {
-            $scopeObj = new Scope($scope);
-            return $scopeObj->toString();
-        } catch (InvalidArgumentException $e) {
-            throw new BadRequestException('"scope" is invalid', $e->getMessage());
-        }
-    }
-
-    private function validateState($state)
-    {
-        if (null === $state) {
-            throw new BadRequestException('missing parameter "state"');
-        }
-        if (1 !== preg_match('/^(?:[\x20-\x7E])*$/', $state)) {
-            throw new BadRequestException('"state" contains invalid characters');
-        }
-
-        return $state;
     }
 }
