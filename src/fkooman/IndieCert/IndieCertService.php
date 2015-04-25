@@ -23,14 +23,11 @@ use fkooman\Http\JsonResponse;
 use fkooman\Http\FormResponse;
 use fkooman\Rest\Service;
 use GuzzleHttp\Client;
-use fkooman\X509\CertParser;
-use fkooman\X509\CertParserException;
 use fkooman\Http\Uri;
 use fkooman\Http\RedirectResponse;
 use fkooman\Http\Exception\BadRequestException;
 use fkooman\Http\Exception\ForbiddenException;
 use fkooman\Http\Exception\UnauthorizedException;
-use DomDocument;
 use fkooman\Rest\Plugin\UserInfo;
 use InvalidArgumentException;
 
@@ -264,27 +261,25 @@ class IndieCertService extends Service
         if ($clientIdUriObj->getHost() !== $redirectUriObj->getHost()) {
             throw new BadRequestException('client_id must have same host as redirect_uri');
         }
-
-        $certFingerprint = $this->getCertFingerprint(
-            $request->getHeader('SSL_CLIENT_CERT')
-        );
-
-        if (false === $certFingerprint) {
+    
+        // FIXME: code duplication in the postConfirm method
+        $fingerprintData = $request->getHeader('SSL_CLIENT_CERT');
+        if (null === $fingerprintData) {
             return $this->templateManager->render('noCert');
         }
+        $certificateValidator = new CertificateValidator(
+            $fingerprintData,
+            $this->client
+        );
 
-        $pageFetcher = new PageFetcher($this->client);
-        $htmlResponse = $pageFetcher->fetch($me);
-        $relMeLinks = $this->extractRelMeLinks($htmlResponse);
+        if (false === $certificateValidator->hasFingerprint($me)) {
+            $authorizationEndpoint = $request->getAbsRoot() . 'auth';
 
-        $authorizationEndpoint = $request->getAbsRoot() . 'auth';
-
-        if (false === $this->hasFingerprint($relMeLinks, $certFingerprint)) {
             return $this->templateManager->render(
                 'missingFingerprint',
                 array(
                     'me' => $me,
-                    'certFingerprint' => $certFingerprint,
+                    'certFingerprint' => $certificateValidator->getFingerprint(),
                     'authorizationEndpoint' => $authorizationEndpoint
                 )
             );
@@ -348,8 +343,27 @@ class IndieCertService extends Service
             throw new BadRequestException('CSRF protection triggered');
         }
 
-        // because of the referrer check we know the browser came from the
-        // 'auth' URI and that certificate was already checked before...
+        $fingerprintData = $request->getHeader('SSL_CLIENT_CERT');
+        if (null === $fingerprintData) {
+            return $this->templateManager->render('noCert');
+        }
+        $certificateValidator = new CertificateValidator(
+            $fingerprintData,
+            $this->client
+        );
+
+        if (false === $certificateValidator->hasFingerprint($me)) {
+            $authorizationEndpoint = $request->getAbsRoot() . 'auth';
+
+            return $this->templateManager->render(
+                'missingFingerprint',
+                array(
+                    'me' => $me,
+                    'certFingerprint' => $certificateValidator->getFingerprint(),
+                    'authorizationEndpoint' => $authorizationEndpoint
+                )
+            );
+        }
 
         // store approval if requested
         if (null !== $request->getPostParameter('remember')) {
@@ -511,63 +525,5 @@ class IndieCertService extends Service
             )
         );
         return $response;
-    }
-
-    private function hasFingerprint(array $relMeLinks, $certFingerprint)
-    {
-        $certFingerprints = array();
-
-        $pattern = '/^ni:\/\/\/sha-256;[a-zA-Z0-9_-]+\?ct=application\/x-x509-user-cert$/';
-
-        foreach ($relMeLinks as $meLink) {
-            if (1 === preg_match($pattern, $meLink)) {
-                $certFingerprints[] = $meLink;
-            }
-        }
-
-        if (!in_array($certFingerprint, $certFingerprints)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    private function getCertFingerprint($clientCert)
-    {
-        // determine certificate fingerprint
-        try {
-            $certParser = new CertParser($clientCert);
-            return sprintf(
-                'ni:///sha-256;%s?ct=application/x-x509-user-cert',
-                $certParser->getFingerPrint('sha256', true)
-            );
-        } catch (CertParserException $e) {
-            return false;
-        }
-    }
-
-    private function extractRelMeLinks($htmlString)
-    {
-        $dom = new DomDocument();
-        // disable error handling by DomDocument so we handle them ourselves
-        libxml_use_internal_errors(true);
-        $dom->loadHTML($htmlString);
-        // throw away all errors, we do not care about them anyway
-        libxml_clear_errors();
-
-        $tags = array('link', 'a');
-        $relMeLinks = array();
-        foreach ($tags as $tag) {
-            $elements = $dom->getElementsByTagName($tag);
-            foreach ($elements as $element) {
-                $href = $element->getAttribute('href');
-                $rel = $element->getAttribute('rel');
-                if ('me' === $rel) {
-                    $relMeLinks[] = $href;
-                }
-            }
-        }
-
-        return $relMeLinks;
     }
 }

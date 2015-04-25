@@ -6,6 +6,10 @@
   in the `client_id` (issue #12)
 - implement `scope`/`access_token` support (useful for micropub integration)
 - **BREAKING** database layout changed
+- fix a security issue where the `confirm` page did not require a valid
+  client certificate, allowing any attacker to register approvals for any
+  one. It did **NOT** allow impersonation of other users
+- add some initial unit tests
 
 ## 0.3.10
 - update `fkooman/rest` and `fkooman/rest-plugin-indieauth`
