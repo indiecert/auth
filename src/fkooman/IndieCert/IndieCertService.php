@@ -33,71 +33,80 @@ use InvalidArgumentException;
 
 class IndieCertService extends Service
 {
-    /** @var string */
-    private $caCrt;
-
-    /** @var string */
-    private $caKey;
-
     /** @var fkooman\RelMeAuth\PdoStorage */
-    private $pdoStorage;
+    private $db;
+
+    /** @var fkooman\IndieCert\CertManager */
+    private $certManager;
 
     /** @var GuzzleHttp\Client */
     private $client;
 
-    /** @var fkooman\IndieCert\IO */
-    private $io;
-
     /** @var fkooman\IndieCert\TemplateManager */
     private $templateManager;
 
-    public function __construct($caCrt, $caKey, PdoStorage $pdoStorage, Client $client = null, IO $io = null, TemplateManager $templateManager = null)
+    /** @var fkooman\IndieCert\IO */
+    private $io;
+
+    public function __construct(PdoStorage $db, CertManager $certManager, Client $client = null, TemplateManager $templateManager = null, IO $io = null)
     {
         parent::__construct();
 
-        $this->caCrt = $caCrt;
-        $this->caKey = $caKey;
-        $this->pdoStorage = $pdoStorage;
+        $this->db = $db;
+        $this->certManager = $certManager;
 
+        // Guzzle
         if (null === $client) {
             $client = new Client();
         }
         $this->client = $client;
    
+        // IO
         if (null === $io) {
             $io = new IO();
         }
         $this->io = $io;
-    
+        
+        // TemplateManager
         if (null === $templateManager) {
             $templateManager = new TemplateManager();
         }
         $this->templateManager = $templateManager;
 
-        $this->setDefaultRoute('/welcome');
-
         $this->get(
-            '/faq',
-            function (Request $request) {
-                return $this->getFaq($request);
+            '/',
+            function (Request $request, UserInfo $userInfo = null) {
+                return $this->getIndex($request, $userInfo);
             },
-            array('skipPlugins' => array('fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication'))
+            array(
+                'fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication' => array(
+                    'requireAuth' => false
+                )
+            )
         );
 
         $this->get(
-            '/welcome',
-            function (Request $request) {
-                return $this->getWelcome($request);
+            '/faq',
+            function (Request $request, UserInfo $userInfo) {
+                return $this->getFaq($request, $userInfo);
             },
-            array('skipPlugins' => array('fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication'))
+            array(
+                'fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication' => array(
+                    'requireAuth' => false
+                )
+            )
         );
 
         $this->get(
             '/rp',
-            function (Request $request) {
-                return $this->getRp($request);
+            function (Request $request, UserInfo $userInfo) {
+                return $this->getRp($request, $userInfo);
             },
-            array('skipPlugins' => array('fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication'))
+            array(
+                'fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication' => array(
+                    'requireAuth' => false
+                )
+            )
         );
 
         // for this URL you actually need to be authenticated...
@@ -108,6 +117,7 @@ class IndieCertService extends Service
             }
         );
 
+        // for this URL you actually need to be authenticated...
         $this->get(
             '/tokens',
             function (Request $request, UserInfo $userInfo) {
@@ -172,42 +182,55 @@ class IndieCertService extends Service
         );
     }
 
-    public function getFaq(Request $request)
-    {
-        return $this->templateManager->render('faqPage');
-    }
-
-    public function getWelcome(Request $request)
+    private function getIndex(Request $request, UserInfo $userInfo = null)
     {
         $redirectUri = $request->getAbsRoot() . 'cb';
+        $userId = null !== $userInfo ? $userInfo->getUserId() : null;
+
         return $this->templateManager->render(
             'welcomePage',
             array(
-                'redirect_uri' => $redirectUri
+                'redirect_uri' => $redirectUri,
+                'me' => $userId
             )
         );
     }
 
-    public function getRp(Request $request)
+    private function getFaq(Request $request, UserInfo $userInfo)
+    {
+        $userId = null !== $userInfo ? $userInfo->getUserId() : null;
+
+        return $this->templateManager->render(
+            'faqPage',
+            array(
+                'me' => $userId
+            )
+        );
+    }
+
+    private function getRp(Request $request, UserInfo $userInfo)
     {
         $authUri = $request->getAbsRoot() . 'auth';
         $verifyPath = $request->getRoot() . 'auth';
         $hostName = $request->getRequestUri()->getHost();
+        $userId = null !== $userInfo ? $userInfo->getUserId() : null;
+
         return $this->templateManager->render(
             'relyingPartyPage',
             array(
                 'authUri' => $authUri,
                 'verifyPath' => $verifyPath,
-                'hostName' => $hostName
+                'hostName' => $hostName,
+                'me' => $userId
             )
         );
     }
 
-    public function getAccessTokens(Request $request, UserInfo $userInfo)
+    private function getAccessTokens(Request $request, UserInfo $userInfo)
     {
         $userId = $userInfo->getUserId();
 
-        $accessTokens = $this->pdoStorage->getAccessTokens($userId);
+        $accessTokens = $this->db->getAccessTokens($userId);
 
         return $this->templateManager->render(
             'accessTokensPage',
@@ -218,17 +241,17 @@ class IndieCertService extends Service
         );
     }
 
-    public function getSuccess(Request $request, UserInfo $userInfo)
+    private function getSuccess(Request $request, UserInfo $userInfo)
     {
         return $this->templateManager->render(
             'authenticatedPage',
             array(
-                'me' => $userInfo->getUserId()
+                'me' => $userInfo->getUserId(),
             )
         );
     }
 
-    public function getEnroll(Request $request)
+    private function getEnroll(Request $request)
     {
         return $this->templateManager->render(
             'enrollPage',
@@ -239,37 +262,20 @@ class IndieCertService extends Service
         );
     }
 
-    public function postEnroll(Request $request)
+    private function postEnroll(Request $request)
     {
-        $spkac = $request->getPostParameter('spkac');
-
-        // FIXME: validate the key size
-        // FIXME: validate the challenge
-
-        $userAgent = $request->getHeader('USER_AGENT');
-        if (false !== strpos($userAgent, 'Chrome')) {
-            // Chrom(e)(ium) needs the certificate format to be DER
-            $format = CertManager::FORMAT_DER;
-        } else {
-            $format = CertManager::FORMAT_PEM;
-        }
-
-        // determine serialNumber
-        $commonName = $this->io->getRandomHex();
-        $serialNumber = $this->io->getRandomHex();
-
-        // we want to keep a list of CN/serial for book keeping and revocation
-        
-        $certManager = new CertManager($this->caCrt, $this->caKey);
-        $clientCert = $certManager->generateClientCertificate($spkac, $commonName, $serialNumber, $format);
+        $userCert = $this->certManager->enroll(
+            $request->getPostParameter('spkac'),
+            $request->getHeader('USER_AGENT')
+        );
 
         $response = new Response(200, 'application/x-x509-user-cert');
-        $response->setContent($clientCert);
+        $response->setContent($userCert);
 
         return $response;
     }
 
-    public function getAuth(Request $request)
+    private function getAuth(Request $request)
     {
         $me = InputValidation::validateMe($request->getQueryParameter('me'));
         $clientId = InputValidation::validateUri($request->getQueryParameter('client_id'), 'client_id');
@@ -307,11 +313,11 @@ class IndieCertService extends Service
             );
         }
 
-        $approval = $this->pdoStorage->getApproval($me, $clientId, $redirectUri, $scope);
+        $approval = $this->db->getApproval($me, $clientId, $redirectUri, $scope);
         if (false !== $approval) {
             // check if not expired
             if ($this->io->getTime() >= $approval['expires_at']) {
-                $this->pdoStorage->deleteApproval($me, $clientId, $redirectUri, $scope);
+                $this->db->deleteApproval($me, $clientId, $redirectUri, $scope);
                 $approval = false;
             }
         }
@@ -351,7 +357,7 @@ class IndieCertService extends Service
         return $this->indieCodeRedirect($me, $clientId, $redirectUri, $scope, $state);
     }
 
-    public function postConfirm(Request $request)
+    private function postConfirm(Request $request)
     {
         $me = InputValidation::validateMe($request->getQueryParameter('me'));
         $clientId = InputValidation::validateUri($request->getQueryParameter('client_id'), 'client_id');
@@ -389,18 +395,18 @@ class IndieCertService extends Service
 
         // store approval if requested
         if (null !== $request->getPostParameter('remember')) {
-            $this->pdoStorage->storeApproval($me, $clientId, $redirectUri, $scope, $this->io->getTime() + 3600*24*7);
+            $this->db->storeApproval($me, $clientId, $redirectUri, $scope, $this->io->getTime() + 3600*24*7);
         }
 
         return $this->indieCodeRedirect($me, $clientId, $redirectUri, $scope, $state);
     }
 
-    public function postAuth(Request $request)
+    private function postAuth(Request $request)
     {
         return $this->postAuthToken($request, 'used_for_auth');
     }
 
-    public function postToken(Request $request)
+    private function postToken(Request $request)
     {
         return $this->postAuthToken($request, 'used_for_token');
     }
@@ -422,7 +428,7 @@ class IndieCertService extends Service
             throw new BadRequestException('invalid_request', 'client_id must have same host as redirect_uri');
         }
 
-        $indieCode = $this->pdoStorage->getCode($code, $clientId, $redirectUri, $usedFor);
+        $indieCode = $this->db->getCode($code, $clientId, $redirectUri, $usedFor);
 
         if (false === $indieCode) {
             throw new BadRequestException('invalid_request', 'code not found');
@@ -455,7 +461,7 @@ class IndieCertService extends Service
             if ('used_for_token' === $usedFor) {
                 // generate access token and add it to the response
                 $accessToken = $this->io->getRandomHex();
-                $this->pdoStorage->storeAccessToken(
+                $this->db->storeAccessToken(
                     $accessToken,
                     $indieCode['me'],
                     $clientId,
@@ -471,11 +477,11 @@ class IndieCertService extends Service
         return $response;
     }
 
-    public function indieCodeRedirect($me, $clientId, $redirectUri, $scope, $state)
+    private function indieCodeRedirect($me, $clientId, $redirectUri, $scope, $state)
     {
         // create indiecode
         $code = $this->io->getRandomHex();
-        $this->pdoStorage->storeIndieCode(
+        $this->db->storeIndieCode(
             $code,
             $me,
             $clientId,
@@ -517,7 +523,7 @@ class IndieCertService extends Service
             );
         }
         
-        $accessToken = $this->pdoStorage->getAccessToken(substr($authHeader, 7));
+        $accessToken = $this->db->getAccessToken(substr($authHeader, 7));
         if (false === $accessToken) {
             throw new UnauthorizedException(
                 'invalid_token',

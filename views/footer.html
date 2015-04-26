@@ -1,3 +1,9 @@
 <div class="footer">
-    IndieCert | <a href="faq">FAQ</a> | <a href="https://github.com/fkooman/indiecert">Source</a>
+    <span class="pull-left">IndieCert</span>
+    <span class="pull-right">
+        {% if me is defined and me %}
+            {{ me|e }} | <a href="indieauth/logout">Logout</a> |
+        {% endif %}
+        <a href="faq">FAQ</a>
+    </span>
 </div>

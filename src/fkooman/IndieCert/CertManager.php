@@ -16,10 +16,17 @@ class CertManager
     /** @var string */
     private $caKey;
 
-    public function __construct($caCrt, $caKey)
+    /** @var fkooman\IndieCert\IO */
+    private $io;
+
+    public function __construct($caCrt, $caKey, IO $io = null)
     {
         $this->caCrt = $caCrt;
         $this->caKey = $caKey;
+        if (null === $io) {
+            $io = new IO();
+        }
+        $this->io = $io;
     }
 
     public static function generateCertificateAuthority($keySize = 2048, $commonName = 'Demo CA')
@@ -54,7 +61,26 @@ class CertManager
         );
     }
 
-    public function generateClientCertificate($spkac, $commonName, $serialNumber, $saveFormat = CertManager::FORMAT_PEM)
+    public function enroll($spkac, $userAgent)
+    {
+        // FIXME: validate the key size
+        // FIXME: validate the challenge
+
+        if (false !== strpos($userAgent, 'Chrome')) {
+            // Chrom(e)(ium) needs the certificate format to be DER
+            $format = CertManager::FORMAT_DER;
+        } else {
+            $format = CertManager::FORMAT_PEM;
+        }
+
+        // determine serialNumber
+        $commonName = $this->io->getRandomHex();
+        $serialNumber = $this->io->getRandomHex();
+        
+        return $this->generateClientCertificate($spkac, $commonName, $serialNumber, $format);
+    }
+
+    private function generateClientCertificate($spkac, $commonName, $serialNumber, $saveFormat = CertManager::FORMAT_PEM)
     {
         $caPrivateKey = new Crypt_RSA();
         $caPrivateKey->loadKey($this->caKey);

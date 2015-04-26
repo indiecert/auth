@@ -4,7 +4,7 @@
 {% include 'head.html' %}
 <body>
     <div id="container">
-        <a class="header" href="welcome"><h1>IndieCert</h1></a>
+        <a class="header" href="."><h1>IndieCert</h1></a>
         <p class="warn">
             This is an <strong>EXPERIMENTAL</strong> service. No warranty!
         </p>
@@ -42,11 +42,15 @@
             over HTTPS!
         </p>
 
-        <form class="try" method="post" action="indieauth/auth">
-            <span class="label">https://</span><input required type="text" name="me" placeholder="example.org">
-            <input type="hidden" name="redirect_to" value="/success">
-            <input type="submit" value="Sign In">
-        </form>
+        {% if me is defined and me %}
+            <p class="info">Already authenticated as <code><strong>{{ me|e }}</strong></code> (-:</p>
+        {% else %}
+            <form class="try" method="post" action="indieauth/auth">
+                <span class="label">https://</span><input required type="text" name="me" placeholder="example.org">
+                <input type="hidden" name="redirect_to" value="/success">
+                <input type="submit" value="Sign In">
+            </form>
+        {% endif %}
 
         <h2>Relying Party?</h2>
         <p>

@@ -18,14 +18,15 @@
 require_once dirname(__DIR__).'/vendor/autoload.php';
 
 use fkooman\Ini\IniReader;
-use fkooman\Http\Exception\HttpException;
-use fkooman\Http\Exception\InternalServerErrorException;
-use fkooman\IndieCert\IndieCertService;
-use fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication;
-use fkooman\IndieCert\PdoStorage;
-use GuzzleHttp\Client;
 use fkooman\Http\Request;
 use fkooman\Http\IncomingRequest;
+use fkooman\Http\Exception\HttpException;
+use fkooman\Http\Exception\InternalServerErrorException;
+use fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication;
+use GuzzleHttp\Client;
+use fkooman\IndieCert\CertManager;
+use fkooman\IndieCert\IndieCertService;
+use fkooman\IndieCert\PdoStorage;
 use fkooman\IndieCert\TemplateManager;
 
 try {
@@ -33,21 +34,23 @@ try {
         dirname(__DIR__).'/config/config.ini'
     );
 
-    $caDir = $iniReader->v('CA', 'storageDir');
-    $caCrt = file_get_contents(sprintf('%s/ca.crt', $caDir));
-    $caKey = file_get_contents(sprintf('%s/ca.key', $caDir));
-
-    // STORAGE
+    // PdoStorage
     $pdo = new PDO(
         $iniReader->v('PdoStorage', 'dsn'),
         $iniReader->v('PdoStorage', 'username', false),
         $iniReader->v('PdoStorage', 'password', false)
     );
-    $pdoStorage = new PdoStorage($pdo);
+    $db = new PdoStorage($pdo);
 
-    // HTTP CLIENT
+    // CertManager
+    $caDir = $iniReader->v('CA', 'storageDir');
+    $caCrt = file_get_contents(sprintf('%s/ca.crt', $caDir));
+    $caKey = file_get_contents(sprintf('%s/ca.key', $caDir));
+
+    $certManager = new CertManager($caCrt, $caKey);
+
+    // Guzzle
     $disableServerCertCheck = $iniReader->v('disableServerCertCheck', false, false);
-
     $client = new Client(
         array(
             'defaults' => array(
@@ -57,6 +60,7 @@ try {
         )
     );
 
+    // TemplateManager
     $templateManager = new TemplateManager($iniReader->v('templateCache', false, null));
 
     $request = Request::fromIncomingRequest(new IncomingRequest());
@@ -64,7 +68,7 @@ try {
     $indieAuth->setClient($client);
     $indieAuth->setDiscovery(false);
 
-    $service = new IndieCertService($caCrt, $caKey, $pdoStorage, $client, null, $templateManager);
+    $service = new IndieCertService($db, $certManager, $client, $templateManager);
     $service->registerOnMatchPlugin($indieAuth);
     $service->run($request)->sendResponse();
 } catch (Exception $e) {

@@ -4,15 +4,18 @@
 {% include 'head.html' %}
 <body>
     <div id="container">
-        <a class="header" href="welcome"><h1>IndieCert</h1></a>
-
-        <p>
-            This page shows a list of granted access tokens. You can delete
-            them here.
-        </p>
+        <a class="header" href="."><h1>IndieCert</h1></a>
         
+        <h2>Approvals</h2>
         <p>
-            Your identity is <code>{{ me|e }}</code>.
+            This table shows a list of clients for which you remembered the
+            approval. You can delete them here.
+        </p>
+
+        <h2>Access Tokens</h2>
+        <p>
+            This table shows a list of clients and the access tokens granted to
+            them. You can delete them here.
         </p>
 
         <table class="accessTokens">

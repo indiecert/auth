@@ -21,6 +21,10 @@ code {
     background-color: #d1def9;
 }
 
+p.info code {
+    background-color: #063;
+}
+
 pre {
     background-color: #f9e5d1;
     white-space: pre-wrap;
@@ -126,12 +130,20 @@ table.accessTokens form {
 
 div.footer {
     border-top: 1px solid #888;
-    padding: 0.5em;
-    text-align: right;
+    padding: 0.5em 0;
     font-size: 85%;
     color: #888;
+    overflow: hidden;
 }
 
 div.footer a {
     color: #888;
+}
+
+.pull-left {
+    float: left;
+}
+
+.pull-right {
+    float: right;
 }

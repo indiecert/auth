@@ -62,7 +62,9 @@ class IndieCertServiceTest extends PHPUnit_Framework_TestCase
         );
         $client->getEmitter()->attach($mock);
 
-        $this->service = new IndieCertService('crt', 'key', $storage, $client, $ioStub, null);
+        $certManager = new CertManager('crt', 'key', $ioStub);
+
+        $this->service = new IndieCertService($storage, $certManager, $client, null, $ioStub);
     }
 
     public function testAuthRequest()
