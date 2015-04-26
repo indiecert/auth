@@ -109,6 +109,13 @@ class IndieCertService extends Service
         );
 
         $this->get(
+            '/tokens',
+            function (Request $request, UserInfo $userInfo) {
+                return $this->getAccessTokens($request, $userInfo);
+            }
+        );
+
+        $this->get(
             '/auth',
             function (Request $request) {
                 return $this->getAuth($request);
@@ -196,6 +203,21 @@ class IndieCertService extends Service
         );
     }
 
+    public function getAccessTokens(Request $request, UserInfo $userInfo)
+    {
+        $userId = $userInfo->getUserId();
+
+        $accessTokens = $this->pdoStorage->getAccessTokens($userId);
+
+        return $this->templateManager->render(
+            'accessTokensPage',
+            array(
+                'me' => $userId,
+                'tokens' => $accessTokens
+            )
+        );
+    }
+
     public function getSuccess(Request $request, UserInfo $userInfo)
     {
         return $this->templateManager->render(
@@ -264,7 +286,7 @@ class IndieCertService extends Service
     
         // FIXME: code duplication in the postConfirm method
         $fingerprintData = $request->getHeader('SSL_CLIENT_CERT');
-        if (null === $fingerprintData) {
+        if (empty($fingerprintData)) {
             return $this->templateManager->render('noCert');
         }
         $certificateValidator = new CertificateValidator(
@@ -344,7 +366,7 @@ class IndieCertService extends Service
         }
 
         $fingerprintData = $request->getHeader('SSL_CLIENT_CERT');
-        if (null === $fingerprintData) {
+        if (empty($fingerprintData)) {
             return $this->templateManager->render('noCert');
         }
         $certificateValidator = new CertificateValidator(

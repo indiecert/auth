@@ -106,8 +106,22 @@ table.askConfirmation {
     border-collapse: collapse;
 }
 
-table.askConfirmation th, td {
+table.askConfirmation th, table.askConfirmation td {
     padding: 0.5em 0;
+}
+
+table.accessTokens {
+    margin: 1em 0;
+    width: 100%;
+}
+
+table.accessTokens th, table.accessTokens td {
+    padding: 0 0.5em;
+    border-bottom: 1px solid #ccc;
+}
+
+table.accessTokens form {
+    padding: 0;
 }
 
 div.footer {

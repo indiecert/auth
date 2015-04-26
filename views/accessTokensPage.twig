@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+
+<html lang="en">
+{% include 'head.html' %}
+<body>
+    <div id="container">
+        <a class="header" href="welcome"><h1>IndieCert</h1></a>
+
+        <p>
+            This page shows a list of granted access tokens. You can delete
+            them here.
+        </p>
+        
+        <p>
+            Your identity is <code>{{ me|e }}</code>.
+        </p>
+
+        <table class="accessTokens">
+            <tr><th>Website</th><th>Scope</th><th>Issued</th><th></th></tr>
+            {% for token in tokens %}
+                <tr>
+                    <td><code>{{ token.client_id|e }}</code></td>
+                    <td><code>{{ token.scope|e }}</code></td>
+                    <td>{{ token.issue_time|e|date }}</td>
+                    <td><form method="post" action="{{ token.scope|e }}"><input type="submit" value="Delete"></form></td>
+                </tr>
+            {% endfor %}
+        </table>
+
+        {% include 'footer.html' %}
+    </div> <!-- /container -->
+</body>
+</html>
