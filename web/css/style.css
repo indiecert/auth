@@ -105,6 +105,12 @@ input[type=submit] {
     background: #063;
 }
 
+input[type=submit].delete {
+    border: 1px solid #d00;
+    color: #fff; 
+    background: #c00;
+}
+
 table.askConfirmation {
     width: 100%;
     border-collapse: collapse;

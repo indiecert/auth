@@ -111,17 +111,9 @@ class IndieCertService extends Service
 
         // for this URL you actually need to be authenticated...
         $this->get(
-            '/success',
+            '/account',
             function (Request $request, UserInfo $userInfo) {
-                return $this->getSuccess($request, $userInfo);
-            }
-        );
-
-        // for this URL you actually need to be authenticated...
-        $this->get(
-            '/tokens',
-            function (Request $request, UserInfo $userInfo) {
-                return $this->getAccessTokens($request, $userInfo);
+                return $this->getAccount($request, $userInfo);
             }
         );
 
@@ -188,7 +180,7 @@ class IndieCertService extends Service
         $userId = null !== $userInfo ? $userInfo->getUserId() : null;
 
         return $this->templateManager->render(
-            'welcomePage',
+            'indexPage',
             array(
                 'redirect_uri' => $redirectUri,
                 'me' => $userId
@@ -226,27 +218,17 @@ class IndieCertService extends Service
         );
     }
 
-    private function getAccessTokens(Request $request, UserInfo $userInfo)
+    private function getAccount(Request $request, UserInfo $userInfo)
     {
         $userId = $userInfo->getUserId();
 
         $accessTokens = $this->db->getAccessTokens($userId);
 
         return $this->templateManager->render(
-            'accessTokensPage',
+            'accountPage',
             array(
                 'me' => $userId,
                 'tokens' => $accessTokens
-            )
-        );
-    }
-
-    private function getSuccess(Request $request, UserInfo $userInfo)
-    {
-        return $this->templateManager->render(
-            'authenticatedPage',
-            array(
-                'me' => $userInfo->getUserId(),
             )
         );
     }

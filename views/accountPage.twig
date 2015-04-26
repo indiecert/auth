@@ -6,6 +6,10 @@
     <div id="container">
         <a class="header" href="."><h1>IndieCert</h1></a>
         
+        <p>
+            Welcome <code>{{ me|e }}</code> to your account page.
+        </p>
+
         <h2>Approvals</h2>
         <p>
             This table shows a list of clients for which you remembered the
@@ -25,7 +29,7 @@
                     <td><code>{{ token.client_id|e }}</code></td>
                     <td><code>{{ token.scope|e }}</code></td>
                     <td>{{ token.issue_time|e|date }}</td>
-                    <td><form method="post" action="{{ token.scope|e }}"><input type="submit" value="Delete"></form></td>
+                    <td><form method="post" action="{{ token.scope|e }}"><input class="delete" type="submit" value="Delete"></form></td>
                 </tr>
             {% endfor %}
         </table>
