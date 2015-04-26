@@ -19,10 +19,10 @@
             {% endif %}
         </table>
 
-        <form method="post" action="{{ confirmUri|e }}">
+        <form class="askConfirmation" method="post" action="{{ confirmUri|e }}">
             <input type="checkbox" id="remember" name="remember" />
             <label class="remember" for="remember">Remember for 1 week</label>
-            <input type="submit" value="Approve">
+            <input class="info" type="submit" value="Approve">
         </form>
 
         {% include 'footer.html' %}

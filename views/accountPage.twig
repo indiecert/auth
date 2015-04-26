@@ -7,7 +7,7 @@
         <a class="header" href="."><h1>IndieCert</h1></a>
         
         <p>
-            Welcome <code>{{ me|e }}</code> to your account page.
+            Welcome to your account page! Your identity is <code>{{ me|e }}</code>.
         </p>
 
         <form method="get" action="indieauth/logout">
@@ -26,14 +26,20 @@
             them. You can delete them here.
         </p>
 
-        <table class="accessTokens">
-            <tr><th>Website</th><th>Scope</th><th>Issued</th><th></th></tr>
+        <table class="account">
+            <tr>
+                <th>Website</th>
+                <th>Scope</th>
+                <th>Issued</th>
+                <th>Actions</th>
+            </tr>
+
             {% for token in tokens %}
                 <tr>
                     <td><code>{{ token.client_id|e }}</code></td>
                     <td><code>{{ token.scope|e }}</code></td>
                     <td>{{ token.issue_time|e|date }}</td>
-                    <td><form method="post" action="{{ token.scope|e }}"><input class="delete" type="submit" value="Delete"></form></td>
+                    <td><form method="post" action="{{ token.scope|e }}"><input class="err" type="submit" value="Delete"></form></td>
                 </tr>
             {% endfor %}
         </table>

@@ -21,10 +21,6 @@ code {
     background-color: #d1def9;
 }
 
-p.info code {
-    background-color: #063;
-}
-
 pre {
     background-color: #f9e5d1;
     white-space: pre-wrap;
@@ -42,12 +38,6 @@ div.footnotes {
     font-size: 75%;
     color: #888;
     margin-bottom: 1em;
-}
-
-form {
-    text-align: center;
-    padding: 1em;
-    margin: 1em auto;
 }
 
 a.header {
@@ -82,11 +72,17 @@ p.warn a {
     color: #000;
 }
 
-span.label {
-    padding: 0.5em 0.25em;
-    border: 1px solid #d5d5d5;
-    border-right: 0;
-    background-color: #e5e5e5;
+div.footer {
+    border-top: 1px solid #888;
+    margin: 0.5em 0;
+    padding: 0.5em 0;
+    font-size: 85%;
+    color: #888;
+    text-align: right;
+}
+
+div.footer a {
+    color: #888;
 }
 
 input[type=text] {
@@ -94,21 +90,42 @@ input[type=text] {
     border: 1px solid #d5d5d5;
 }
 
-label.remember {
-    margin-right: 2em;
-}
-
 input[type=submit] {
     padding: 0.5em;
+    border: 1px solid #ccc;
+    color: #000; 
+    background: #ddd;
+}
+
+input[type=submit].info {
     border: 1px solid #052;
     color: #fff; 
     background: #063;
 }
 
-input[type=submit].delete {
+input[type=submit].warn {
+    border: 1px solid #fc0;
+    color: #fff; 
+    background: #ec0;
+}
+
+input[type=submit].err {
     border: 1px solid #d00;
     color: #fff; 
     background: #c00;
+}
+
+form.authenticate, form.askConfirmation {
+    text-align: center;
+    padding: 1em;
+    margin: 1em auto;
+}
+
+form.authenticate label {
+    padding: 0.5em 0.25em;
+    border: 1px solid #d5d5d5;
+    border-right: 0;
+    background-color: #e5e5e5;
 }
 
 table.askConfirmation {
@@ -120,36 +137,19 @@ table.askConfirmation th, table.askConfirmation td {
     padding: 0.5em 0;
 }
 
-table.accessTokens {
-    margin: 1em 0;
+form.askConfirmation label {
+    margin-right: 2em;
+}
+
+table.account {
     width: 100%;
+    border-collapse: collapse;
 }
 
-table.accessTokens th, table.accessTokens td {
-    padding: 0 0.5em;
-    border-bottom: 1px solid #ccc;
+table.account th {
+    border-bottom: 1px solid #000;
 }
 
-table.accessTokens form {
-    padding: 0;
-}
-
-div.footer {
-    border-top: 1px solid #888;
+table.account th, table.account td {
     padding: 0.5em 0;
-    font-size: 85%;
-    color: #888;
-    text-align: right;
-}
-
-div.footer a {
-    color: #888;
-}
-
-.pull-left {
-    float: left;
-}
-
-.pull-right {
-    float: right;
 }
