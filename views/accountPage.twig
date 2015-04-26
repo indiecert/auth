@@ -71,7 +71,7 @@
                 <tr>
                     <td><code>{{ token.client_id|e }}</code></td>
                     <td><code>{{ token.scope|e }}</code></td>
-                    <td>{{ token.issue_time|e|date }}</td>
+                    <td>{{ token.issue_time|e|date("c") }}</td>
                     <!-- <td>
                         <form method="post" action="{{ token.scope|e }}"><input class="err" type="submit" value="Delete"></form>
                     </td> -->
