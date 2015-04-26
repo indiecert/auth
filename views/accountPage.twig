@@ -14,40 +14,57 @@
             <input type="submit" value="Logout">
         </form>
 
+        {% if approvals %}
+
         <h2>Approvals</h2>
         <p>
             This table shows a list of clients for which you decided to remember the
-            approval. You can delete them here.
+            approval.
         </p>
+
+        <p class="warn">In the future it will become possible to delete approvals!</p>
+        <p class="info">Approvals are automatically forgotten after 7 days!</p>
 
         <table class="account">
             <tr>
                 <th>Website</th>
                 <th>Scope</th>
-                <th>Actions</th>
+                <!-- <th>Actions</th> -->
             </tr>
 
             {% for approval in approvals %}
                 <tr>
                     <td><code>{{ approval.client_id|e }}</code></td>
-                    <td><code>{{ approval.scope|e }}</code></td>
-                    <td><form method="post" action="{{ approval.scope|e }}"><input class="err" type="submit" value="Delete"></form></td>
+                    <td>
+                        {% if approval.scope %}
+                            <code>{{ approval.scope|e }}</code>
+                        {% else %}
+                            <small><em>n/a</em></small>
+                        {% endif %}
+                    </td>
+                    <!-- <td>
+                        <form method="post" action="{{ approval.scope|e }}"><input class="err" type="submit" value="Delete"></form>
+                    </td> -->
                 </tr>
             {% endfor %}
         </table>
+        {% endif %}
 
+        {% if tokens %}
         <h2>Access Tokens</h2>
         <p>
             This table shows a list of clients and the access tokens granted to
-            them. You can delete them here.
+            them.
         </p>
+
+        <p class="warn">In the future it will become possible to delete access tokens!</p>
 
         <table class="account">
             <tr>
                 <th>Website</th>
                 <th>Scope</th>
                 <th>Issued</th>
-                <th>Actions</th>
+                <!-- <th>Actions</th> -->
             </tr>
 
             {% for token in tokens %}
@@ -55,10 +72,13 @@
                     <td><code>{{ token.client_id|e }}</code></td>
                     <td><code>{{ token.scope|e }}</code></td>
                     <td>{{ token.issue_time|e|date }}</td>
-                    <td><form method="post" action="{{ token.scope|e }}"><input class="err" type="submit" value="Delete"></form></td>
+                    <!-- <td>
+                        <form method="post" action="{{ token.scope|e }}"><input class="err" type="submit" value="Delete"></form>
+                    </td> -->
                 </tr>
             {% endfor %}
         </table>
+        {% endif %}
 
         {% include 'footer.html' %}
     </div> <!-- /container -->

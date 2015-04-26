@@ -15,17 +15,13 @@ h1 {
 code, pre {
     font-family: monospace;
     font-size: 120%;
-}
-
-code { 
-    background-color: #d1def9;
+    background-color: #f9e5d1;
 }
 
 pre {
-    background-color: #f9e5d1;
     white-space: pre-wrap;
-    border: 1px solid #e9d5c1;
-    padding: 0.5em;
+    border: 1px solid #e8d4c0;
+    padding: 0.4em;
 }
 
 span.sup {
@@ -52,7 +48,7 @@ a {
 
 p.info {
     background-color: #063;
-    border: 1px solid #052;
+    border: 1px solid #041;
     color: #fff;
     padding: 1em;
 }
@@ -63,7 +59,7 @@ p.info a {
 
 p.warn {
     background-color: #fc0;
-    border: 1px solid #eb0;
+    border: 1px solid #da0;
     color: #000;
     padding: 1em;
 }
@@ -72,47 +68,58 @@ p.warn a {
     color: #000;
 }
 
+p.err {
+    background-color: #c00;
+    border: 1px solid #a00;
+    color: #000;
+    padding: 1em;
+}
+
+p.err a {
+    color: #000;
+}
+
 div.footer {
-    border-top: 1px solid #888;
-    margin: 0.5em 0;
+    border-top: 1px solid #bbb;
+    margin: 1em 0;
     padding: 0.5em 0;
     font-size: 85%;
-    color: #888;
+    color: #999;
     text-align: right;
 }
 
 div.footer a {
-    color: #888;
+    color: #999;
 }
 
 input[type=text] {
-    padding: 0.5em;
-    border: 1px solid #d5d5d5;
+    padding: 0.4em;
+    border: 1px solid #bbb;
 }
 
 input[type=submit] {
-    padding: 0.5em;
-    border: 1px solid #ccc;
+    padding: 0.4em;
+    background-color: #ddd;
+    border: 1px solid #bbb;
     color: #000; 
-    background: #ddd;
 }
 
 input[type=submit].info {
-    border: 1px solid #052;
+    background-color: #063;
+    border: 1px solid #041;
     color: #fff; 
-    background: #063;
 }
 
 input[type=submit].warn {
-    border: 1px solid #fc0;
+    background-color: #fc0;
+    border: 1px solid #da0;
     color: #fff; 
-    background: #ec0;
 }
 
 input[type=submit].err {
-    border: 1px solid #d00;
+    background-color: #c00;
+    border: 1px solid #a00;
     color: #fff; 
-    background: #c00;
 }
 
 form.authenticate, form.askConfirmation {
@@ -122,10 +129,11 @@ form.authenticate, form.askConfirmation {
 }
 
 form.authenticate label {
-    padding: 0.5em 0.25em;
-    border: 1px solid #d5d5d5;
+    padding: 0.4em 0.25em;
+    background-color: #ddd;
+    border: 1px solid #bbb;
     border-right: 0;
-    background-color: #e5e5e5;
+
 }
 
 table.askConfirmation {
@@ -134,7 +142,7 @@ table.askConfirmation {
 }
 
 table.askConfirmation th, table.askConfirmation td {
-    padding: 0.5em 0;
+    padding: 0.4em 0;
 }
 
 form.askConfirmation label {
@@ -147,9 +155,9 @@ table.account {
 }
 
 table.account th {
-    border-bottom: 1px solid #000;
+    border-bottom: 1px solid #bbb;
 }
 
 table.account th, table.account td {
-    padding: 0.5em;
+    padding: 0.4em;
 }
