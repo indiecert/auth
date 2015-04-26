@@ -139,7 +139,7 @@ div.footer {
     padding: 0.5em 0;
     font-size: 85%;
     color: #888;
-    overflow: hidden;
+    text-align: right;
 }
 
 div.footer a {

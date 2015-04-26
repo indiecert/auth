@@ -73,48 +73,29 @@ class IndieCertService extends Service
         }
         $this->templateManager = $templateManager;
 
+        // Autentication NOT needed
         $this->get(
             '/',
-            function (Request $request, UserInfo $userInfo = null) {
-                return $this->getIndex($request, $userInfo);
+            function (Request $request) {
+                return $this->getIndex($request);
             },
-            array(
-                'fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication' => array(
-                    'requireAuth' => false
-                )
-            )
+            array('skipPlugins' => array('fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication'))
         );
 
         $this->get(
             '/faq',
-            function (Request $request, UserInfo $userInfo) {
-                return $this->getFaq($request, $userInfo);
+            function (Request $request) {
+                return $this->getFaq($request);
             },
-            array(
-                'fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication' => array(
-                    'requireAuth' => false
-                )
-            )
+            array('skipPlugins' => array('fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication'))
         );
 
         $this->get(
             '/rp',
-            function (Request $request, UserInfo $userInfo) {
-                return $this->getRp($request, $userInfo);
+            function (Request $request) {
+                return $this->getRp($request);
             },
-            array(
-                'fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication' => array(
-                    'requireAuth' => false
-                )
-            )
-        );
-
-        // for this URL you actually need to be authenticated...
-        $this->get(
-            '/account',
-            function (Request $request, UserInfo $userInfo) {
-                return $this->getAccount($request, $userInfo);
-            }
+            array('skipPlugins' => array('fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication'))
         );
 
         $this->get(
@@ -172,63 +153,46 @@ class IndieCertService extends Service
             },
             array('skipPlugins' => array('fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication'))
         );
+
+        // MUST be authenticated
+        $this->get(
+            '/account',
+            function (Request $request, UserInfo $userInfo) {
+                return $this->getAccount($request, $userInfo);
+            }
+        );
     }
 
-    private function getIndex(Request $request, UserInfo $userInfo = null)
+    private function getIndex(Request $request)
     {
         $redirectUri = $request->getAbsRoot() . 'cb';
-        $userId = null !== $userInfo ? $userInfo->getUserId() : null;
-
         return $this->templateManager->render(
             'indexPage',
             array(
                 'redirect_uri' => $redirectUri,
-                'me' => $userId
             )
         );
     }
 
-    private function getFaq(Request $request, UserInfo $userInfo)
+    private function getFaq(Request $request)
     {
-        $userId = null !== $userInfo ? $userInfo->getUserId() : null;
-
         return $this->templateManager->render(
-            'faqPage',
-            array(
-                'me' => $userId
-            )
+            'faqPage'
         );
     }
 
-    private function getRp(Request $request, UserInfo $userInfo)
+    private function getRp(Request $request)
     {
         $authUri = $request->getAbsRoot() . 'auth';
         $verifyPath = $request->getRoot() . 'auth';
         $hostName = $request->getRequestUri()->getHost();
-        $userId = null !== $userInfo ? $userInfo->getUserId() : null;
 
         return $this->templateManager->render(
             'relyingPartyPage',
             array(
                 'authUri' => $authUri,
                 'verifyPath' => $verifyPath,
-                'hostName' => $hostName,
-                'me' => $userId
-            )
-        );
-    }
-
-    private function getAccount(Request $request, UserInfo $userInfo)
-    {
-        $userId = $userInfo->getUserId();
-
-        $accessTokens = $this->db->getAccessTokens($userId);
-
-        return $this->templateManager->render(
-            'accountPage',
-            array(
-                'me' => $userId,
-                'tokens' => $accessTokens
+                'hostName' => $hostName
             )
         );
     }
@@ -535,5 +499,19 @@ class IndieCertService extends Service
             )
         );
         return $response;
+    }
+
+    private function getAccount(Request $request, UserInfo $userInfo)
+    {
+        $userId = $userInfo->getUserId();
+        $accessTokens = $this->db->getAccessTokens($userId);
+
+        return $this->templateManager->render(
+            'accountPage',
+            array(
+                'me' => $userId,
+                'tokens' => $accessTokens
+            )
+        );
     }
 }
