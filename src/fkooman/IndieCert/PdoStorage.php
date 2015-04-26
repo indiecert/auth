@@ -140,6 +140,21 @@ class PdoStorage
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getApprovals($me)
+    {
+        // FIXME: do we need an index on the me column as well?
+        $stmt = $this->db->prepare(
+            sprintf(
+                'SELECT client_id, scope FROM %s WHERE me = :me',
+                $this->prefix.'indie_approvals'
+            )
+        );
+        $stmt->bindValue(':me', $me, PDO::PARAM_STR);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function storeApproval($me, $clientId, $redirectUri, $scope, $expiresAt)
     {
         $stmt = $this->db->prepare(

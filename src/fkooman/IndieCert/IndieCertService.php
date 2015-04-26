@@ -505,11 +505,13 @@ class IndieCertService extends Service
     {
         $userId = $userInfo->getUserId();
         $accessTokens = $this->db->getAccessTokens($userId);
+        $approvals = $this->db->getApprovals($userId);
 
         return $this->templateManager->render(
             'accountPage',
             array(
                 'me' => $userId,
+                'approvals' => $approvals,
                 'tokens' => $accessTokens
             )
         );

@@ -16,9 +16,25 @@
 
         <h2>Approvals</h2>
         <p>
-            This table shows a list of clients for which you remembered the
+            This table shows a list of clients for which you decided to remember the
             approval. You can delete them here.
         </p>
+
+        <table class="account">
+            <tr>
+                <th>Website</th>
+                <th>Scope</th>
+                <th>Actions</th>
+            </tr>
+
+            {% for approval in approvals %}
+                <tr>
+                    <td><code>{{ approval.client_id|e }}</code></td>
+                    <td><code>{{ approval.scope|e }}</code></td>
+                    <td><form method="post" action="{{ approval.scope|e }}"><input class="err" type="submit" value="Delete"></form></td>
+                </tr>
+            {% endfor %}
+        </table>
 
         <h2>Access Tokens</h2>
         <p>
