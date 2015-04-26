@@ -1,5 +1,12 @@
 # Changes
 
+## 0.4.1
+- introduce 'account' page instead of 'success' page
+- show granted approvals and access tokens on the user's account page
+- rework some CSS
+- add more unit tests
+- get rid of the `/welcome` page, no longer needed
+
 ## 0.4.0
 - fix typo in confirmation screen
 - do not show misleading `redirect_uri` errors when the error is actually
