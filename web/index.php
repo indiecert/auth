@@ -28,6 +28,7 @@ use fkooman\IndieCert\CertManager;
 use fkooman\IndieCert\IndieCertService;
 use fkooman\IndieCert\PdoStorage;
 use fkooman\IndieCert\TemplateManager;
+use fkooman\IndieCert\IndieTokenAuthentication;
 
 try {
     $iniReader = IniReader::fromFile(
@@ -64,12 +65,27 @@ try {
     $templateManager = new TemplateManager($iniReader->v('templateCache', false, null));
 
     $request = Request::fromIncomingRequest(new IncomingRequest());
+
     $indieAuth = new IndieAuthAuthentication($request->getAbsRoot() . 'auth');
     $indieAuth->setClient($client);
     $indieAuth->setDiscovery(false);
 
+    $indieTokenAuth = new IndieTokenAuthentication($db, 'IndieCert');
+
     $service = new IndieCertService($db, $certManager, $client, $templateManager);
-    $service->registerOnMatchPlugin($indieAuth);
+    $service->registerOnMatchPlugin(
+        $indieAuth,
+        array(
+            'defaultDisable' => true
+        )
+    );
+    $service->registerOnMatchPlugin(
+        $indieTokenAuth,
+        array(
+            'defaultDisable' => true
+        )
+    );
+
     $service->run($request)->sendResponse();
 } catch (Exception $e) {
     error_log(

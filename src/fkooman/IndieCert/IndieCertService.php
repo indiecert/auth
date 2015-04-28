@@ -78,80 +78,75 @@ class IndieCertService extends Service
             '/',
             function (Request $request) {
                 return $this->getIndex($request);
-            },
-            array('skipPlugins' => array('fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication'))
+            }
         );
 
         $this->get(
             '/faq',
             function (Request $request) {
                 return $this->getFaq($request);
-            },
-            array('skipPlugins' => array('fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication'))
+            }
         );
 
         $this->get(
             '/rp',
             function (Request $request) {
                 return $this->getRp($request);
-            },
-            array('skipPlugins' => array('fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication'))
+            }
         );
 
         $this->get(
             '/auth',
             function (Request $request) {
                 return $this->getAuth($request);
-            },
-            array('skipPlugins' => array('fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication'))
+            }
         );
 
         $this->post(
             '/confirm',
             function (Request $request) {
                 return $this->postConfirm($request);
-            },
-            array('skipPlugins' => array('fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication'))
+            }
         );
 
         $this->post(
             '/auth',
             function (Request $request) {
                 return $this->postAuth($request);
-            },
-            array('skipPlugins' => array('fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication'))
+            }
         );
 
         $this->get(
             '/token',
-            function (Request $request) {
-                return $this->getToken($request);
+            function (Request $request, IndieTokenInfo $indieTokenInfo) {
+                return $this->getToken($request, $indieTokenInfo);
             },
-            array('skipPlugins' => array('fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication'))
+            array(
+                'enablePlugins' => array(
+                    'fkooman\IndieCert\IndieTokenAuthentication'
+                )
+            )
         );
     
         $this->post(
             '/token',
             function (Request $request) {
                 return $this->postToken($request);
-            },
-            array('skipPlugins' => array('fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication'))
+            }
         );
         
         $this->get(
             '/enroll',
             function (Request $request) {
                 return $this->getEnroll($request);
-            },
-            array('skipPlugins' => array('fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication'))
+            }
         );
 
         $this->post(
             '/enroll',
             function (Request $request) {
                 return $this->postEnroll($request);
-            },
-            array('skipPlugins' => array('fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication'))
+            }
         );
 
         // MUST be authenticated
@@ -159,7 +154,12 @@ class IndieCertService extends Service
             '/account',
             function (Request $request, UserInfo $userInfo) {
                 return $this->getAccount($request, $userInfo);
-            }
+            },
+            array(
+                'enablePlugins' => array(
+                    'fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication'
+                )
+            )
         );
     }
 
@@ -405,7 +405,7 @@ class IndieCertService extends Service
             $responseData['scope'] = $indieCode['scope'];
 
             if ('used_for_token' === $usedFor) {
-                // generate access token and add it to the response
+                // generate access token and add it to the response as well
                 $accessToken = $this->io->getRandomHex();
                 $this->db->storeAccessToken(
                     $accessToken,
@@ -441,48 +441,8 @@ class IndieCertService extends Service
         return new RedirectResponse($responseUri, 302);
     }
 
-    private function getToken(Request $request)
+    private function getToken(Request $request, IndieTokenInfo $indieTokenInfo)
     {
-        $authHeader = $request->getHeader('Authorization');
-        if (null === $authHeader) {
-            throw new UnauthorizedException(
-                'invalid_request',
-                'missing authorization header',
-                'Bearer',
-                array(
-                    'realm' => 'IndieCert',
-                    'error' => 'invalid_request',
-                    'error_description' => 'missing authorization header'
-                )
-            );
-        }
-        if (0 !== strpos($authHeader, 'Bearer ')) {
-            throw new UnauthorizedException(
-                'invalid_request',
-                'not a bearer authorization header',
-                'Bearer',
-                array(
-                    'realm' => 'IndieCert',
-                    'error' => 'invalid_request',
-                    'error_description' => 'not a bearer authorization header'
-                )
-            );
-        }
-        
-        $accessToken = $this->db->getAccessToken(substr($authHeader, 7));
-        if (false === $accessToken) {
-            throw new UnauthorizedException(
-                'invalid_token',
-                'access token not found',
-                'Bearer',
-                array(
-                    'realm' => 'IndieCert',
-                    'error' => 'invalid_token',
-                    'error_description' => 'access token not found'
-                )
-            );
-        }
-
         // default to "application/x-www-form-urlencoded" for now...
         if (false !== strpos($request->getHeader('Accept'), 'application/json')) {
             $response = new JsonResponse();
@@ -492,12 +452,12 @@ class IndieCertService extends Service
 
         $response->setContent(
             array(
-                'me' => $accessToken['me'],
-                'scope' => $accessToken['scope'],
-                'client_id' => $accessToken['client_id']
-                //'issued_at' => $accessToken['issue_time']
+                'me' => $indieTokenInfo->getMe(),
+                'scope' => $indieTokenInfo->getScope(),
+                'client_id' => $indieTokenInfo->getClientId()
             )
         );
+
         return $response;
     }
 

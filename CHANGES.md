@@ -1,5 +1,10 @@
 # Changes
 
+## 0.4.2
+- separate token validation class + initial unit test
+- update `fkooman/rest` to support 'default disabled' plugins cleaning up to
+  code a lot
+
 ## 0.4.1
 - introduce 'account' page instead of 'success' page
 - show granted approvals and access tokens on the user's account page
