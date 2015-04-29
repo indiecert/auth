@@ -161,6 +161,30 @@ class IndieCertService extends Service
                 )
             )
         );
+        
+        $this->post(
+            '/credential',
+            function (Request $request, UserInfo $userInfo) {
+                return $this->generateCredential($request, $userInfo);
+            },
+            array(
+                'enablePlugins' => array(
+                    'fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication'
+                )
+            )
+        );
+
+        $this->delete(
+            '/credential',
+            function (Request $request, UserInfo $userInfo) {
+                return $this->deleteCredential($request, $userInfo);
+            },
+            array(
+                'enablePlugins' => array(
+                    'fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication'
+                )
+            )
+        );
     }
 
     private function getIndex(Request $request)
@@ -466,14 +490,38 @@ class IndieCertService extends Service
         $userId = $userInfo->getUserId();
         $accessTokens = $this->db->getAccessTokens($userId);
         $approvals = $this->db->getApprovals($userId);
-
+        $credential = $this->db->getCredentialForUser($userId);
+        $tokenEndpoint = $request->getAbsRoot() . 'token';
         return $this->templateManager->render(
             'accountPage',
             array(
                 'me' => $userId,
                 'approvals' => $approvals,
-                'tokens' => $accessTokens
+                'tokens' => $accessTokens,
+                'credential' => $credential,
+                'token_endpoint' => $tokenEndpoint
             )
         );
+    }
+
+    private function generateCredential(Request $request, UserInfo $userInfo)
+    {
+        // delete
+        $this->db->deleteCredential($userInfo->getUserId());
+        
+        // create new
+        $credential = $this->io->getRandomHex();
+        $issueTime = $this->io->getTime();
+        $this->db->storeCredential($userInfo->getUserId(), $credential, $issueTime);
+
+        return new RedirectResponse($request->getAbsRoot() . 'account#micropub', 302);
+    }
+
+    private function deleteCredential(Request $request, UserInfo $userInfo)
+    {
+        // delete
+        $this->db->deleteCredential($userInfo->getUserId());
+        
+        return new RedirectResponse($request->getAbsRoot() . 'account#micropub', 302);
     }
 }

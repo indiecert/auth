@@ -4,6 +4,9 @@
 - separate token validation class + initial unit test
 - update `fkooman/rest` to support 'default disabled' plugins cleaning up to
   code a lot
+- implement generation of authentication tokens needed for token validation
+  on account page
+- remove all `<blockquote>`'s
 
 ## 0.4.1
 - introduce 'account' page instead of 'success' page

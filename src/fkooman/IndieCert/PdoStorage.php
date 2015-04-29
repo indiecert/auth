@@ -145,7 +145,7 @@ class PdoStorage
         // FIXME: do we need an index on the me column as well?
         $stmt = $this->db->prepare(
             sprintf(
-                'SELECT client_id, scope FROM %s WHERE me = :me',
+                'SELECT client_id, scope, expires_at FROM %s WHERE me = :me',
                 $this->prefix.'indie_approvals'
             )
         );
@@ -228,6 +228,67 @@ class PdoStorage
         }
     }
 
+    public function getCredential($bearerToken)
+    {
+        $stmt = $this->db->prepare(
+            sprintf(
+                'SELECT * FROM %s WHERE bearer_token = :bearer_token',
+                $this->prefix.'indie_credentials'
+            )
+        );
+        $stmt->bindValue(':bearer_token', $bearerToken, PDO::PARAM_STR);
+        $stmt->execute();
+
+        // FIXME: return false if non available!
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getCredentialForUser($me)
+    {
+        $stmt = $this->db->prepare(
+            sprintf(
+                'SELECT * FROM %s WHERE me = :me',
+                $this->prefix.'indie_credentials'
+            )
+        );
+        $stmt->bindValue(':me', $me, PDO::PARAM_STR);
+        $stmt->execute();
+
+        // FIXME: return false if non available!
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function storeCredential($me, $bearerToken, $issueTime)
+    {
+        $stmt = $this->db->prepare(
+            sprintf(
+                'INSERT INTO %s (me, bearer_token, issue_time) VALUES(:me, :bearer_token, :issue_time)',
+                $this->prefix.'indie_credentials'
+            )
+        );
+        $stmt->bindValue(':me', $me, PDO::PARAM_STR);
+        $stmt->bindValue(':bearer_token', $bearerToken, PDO::PARAM_STR);
+        $stmt->bindValue(':issue_time', $issueTime, PDO::PARAM_INT);
+        $stmt->execute();
+
+        if (1 !== $stmt->rowCount()) {
+            throw new PdoStorageException('unable to add');
+        }
+    }
+
+    public function deleteCredential($me)
+    {
+        $stmt = $this->db->prepare(
+            sprintf(
+                'DELETE FROM %s WHERE me = :me',
+                $this->prefix.'indie_credentials'
+            )
+        );
+
+        $stmt->bindValue(':me', $me, PDO::PARAM_STR);
+        return $stmt->execute();
+    }
+
     public function deleteExpiredApprovals($currentTime)
     {
         $stmt = $this->db->prepare(
@@ -296,6 +357,16 @@ class PdoStorage
             $prefix.'indie_access_tokens'
         );
 
+        $query[] = sprintf(
+            'CREATE TABLE IF NOT EXISTS %s (
+                bearer_token VARCHAR(255) NOT NULL,
+                me VARCHAR(255) NOT NULL,
+                issue_time INT NOT NULL,
+                PRIMARY KEY (bearer_token)
+            )',
+            $prefix.'indie_credentials'
+        );
+
         return $query;
     }
 
@@ -306,7 +377,7 @@ class PdoStorage
             $this->db->query($q);
         }
 
-        $tables = array('indie_approvals', 'indie_codes', 'indie_access_tokens');
+        $tables = array('indie_approvals', 'indie_codes', 'indie_access_tokens', 'indie_credentials');
         foreach ($tables as $t) {
             // make sure the tables are empty
             $this->db->query(

@@ -22,13 +22,11 @@
             approval.
         </p>
 
-        <p class="warn">In the future it will become possible to delete approvals!</p>
-        <p class="info">Approvals are automatically forgotten after 7 days!</p>
-
         <table class="account">
             <tr>
                 <th>Website</th>
                 <th>Scope</th>
+                <th>Expires</th>
                 <!-- <th>Actions</th> -->
             </tr>
 
@@ -42,6 +40,7 @@
                             <small><em>n/a</em></small>
                         {% endif %}
                     </td>
+                    <td>{{ approval.expires_at|e|date("Y-m-d") }}</td>
                     <!-- <td>
                         <form method="post" action="{{ approval.scope|e }}"><input class="err" type="submit" value="Delete"></form>
                     </td> -->
@@ -71,13 +70,40 @@
                 <tr>
                     <td><code>{{ token.client_id|e }}</code></td>
                     <td><code>{{ token.scope|e }}</code></td>
-                    <td>{{ token.issue_time|e|date("c") }}</td>
+                    <td>{{ token.issue_time|e|date("Y-m-d") }}</td>
                     <!-- <td>
                         <form method="post" action="{{ token.scope|e }}"><input class="err" type="submit" value="Delete"></form>
                     </td> -->
                 </tr>
             {% endfor %}
         </table>
+        {% endif %}
+
+        <h2 id="micropub">Micropub</h2>
+        <p>
+            If you run your own <a href="https://indiewebcamp.com/micropub">micropub</a>
+            service you can generate a secret here that can be used by the
+            micropub endpoint to validate tokens it receives from a micropub
+            client at endpoint <code>{{ token_endpoint|e }}</code>.
+        </p>
+
+        {% if credential %}
+            <p class="block">
+                Your micropub credential is <code>{{ credential.bearer_token|e }}</code>.
+            </p>
+            <form class="credential" method="post" action="credential">
+                <input class="warn" type="submit" value="Regenerate">
+            </form>
+
+            <form class="credential" method="post" action="credential">
+                <input type="hidden" name="_METHOD" value="DELETE">
+                <input class="err" type="submit" value="Delete">
+            </form>
+        {% else %}
+            <form class="credentials" method="post" action="credential">
+                <input type="hidden" name="type" value="micropub">
+                <input class="info" type="submit" value="Generate">
+            </form>
         {% endif %}
 
         {% include 'footer.html' %}
