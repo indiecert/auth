@@ -91,11 +91,7 @@
             <p class="block">
                 Your micropub credential is <code>{{ credential.bearer_token|e }}</code>.
             </p>
-            <form class="credential" method="post" action="credential">
-                <input class="warn" type="submit" value="Regenerate">
-            </form>
-
-            <form class="credential" method="post" action="credential">
+            <form method="post" action="credential">
                 <input type="hidden" name="_METHOD" value="DELETE">
                 <input class="err" type="submit" value="Delete">
             </form>

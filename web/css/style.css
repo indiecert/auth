@@ -138,10 +138,6 @@ input[type=submit].err {
     color: #fff; 
 }
 
-form.credential {
-    display: inline;
-}
-
 form.authenticate, form.askConfirmation {
     text-align: center;
     padding: 1em;

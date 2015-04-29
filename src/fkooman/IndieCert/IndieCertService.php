@@ -506,10 +506,6 @@ class IndieCertService extends Service
 
     private function generateCredential(Request $request, UserInfo $userInfo)
     {
-        // delete
-        $this->db->deleteCredential($userInfo->getUserId());
-        
-        // create new
         $credential = $this->io->getRandomHex();
         $issueTime = $this->io->getTime();
         $this->db->storeCredential($userInfo->getUserId(), $credential, $issueTime);
