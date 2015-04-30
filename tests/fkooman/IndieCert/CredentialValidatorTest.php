@@ -19,16 +19,9 @@ namespace fkooman\IndieCert;
 
 use PDO;
 use PHPUnit_Framework_TestCase;
-use fkooman\Http\Request;
-use fkooman\Http\Uri;
-use GuzzleHttp\Client;
-use GuzzleHttp\Subscriber\Mock;
-use GuzzleHttp\Message\Response;
-use GuzzleHttp\Stream\Stream;
 
-class IndieTokenAuthenticationTest extends PHPUnit_Framework_TestCase
+class CredentialValidatorTest extends PHPUnit_Framework_TestCase
 {
-    /** @var fkooman\IndieCert\PdoStorage */
     private $db;
 
     public function setUp()
@@ -43,27 +36,18 @@ class IndieTokenAuthenticationTest extends PHPUnit_Framework_TestCase
         $this->db->initDatabase();
     }
 
-    public function testIndieTokenSimple()
+    public function testNonExistingCredential()
     {
-        $this->db->storeAccessToken(
-            'xyz',
-            'https://fkooman.example/',
-            'https://app.example/',
-            'post',
-            time()
-        );
+        $c = new CredentialValidator($this->db);
+        $tokenInfo = $c->validate('foo');
+        $this->assertFalse($tokenInfo->get('active'));
+    }
 
-        $request = new Request('https://indiecert.example/token', 'GET');
-        $request->setHeaders(
-            array(
-                'Authorization' => 'Bearer xyz'
-            )
-        );
- 
-        $ita = new IndieTokenAuthentication($this->db, 'IndieCert');
-        $response = $ita->execute($request, array());
-        $this->assertEquals('https://fkooman.example/', $response->getMe());
-        $this->assertEquals('https://app.example/', $response->getClientId());
-        $this->assertEquals('post', $response->getScope());
+    public function testExistingCredential()
+    {
+        $this->db->storeCredential('https://www.example.org/', 'foo', '123456');
+        $c = new CredentialValidator($this->db);
+        $tokenInfo = $c->validate('foo');
+        $this->assertTrue($tokenInfo->get('active'));
     }
 }

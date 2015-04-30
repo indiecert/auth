@@ -130,14 +130,32 @@ class PdoStorage
         // FIXME: do we need an index on the me column as well?
         $stmt = $this->db->prepare(
             sprintf(
-                'SELECT client_id, scope, issue_time FROM %s WHERE me = :me',
+                'SELECT * FROM %s WHERE me = :me',
                 $this->prefix.'indie_access_tokens'
             )
         );
         $stmt->bindValue(':me', $me, PDO::PARAM_STR);
         $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $accessTokens = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        for ($i = 0; $i < count($accessTokens); $i++) {
+            $accessTokens[$i]['access_token'] = substr($accessTokens[$i]['access_token'], 0, 12);
+        }
+        return $accessTokens;
+    }
+
+    public function deleteAccessToken($me, $accessToken)
+    {
+        $stmt = $this->db->prepare(
+            sprintf(
+                'DELETE FROM %s WHERE me = :me AND access_token LIKE :access_token',
+                $this->prefix.'indie_access_tokens'
+            )
+        );
+
+        $stmt->bindValue(':me', $me, PDO::PARAM_STR);
+        $stmt->bindValue(':access_token', $accessToken . '%', PDO::PARAM_STR);
+        return $stmt->execute();
     }
 
     public function getApprovals($me)

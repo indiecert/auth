@@ -19,7 +19,7 @@
         <h2>Approvals</h2>
         <p>
             This table shows a list of clients for which you decided to remember the
-            approval.
+            approval. Approvals expire automatically after 7 days.
         </p>
 
         <table class="account">
@@ -27,7 +27,6 @@
                 <th>Website</th>
                 <th>Scope</th>
                 <th>Expires</th>
-                <!-- <th>Actions</th> -->
             </tr>
 
             {% for approval in approvals %}
@@ -41,9 +40,6 @@
                         {% endif %}
                     </td>
                     <td>{{ approval.expires_at|e|date("Y-m-d") }}</td>
-                    <!-- <td>
-                        <form method="post" action="{{ approval.scope|e }}"><input class="err" type="submit" value="Delete"></form>
-                    </td> -->
                 </tr>
             {% endfor %}
         </table>
@@ -56,14 +52,12 @@
             them.
         </p>
 
-        <p class="warn">In the future it will become possible to delete access tokens!</p>
-
         <table class="account">
             <tr>
                 <th>Website</th>
                 <th>Scope</th>
                 <th>Issued</th>
-                <!-- <th>Actions</th> -->
+                <th>Actions</th>
             </tr>
 
             {% for token in tokens %}
@@ -71,9 +65,12 @@
                     <td><code>{{ token.client_id|e }}</code></td>
                     <td><code>{{ token.scope|e }}</code></td>
                     <td>{{ token.issue_time|e|date("Y-m-d") }}</td>
-                    <!-- <td>
-                        <form method="post" action="{{ token.scope|e }}"><input class="err" type="submit" value="Delete"></form>
-                    </td> -->
+                    <td>
+                        <form method="post" action="token/{{ token.access_token|e }}">
+                            <input type="hidden" name="_METHOD" value="DELETE">
+                            <input class="err" type="submit" value="Delete">
+                        </form>
+                    </td>
                 </tr>
             {% endfor %}
         </table>
@@ -81,16 +78,16 @@
 
         <h2 id="micropub">Micropub</h2>
         <p>
-            If you run your own <a href="https://indiewebcamp.com/micropub">micropub</a>
-            service you can generate a secret here that can be used by the
-            micropub endpoint to validate tokens it receives from a micropub
-            client at endpoint <code>{{ token_endpoint|e }}</code>.
+            You can generate a token here for use by your own
+            <a href="https://indiewebcamp.com/micropub">micropub</a> endpoint.
+            See the <a href="faq#micropub">FAQ</a> for more information.
         </p>
 
         {% if credential %}
-            <p class="block">
-                Your micropub credential is <code>{{ credential.bearer_token|e }}</code>.
+            <p>
+            Your token is <code>{{ credential.bearer_token|e }}</code>.
             </p>
+
             <form method="post" action="credential">
                 <input type="hidden" name="_METHOD" value="DELETE">
                 <input class="err" type="submit" value="Delete">

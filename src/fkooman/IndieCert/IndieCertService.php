@@ -29,6 +29,7 @@ use fkooman\Http\Exception\BadRequestException;
 use fkooman\Http\Exception\ForbiddenException;
 use fkooman\Http\Exception\UnauthorizedException;
 use fkooman\Rest\Plugin\UserInfo;
+use fkooman\Rest\Plugin\Bearer\TokenInfo;
 use InvalidArgumentException;
 
 class IndieCertService extends Service
@@ -115,24 +116,36 @@ class IndieCertService extends Service
                 return $this->postAuth($request);
             }
         );
-
-        $this->get(
-            '/token',
-            function (Request $request, IndieTokenInfo $indieTokenInfo) {
-                return $this->getToken($request, $indieTokenInfo);
-            },
-            array(
-                'enablePlugins' => array(
-                    'fkooman\IndieCert\IndieTokenAuthentication'
-                )
-            )
-        );
     
         $this->post(
             '/token',
-            function (Request $request) {
-                return $this->postToken($request);
-            }
+            function (Request $request, TokenInfo $tokenInfo = null) {
+                if (null === $tokenInfo) {
+                    // no bearer token authentication
+                    return $this->postToken($request);
+                }
+                return $this->verifyToken($request, $tokenInfo);
+            },
+            array(
+                'enablePlugins' => array(
+                    'fkooman\Rest\Plugin\Bearer\BearerAuthentication'
+                ),
+                'fkooman\Rest\Plugin\Bearer\BearerAuthentication' => array(
+                    'requireAuth' => false
+                )
+            )
+        );
+
+        $this->delete(
+            '/token/:id',
+            function (Request $request, UserInfo $userInfo, $id) {
+                return $this->deleteToken($request, $userInfo, $id);
+            },
+            array(
+                'enablePlugins' => array(
+                    'fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication'
+                )
+            )
         );
         
         $this->get(
@@ -201,7 +214,10 @@ class IndieCertService extends Service
     private function getFaq(Request $request)
     {
         return $this->templateManager->render(
-            'faqPage'
+            'faqPage',
+            array(
+                'token_endpoint' => $request->getAbsRoot() . 'token'
+            )
         );
     }
 
@@ -384,10 +400,6 @@ class IndieCertService extends Service
     private function postAuthToken(Request $request, $usedFor)
     {
         $code = InputValidation::validateCode($request->getPostParameter('code'));
-
-        if (null === $code) {
-            throw new BadRequestException('invalid_request', 'missing code');
-        }
         $clientId = InputValidation::validateUri($request->getPostParameter('client_id'), 'client_id');
         $redirectUri = InputValidation::validateUri($request->getPostParameter('redirect_uri'), 'redirect_uri');
 
@@ -465,22 +477,38 @@ class IndieCertService extends Service
         return new RedirectResponse($responseUri, 302);
     }
 
-    private function getToken(Request $request, IndieTokenInfo $indieTokenInfo)
+    private function verifyToken(Request $request, TokenInfo $tokenInfo)
     {
-        // default to "application/x-www-form-urlencoded" for now...
-        if (false !== strpos($request->getHeader('Accept'), 'application/json')) {
-            $response = new JsonResponse();
-        } else {
-            $response = new FormResponse();
+        // validate the request is properly authenticated
+        // FIXME: this is never triggered, we MUST assume if bearer authorization
+        // token is set it is an attempt at verifying the token...
+        if (!$tokenInfo->get('active')) {
+            throw new UnauthorizedException('', '');
+        }
+        
+        $token = $request->getPostParameter('token');
+        if (null === $token) {
+            throw new BadRequestException('invalid_request', 'token parameter missing');
         }
 
-        $response->setContent(
-            array(
-                'me' => $indieTokenInfo->getMe(),
-                'scope' => $indieTokenInfo->getScope(),
-                'client_id' => $indieTokenInfo->getClientId()
-            )
-        );
+        $accessToken = $this->db->getAccessToken($token);
+        if (false === $accessToken) {
+            $tokenInfo = array(
+                'active' => false
+            );
+        } else {
+            $tokenInfo = array(
+                'active' => true,
+                'me' => $accessToken['me'],
+                'sub' => $accessToken['me'],
+                'scope' => $accessToken['scope'],
+                'client_id' => $accessToken['client_id'],
+                'iat' => intval($accessToken['issue_time'])
+            );
+        }
+
+        $response = new JsonResponse();
+        $response->setContent($tokenInfo);
 
         return $response;
     }
@@ -491,15 +519,14 @@ class IndieCertService extends Service
         $accessTokens = $this->db->getAccessTokens($userId);
         $approvals = $this->db->getApprovals($userId);
         $credential = $this->db->getCredentialForUser($userId);
-        $tokenEndpoint = $request->getAbsRoot() . 'token';
+
         return $this->templateManager->render(
             'accountPage',
             array(
                 'me' => $userId,
                 'approvals' => $approvals,
                 'tokens' => $accessTokens,
-                'credential' => $credential,
-                'token_endpoint' => $tokenEndpoint
+                'credential' => $credential
             )
         );
     }
@@ -515,9 +542,15 @@ class IndieCertService extends Service
 
     private function deleteCredential(Request $request, UserInfo $userInfo)
     {
-        // delete
         $this->db->deleteCredential($userInfo->getUserId());
         
         return new RedirectResponse($request->getAbsRoot() . 'account#micropub', 302);
+    }
+
+    private function deleteToken(Request $request, UserInfo $userInfo, $id)
+    {
+        $this->db->deleteAccessToken($userInfo->getUserId(), $id);
+
+        return new RedirectResponse($request->getAbsRoot() . 'account', 302);
     }
 }

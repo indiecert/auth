@@ -23,12 +23,13 @@ use fkooman\Http\IncomingRequest;
 use fkooman\Http\Exception\HttpException;
 use fkooman\Http\Exception\InternalServerErrorException;
 use fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication;
+use fkooman\Rest\Plugin\Bearer\BearerAuthentication;
 use GuzzleHttp\Client;
+use fkooman\IndieCert\CredentialValidator;
 use fkooman\IndieCert\CertManager;
 use fkooman\IndieCert\IndieCertService;
 use fkooman\IndieCert\PdoStorage;
 use fkooman\IndieCert\TemplateManager;
-use fkooman\IndieCert\IndieTokenAuthentication;
 
 try {
     $iniReader = IniReader::fromFile(
@@ -70,7 +71,10 @@ try {
     $indieAuth->setClient($client);
     $indieAuth->setDiscovery(false);
 
-    $indieTokenAuth = new IndieTokenAuthentication($db, 'IndieCert');
+    $bearerAuth = new BearerAuthentication(
+        new CredentialValidator($db),
+        'IndieCert'
+    );
 
     $service = new IndieCertService($db, $certManager, $client, $templateManager);
     $service->registerOnMatchPlugin(
@@ -80,7 +84,7 @@ try {
         )
     );
     $service->registerOnMatchPlugin(
-        $indieTokenAuth,
+        $bearerAuth,
         array(
             'defaultDisable' => true
         )
@@ -88,8 +92,5 @@ try {
 
     $service->run($request)->sendResponse();
 } catch (Exception $e) {
-    error_log(
-        $e->getMessage()
-    );
-    IndieCertService::handleException($e)->sendResponse();
+    IndieCertService::handleException($e, false)->sendResponse();
 }

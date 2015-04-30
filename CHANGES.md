@@ -1,12 +1,18 @@
 # Changes
 
 ## 0.4.2
-- separate token validation class + initial unit test
+- separate token validation class and add initial unit test
 - update `fkooman/rest` to support 'default disabled' plugins cleaning up to
   code a lot
 - implement generation of authentication tokens needed for token validation
-  on account page
+  by micropub endpoint
 - remove all `<blockquote>`'s
+- make it possible to manually delete granted access tokens on the account 
+  page
+- use `fkooman/rest-plugin-bearer` for token validation on `token` endpoint
+  instead of rolling our own
+- implement token introspection according to 
+  `draft-ietf-oauth-introspection-08`
 
 ## 0.4.1
 - introduce 'account' page instead of 'success' page
