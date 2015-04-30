@@ -499,7 +499,6 @@ class IndieCertService extends Service
         } else {
             $tokenInfo = array(
                 'active' => true,
-                'me' => $accessToken['me'],
                 'sub' => $accessToken['me'],
                 'scope' => $accessToken['scope'],
                 'client_id' => $accessToken['client_id'],
