@@ -110,7 +110,7 @@ fi
 %{_datadir}/indiecert/views
 %{_datadir}/indiecert/config
 %dir %attr(0700,apache,apache) %{_localstatedir}/lib/indiecert
-%doc README.md agpl-3.0.txt composer.json config/
+%doc CHANGES.md README.md agpl-3.0.txt composer.json config/
 
 %changelog
 * Thu Apr 30 2015 François Kooman <fkooman@tuxed.net> - 0.4.2-1
