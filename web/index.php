@@ -70,6 +70,7 @@ try {
     $indieAuth = new IndieAuthAuthentication($request->getAbsRoot() . 'auth');
     $indieAuth->setClient($client);
     $indieAuth->setDiscovery(false);
+    $indieAuth->setUnauthorizedRedirectUri('/authenticate');
 
     $bearerAuth = new BearerAuthentication(
         new CredentialValidator($db),

@@ -1,5 +1,9 @@
 # Changes
 
+## 0.4.3
+- update `fkooman/rest-plugin-indieauth` to support redirecting in case
+  of unauthenticated requests to protected endpoints
+
 ## 0.4.2
 - separate token validation class and add initial unit test
 - update `fkooman/rest` to support 'default disabled' plugins cleaning up to

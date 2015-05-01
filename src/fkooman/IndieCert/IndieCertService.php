@@ -28,8 +28,8 @@ use fkooman\Http\RedirectResponse;
 use fkooman\Http\Exception\BadRequestException;
 use fkooman\Http\Exception\ForbiddenException;
 use fkooman\Http\Exception\UnauthorizedException;
-use fkooman\Rest\Plugin\UserInfo;
 use fkooman\Rest\Plugin\Bearer\TokenInfo;
+use fkooman\Rest\Plugin\IndieAuth\IndieInfo;
 use InvalidArgumentException;
 
 class IndieCertService extends Service
@@ -117,6 +117,13 @@ class IndieCertService extends Service
             }
         );
     
+        $this->get(
+            '/authenticate',
+            function (Request $request) {
+                return $this->getAuthenticate($request);
+            }
+        );
+
         $this->post(
             '/token',
             function (Request $request, TokenInfo $tokenInfo = null) {
@@ -138,8 +145,8 @@ class IndieCertService extends Service
 
         $this->delete(
             '/token/:id',
-            function (Request $request, UserInfo $userInfo, $id) {
-                return $this->deleteToken($request, $userInfo, $id);
+            function (Request $request, IndieInfo $indieInfo, $id) {
+                return $this->deleteToken($request, $indieInfo, $id);
             },
             array(
                 'enablePlugins' => array(
@@ -165,8 +172,8 @@ class IndieCertService extends Service
         // MUST be authenticated
         $this->get(
             '/account',
-            function (Request $request, UserInfo $userInfo) {
-                return $this->getAccount($request, $userInfo);
+            function (Request $request, IndieInfo $indieInfo) {
+                return $this->getAccount($request, $indieInfo);
             },
             array(
                 'enablePlugins' => array(
@@ -177,8 +184,8 @@ class IndieCertService extends Service
         
         $this->post(
             '/credential',
-            function (Request $request, UserInfo $userInfo) {
-                return $this->generateCredential($request, $userInfo);
+            function (Request $request, IndieInfo $indieInfo) {
+                return $this->generateCredential($request, $indieInfo);
             },
             array(
                 'enablePlugins' => array(
@@ -189,8 +196,8 @@ class IndieCertService extends Service
 
         $this->delete(
             '/credential',
-            function (Request $request, UserInfo $userInfo) {
-                return $this->deleteCredential($request, $userInfo);
+            function (Request $request, IndieInfo $indieInfo) {
+                return $this->deleteCredential($request, $indieInfo);
             },
             array(
                 'enablePlugins' => array(
@@ -233,6 +240,16 @@ class IndieCertService extends Service
                 'authUri' => $authUri,
                 'verifyPath' => $verifyPath,
                 'hostName' => $hostName
+            )
+        );
+    }
+
+    private function getAuthenticate(Request $request)
+    {
+        return $this->templateManager->render(
+            'authPage',
+            array(
+                'redirect_to' => InputValidation::validateRedirectTo($request->getAbsRoot(), $request->getQueryParameter('redirect_to'))
             )
         );
     }
@@ -512,9 +529,9 @@ class IndieCertService extends Service
         return $response;
     }
 
-    private function getAccount(Request $request, UserInfo $userInfo)
+    private function getAccount(Request $request, IndieInfo $indieInfo)
     {
-        $userId = $userInfo->getUserId();
+        $userId = $indieInfo->getUserId();
         $accessTokens = $this->db->getAccessTokens($userId);
         $approvals = $this->db->getApprovals($userId);
         $credential = $this->db->getCredentialForUser($userId);
@@ -530,26 +547,26 @@ class IndieCertService extends Service
         );
     }
 
-    private function generateCredential(Request $request, UserInfo $userInfo)
+    private function generateCredential(Request $request, IndieInfo $indieInfo)
     {
         $credential = $this->io->getRandomHex();
         $issueTime = $this->io->getTime();
-        $this->db->storeCredential($userInfo->getUserId(), $credential, $issueTime);
+        $this->db->storeCredential($indieInfo->getUserId(), $credential, $issueTime);
 
         return new RedirectResponse($request->getAbsRoot() . 'account#micropub', 302);
     }
 
-    private function deleteCredential(Request $request, UserInfo $userInfo)
+    private function deleteCredential(Request $request, IndieInfo $indieInfo)
     {
-        $this->db->deleteCredential($userInfo->getUserId());
+        $this->db->deleteCredential($indieInfo->getUserId());
         
         return new RedirectResponse($request->getAbsRoot() . 'account#micropub', 302);
     }
 
-    private function deleteToken(Request $request, UserInfo $userInfo, $id)
+    private function deleteToken(Request $request, IndieInfo $indieInfo, $id)
     {
-        $this->db->deleteAccessToken($userInfo->getUserId(), $id);
+        $this->db->deleteAccessToken($indieInfo->getUserId(), $id);
 
-        return new RedirectResponse($request->getAbsRoot() . 'account', 302);
+        return new RedirectResponse($request->getAbsRoot() . 'account#access_tokens', 302);
     }
 }

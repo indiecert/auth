@@ -117,4 +117,32 @@ class InputValidation
 
         return $state;
     }
+
+    public static function validateRedirectTo($absRoot, $redirectTo)
+    {
+        // no redirectTo specified
+        if (null === $redirectTo) {
+            $redirectTo = $absRoot;
+        }
+
+        // redirectTo specified, using path relative to absRoot
+        if (0 === strpos($redirectTo, '/')) {
+            $redirectTo = $absRoot . substr($redirectTo, 1);
+        }
+
+        // validate and normalize the URL
+        try {
+            $redirectToObj = new Uri($redirectTo);
+            $redirectTo = $redirectToObj->getUri();
+        } catch (InvalidArgumentException $e) {
+            throw new BadRequestException('invalid redirect_to URL');
+        }
+
+        // URL needs to start with absRoot
+        if (0 !== strpos($redirectTo, $absRoot)) {
+            throw new BadRequestException('redirect_to needs to point to a URL relative to the application root');
+        }
+        
+        return $redirectTo;
+    }
 }

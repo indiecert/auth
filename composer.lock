@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "e54536a5ffaf7a53c3b43fa2e20ab0bf",
+    "hash": "8b4c0ee73f5c443d89af15fb0d53e0f7",
     "packages": [
         {
             "name": "fkooman/cert-parser",
@@ -171,16 +171,16 @@
         },
         {
             "name": "fkooman/rest-plugin-bearer",
-            "version": "0.4.0",
+            "version": "0.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fkooman/php-lib-rest-plugin-bearer.git",
-                "reference": "f9e25856d221510a826c6b99897eb29451929790"
+                "reference": "f010b34336201399ec0af2eacd30672c2158a862"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fkooman/php-lib-rest-plugin-bearer/zipball/f9e25856d221510a826c6b99897eb29451929790",
-                "reference": "f9e25856d221510a826c6b99897eb29451929790",
+                "url": "https://api.github.com/repos/fkooman/php-lib-rest-plugin-bearer/zipball/f010b34336201399ec0af2eacd30672c2158a862",
+                "reference": "f010b34336201399ec0af2eacd30672c2158a862",
                 "shasum": ""
             },
             "require": {
@@ -206,25 +206,25 @@
                 }
             ],
             "description": "Bearer (OAuth) Authentication plugin for fkooman/rest",
-            "time": "2015-04-30 11:51:52"
+            "time": "2015-04-30 14:23:31"
         },
         {
             "name": "fkooman/rest-plugin-indieauth",
-            "version": "0.2.2",
+            "version": "0.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fkooman/php-lib-rest-plugin-indieauth.git",
-                "reference": "f877bc30bde078e579703d346679bf008e0f55d8"
+                "reference": "6a12423d73b6e25d3d1eeeb22992382fa4dc77cc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fkooman/php-lib-rest-plugin-indieauth/zipball/f877bc30bde078e579703d346679bf008e0f55d8",
-                "reference": "f877bc30bde078e579703d346679bf008e0f55d8",
+                "url": "https://api.github.com/repos/fkooman/php-lib-rest-plugin-indieauth/zipball/6a12423d73b6e25d3d1eeeb22992382fa4dc77cc",
+                "reference": "6a12423d73b6e25d3d1eeeb22992382fa4dc77cc",
                 "shasum": ""
             },
             "require": {
                 "ext-openssl": "*",
-                "fkooman/rest": "~0.8.0",
+                "fkooman/rest": "~0.8.1",
                 "guzzlehttp/guzzle": "~4.0",
                 "php": ">=5.4.0"
             },
@@ -246,7 +246,7 @@
                 }
             ],
             "description": "IndieAuth plugin for fkooman/rest",
-            "time": "2015-04-12 15:39:56"
+            "time": "2015-05-01 14:44:18"
         },
         {
             "name": "guzzle/guzzle",

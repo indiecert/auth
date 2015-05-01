@@ -2,7 +2,7 @@
 %global github_name      indiecert
 
 Name:       indiecert
-Version:    0.4.2
+Version:    0.4.3
 Release:    1%{?dist}
 Summary:    Authentication service using client certificates
 
@@ -28,9 +28,9 @@ Requires:   php-composer(fkooman/ini) >= 0.2.0
 Requires:   php-composer(fkooman/ini) < 0.3.0
 Requires:   php-composer(fkooman/rest) >= 0.8.1
 Requires:   php-composer(fkooman/rest) < 0.9.0
-Requires:   php-composer(fkooman/rest-plugin-indieauth) >= 0.2.2
-Requires:   php-composer(fkooman/rest-plugin-indieauth) < 0.3.0
-Requires:   php-composer(fkooman/rest-plugin-bearer) >= 0.4.0
+Requires:   php-composer(fkooman/rest-plugin-indieauth) >= 0.3.0
+Requires:   php-composer(fkooman/rest-plugin-indieauth) < 0.4.0
+Requires:   php-composer(fkooman/rest-plugin-bearer) >= 0.4.1
 Requires:   php-composer(fkooman/rest-plugin-bearer) < 0.5.0
 Requires:   php-composer(fkooman/cert-parser) >= 0.1.8
 Requires:   php-composer(fkooman/cert-parser) < 0.2.0
@@ -113,6 +113,9 @@ fi
 %doc CHANGES.md README.md agpl-3.0.txt composer.json config/
 
 %changelog
+* Fri May 01 2015 François Kooman <fkooman@tuxed.net> - 0.4.3-1
+- update to 0.4.3
+
 * Thu Apr 30 2015 François Kooman <fkooman@tuxed.net> - 0.4.2-1
 - update to 0.4.2
 
