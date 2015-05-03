@@ -5,9 +5,16 @@
 <body>
     <div id="container">
         <a class="header" href="."><h1>IndieCert</h1></a>
+
+        {% if redirect_to %}
+            <p class="warn">
+                You tried to access <code>{{ redirect_to|e }}</code> which requires
+                authentication.
+            </p>
+        {% endif %}
+
         <p>
-            The page you tried to visit needs authentication. Please login
-            with your domain name.
+            Please login with your domain name.
         </p>
 
         <form class="authenticate" method="post" action="indieauth/auth">

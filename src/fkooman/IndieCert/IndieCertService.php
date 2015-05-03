@@ -118,9 +118,9 @@ class IndieCertService extends Service
         );
     
         $this->get(
-            '/authenticate',
+            '/login',
             function (Request $request) {
-                return $this->getAuthenticate($request);
+                return $this->getLogin($request);
             }
         );
 
@@ -244,12 +244,17 @@ class IndieCertService extends Service
         );
     }
 
-    private function getAuthenticate(Request $request)
+    private function getLogin(Request $request)
     {
+        $redirectTo = null;
+        if (null !== $request->getQueryParameter('redirect_to')) {
+            $redirectTo = InputValidation::validateRedirectTo($request->getAbsRoot(), $request->getQueryParameter('redirect_to'));
+        }
+
         return $this->templateManager->render(
-            'authPage',
+            'loginPage',
             array(
-                'redirect_to' => InputValidation::validateRedirectTo($request->getAbsRoot(), $request->getQueryParameter('redirect_to'))
+                'redirect_to' => $redirectTo
             )
         );
     }

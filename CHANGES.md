@@ -1,5 +1,9 @@
 # Changes
 
+## 0.4.4
+- move `/authenticate` to `/login`, mention which URL the user tried to
+  access on the login dialog
+
 ## 0.4.3
 - update `fkooman/rest-plugin-indieauth` to support redirecting in case
   of unauthenticated requests to protected endpoints
