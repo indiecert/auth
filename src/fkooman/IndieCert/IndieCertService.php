@@ -114,7 +114,8 @@ class IndieCertService extends Service
             '/auth',
             function (Request $request) {
                 return $this->postAuth($request);
-            }
+            },
+            array('disableReferrerCheck' => true)
         );
     
         $this->get(
@@ -139,7 +140,8 @@ class IndieCertService extends Service
                 ),
                 'fkooman\Rest\Plugin\Bearer\BearerAuthentication' => array(
                     'requireAuth' => false
-                )
+                ),
+                'disableReferrerCheck' => true
             )
         );
 
@@ -373,11 +375,6 @@ class IndieCertService extends Service
         $scope = InputValidation::validateScope($request->getQueryParameter('scope'));
         $state = InputValidation::validateState($request->getQueryParameter('state'));
         $appRootUri = $request->getAbsRoot();
-
-        // CSRF protection
-        if (0 !== strpos($request->getHeader('HTTP_REFERER'), $appRootUri . 'auth')) {
-            throw new BadRequestException('CSRF protection triggered');
-        }
 
         $fingerprintData = $request->getHeader('SSL_CLIENT_CERT');
         if (empty($fingerprintData)) {

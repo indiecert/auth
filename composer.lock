@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "8b4c0ee73f5c443d89af15fb0d53e0f7",
+    "hash": "a9daf875cc764ffe4aa82ae749058d6b",
     "packages": [
         {
             "name": "fkooman/cert-parser",
@@ -125,16 +125,16 @@
         },
         {
             "name": "fkooman/rest",
-            "version": "0.8.1",
+            "version": "0.8.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fkooman/php-lib-rest.git",
-                "reference": "1241007d64f8a103f34e9fbe7598f082e799043f"
+                "reference": "ce572ff9d576cf76837012816801ac8fc605a4c5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fkooman/php-lib-rest/zipball/1241007d64f8a103f34e9fbe7598f082e799043f",
-                "reference": "1241007d64f8a103f34e9fbe7598f082e799043f",
+                "url": "https://api.github.com/repos/fkooman/php-lib-rest/zipball/ce572ff9d576cf76837012816801ac8fc605a4c5",
+                "reference": "ce572ff9d576cf76837012816801ac8fc605a4c5",
                 "shasum": ""
             },
             "require": {
@@ -167,7 +167,7 @@
                 }
             ],
             "description": "Simple PHP library for writing REST services.",
-            "time": "2015-04-27 09:57:36"
+            "time": "2015-05-05 10:20:54"
         },
         {
             "name": "fkooman/rest-plugin-bearer",

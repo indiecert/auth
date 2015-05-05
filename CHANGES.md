@@ -1,5 +1,9 @@
 # Changes
 
+## 0.4.5
+- use CSRF protection built in `fkooman/rest` which makes the protection
+  more uniform
+
 ## 0.4.4
 - move `/authenticate` to `/login`, mention which URL the user tried to
   access on the login dialog

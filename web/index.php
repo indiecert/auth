@@ -78,6 +78,10 @@ try {
     );
 
     $service = new IndieCertService($db, $certManager, $client, $templateManager);
+    
+    // enable CSRF protection
+    $service->setReferrerCheck(true);
+
     $service->registerOnMatchPlugin(
         $indieAuth,
         array(

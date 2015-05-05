@@ -26,7 +26,7 @@ Requires:   php-composer(fkooman/json) >= 0.6.0
 Requires:   php-composer(fkooman/json) < 0.7.0
 Requires:   php-composer(fkooman/ini) >= 0.2.0
 Requires:   php-composer(fkooman/ini) < 0.3.0
-Requires:   php-composer(fkooman/rest) >= 0.8.1
+Requires:   php-composer(fkooman/rest) >= 0.8.3
 Requires:   php-composer(fkooman/rest) < 0.9.0
 Requires:   php-composer(fkooman/rest-plugin-indieauth) >= 0.3.0
 Requires:   php-composer(fkooman/rest-plugin-indieauth) < 0.4.0
