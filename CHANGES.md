@@ -3,6 +3,9 @@
 ## 0.4.5
 - use CSRF protection built in `fkooman/rest` which makes the protection
   more uniform
+- update `fkooman/rest-plugin-indieauth`
+- use POST for logout now instead of GET to accomodate updated 
+  `fkooman/rest-plugin-indieauth`
 
 ## 0.4.4
 - move `/authenticate` to `/login`, mention which URL the user tried to
