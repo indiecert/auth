@@ -8,6 +8,7 @@
     "license": " AGPL-3.0",
     "name": "fkooman/indiecert",
     "require": {
+        "ext-apcu": "*",
         "ext-openssl": "*",
         "fkooman/cert-parser": "~0.1.7",
         "fkooman/ini": "~0.2.0",

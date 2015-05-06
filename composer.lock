@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "51c96948cdb08ac56d1feca158867a8d",
+    "hash": "7453de1bf95787483e0a9de3517aa562",
     "packages": [
         {
             "name": "fkooman/cert-parser",
@@ -683,6 +683,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
+        "ext-apcu": "*",
         "ext-openssl": "*",
         "php": ">=5.4.0"
     },

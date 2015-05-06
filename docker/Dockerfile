@@ -7,7 +7,7 @@ RUN yum install -y yum-plugin-copr; yum clean all
 RUN yum copr enable -y fkooman/php-base
 RUN yum copr enable -y fkooman/php-relmeauth
 
-RUN yum install -y mod_ssl indiecert; yum clean all
+RUN yum install -y mod_ssl php-pecl-zendopcache indiecert; yum clean all
 
 # generate the server certificate
 RUN openssl req -subj '/CN=indiecert.example.org' -new -x509 -nodes -out /etc/pki/tls/certs/indiecert.example.org.crt -keyout /etc/pki/tls/private/indiecert.example.org.key
@@ -26,6 +26,12 @@ RUN update-ca-trust
 # disable the certificate check for use within the docker image, as there is
 # no trusted certificate for "indiecert.example.org" so verification will fail...
 RUN sed -i 's/;disableServerCertCheck/disableServerCertCheck/' /etc/indiecert/config.ini
+
+# enable Twig template cache
+RUN sed -i 's/;templateCache/templateCache/' /etc/indiecert/config.ini
+
+# recommendation from https://php.net/manual/en/opcache.installation.php
+RUN sed -i 's/;opcache.revalidate_freq=2/opcache.revalidate_freq=60/' /etc/php.d/opcache.ini
 
 USER apache
 

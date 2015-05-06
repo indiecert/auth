@@ -1,5 +1,10 @@
 # Changes
 
+## 0.4.6
+- use APCu (if available) to cache fetching the user's homepage instead of 
+  downloading it twice: once on authentication and once on confirm. Initial
+  caching strategy
+
 ## 0.4.5
 - use CSRF protection built in `fkooman/rest` which makes the protection
   more uniform

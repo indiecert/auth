@@ -335,6 +335,14 @@ class IndieCertService extends Service
         }
     
         if (false === $approval) {
+
+            // store in apcu cache that the verification of the fingerprint
+            // was successful, we do not have a user session to keep track of
+            // this kind of stuff
+            if (function_exists('apc_add')) {
+                apc_add($me, true);
+            }
+
             if (null === $scope) {
                 $confirmUri = sprintf(
                     'confirm?client_id=%s&redirect_uri=%s&me=%s&state=%s',
@@ -382,24 +390,37 @@ class IndieCertService extends Service
         if (empty($fingerprintData)) {
             return $this->templateManager->render('noCert');
         }
-        $certificateValidator = new CertificateValidator(
-            $fingerprintData,
-            $this->client
-        );
 
-        if (false === $certificateValidator->hasFingerprint($me)) {
-            $authorizationEndpoint = $request->getAbsRoot() . 'auth';
-            $tokenEndpoint = $request->getAbsRoot() . 'token';
+        $confirmedFingerprint = false;
+        if (function_exists('apc_fetch') && function_exists('apc_delete')) {
+            if (false !== apc_fetch($me)) {
+                // we got confirmation
+                $confirmedFingerprint = true;
+                // delete the key from the cache
+                apc_delete($me);
+            }
+        }
 
-            return $this->templateManager->render(
-                'missingFingerprint',
-                array(
-                    'me' => $me,
-                    'certFingerprint' => $certificateValidator->getFingerprint(),
-                    'authorizationEndpoint' => $authorizationEndpoint,
-                    'tokenEndpoint' => $tokenEndpoint
-                )
+        if (!$confirmedFingerprint) {
+            $certificateValidator = new CertificateValidator(
+                $fingerprintData,
+                $this->client
             );
+
+            if (false === $certificateValidator->hasFingerprint($me)) {
+                $authorizationEndpoint = $request->getAbsRoot() . 'auth';
+                $tokenEndpoint = $request->getAbsRoot() . 'token';
+
+                return $this->templateManager->render(
+                    'missingFingerprint',
+                    array(
+                        'me' => $me,
+                        'certFingerprint' => $certificateValidator->getFingerprint(),
+                        'authorizationEndpoint' => $authorizationEndpoint,
+                        'tokenEndpoint' => $tokenEndpoint
+                    )
+                );
+            }
         }
 
         // store approval if requested

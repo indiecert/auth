@@ -19,6 +19,7 @@ Requires:   php >= 5.4
 Requires:   php-openssl
 Requires:   php-pdo
 Requires:   httpd
+Requires:   php-pecl-apcu
 
 Requires:   php-composer(guzzlehttp/guzzle) >= 4.0
 Requires:   php-composer(guzzlehttp/guzzle) < 5.0
