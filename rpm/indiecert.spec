@@ -2,7 +2,7 @@
 %global github_name      indiecert
 
 Name:       indiecert
-Version:    0.4.5
+Version:    0.4.6
 Release:    1%{?dist}
 Summary:    Authentication service using client certificates
 
@@ -114,6 +114,10 @@ fi
 %doc CHANGES.md README.md agpl-3.0.txt composer.json config/
 
 %changelog
+* Wed May 06 2015 François Kooman <fkooman@tuxed.net> - 0.4.6-1
+- update to 0.4.6
+- depend on php-pecl-apcu
+
 * Tue May 05 2015 François Kooman <fkooman@tuxed.net> - 0.4.5-1
 - update to 0.4.5
 
