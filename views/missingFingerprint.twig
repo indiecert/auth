@@ -11,7 +11,7 @@
         </p>
 
         <p>
-            You claimed the identity <code>{{ me|e }}</code>, but we were unable to
+            You claimed the identity <code>{{ me|e }}</code>, but IndieCert was unable to
             find the fingerprint of the certificate you are currently authenticated with
             on this page.
         </p>
@@ -22,7 +22,16 @@
         </p>
 
 <pre>
-&lt;link rel="me" href="{{ certFingerprint|e }}"&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    ...
+    <strong>&lt;link rel="me" href="{{ certFingerprint|e }}"&gt;</strong>
+    ...
+  &lt;/head&gt;
+  &lt;body&gt;
+    ...
+  &lt;/body&gt;
+&lt;/html&gt;
 </pre>
 
         <p>
@@ -32,7 +41,17 @@
         </p>
 
 <pre>
-&lt;link rel="authorization_endpoint" href="{{ authorizationEndpoint|e }}"&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    ...
+    <strong>&lt;link rel="authorization_endpoint" href="{{ authorizationEndpoint|e }}"&gt;</strong>
+    <strong>&lt;link rel="token_endpoint" href="{{ tokenEndpoint|e }}"&gt;</strong>
+    ...
+  &lt;/head&gt;
+  &lt;body&gt;
+    ...
+  &lt;/body&gt;
+&lt;/html&gt;
 </pre>
 
         <p>

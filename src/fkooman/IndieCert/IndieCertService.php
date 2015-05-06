@@ -312,13 +312,15 @@ class IndieCertService extends Service
 
         if (false === $certificateValidator->hasFingerprint($me)) {
             $authorizationEndpoint = $request->getAbsRoot() . 'auth';
+            $tokenEndpoint = $request->getAbsRoot() . 'token';
 
             return $this->templateManager->render(
                 'missingFingerprint',
                 array(
                     'me' => $me,
                     'certFingerprint' => $certificateValidator->getFingerprint(),
-                    'authorizationEndpoint' => $authorizationEndpoint
+                    'authorizationEndpoint' => $authorizationEndpoint,
+                    'tokenEndpoint' => $tokenEndpoint
                 )
             );
         }
@@ -387,13 +389,15 @@ class IndieCertService extends Service
 
         if (false === $certificateValidator->hasFingerprint($me)) {
             $authorizationEndpoint = $request->getAbsRoot() . 'auth';
+            $tokenEndpoint = $request->getAbsRoot() . 'token';
 
             return $this->templateManager->render(
                 'missingFingerprint',
                 array(
                     'me' => $me,
                     'certFingerprint' => $certificateValidator->getFingerprint(),
-                    'authorizationEndpoint' => $authorizationEndpoint
+                    'authorizationEndpoint' => $authorizationEndpoint,
+                    'tokenEndpoint' => $tokenEndpoint
                 )
             );
         }
