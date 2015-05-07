@@ -26,7 +26,7 @@
             <tr>
                 <th>Website</th>
                 <th>Scope</th>
-                <th>Expires</th>
+                <th>Expires ({{ date()|date("T") }})</th>
             </tr>
 
             {% for approval in approvals %}
@@ -39,7 +39,7 @@
                             <small><em>n/a</em></small>
                         {% endif %}
                     </td>
-                    <td>{{ approval.expires_at|e|date("Y-m-d") }}</td>
+                    <td>{{ approval.expires_at|e|date("Y-m-d H:i:s") }}</td>
                 </tr>
             {% endfor %}
         </table>
@@ -56,7 +56,7 @@
             <tr>
                 <th>Website</th>
                 <th>Scope</th>
-                <th>Issued</th>
+                <th>Issued ({{ date()|date("T") }})</th>
                 <th>Actions</th>
             </tr>
 
@@ -64,7 +64,7 @@
                 <tr>
                     <td><code>{{ token.client_id|e }}</code></td>
                     <td><code>{{ token.scope|e }}</code></td>
-                    <td>{{ token.issue_time|e|date("Y-m-d") }}</td>
+                    <td>{{ token.issue_time|e|date("Y-m-d H:i:s") }}</td>
                     <td>
                         <form method="post" action="token/{{ token.access_token|e }}">
                             <input type="hidden" name="_METHOD" value="DELETE">
