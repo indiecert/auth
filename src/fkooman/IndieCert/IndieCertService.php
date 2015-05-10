@@ -580,14 +580,14 @@ class IndieCertService extends Service
         $issueTime = $this->io->getTime();
         $this->db->storeCredential($indieInfo->getUserId(), $credential, $issueTime);
 
-        return new RedirectResponse($request->getAbsRoot() . 'account#micropub', 302);
+        return new RedirectResponse($request->getAbsRoot() . 'account#credentials', 302);
     }
 
     private function deleteCredential(Request $request, IndieInfo $indieInfo)
     {
         $this->db->deleteCredential($indieInfo->getUserId());
         
-        return new RedirectResponse($request->getAbsRoot() . 'account#micropub', 302);
+        return new RedirectResponse($request->getAbsRoot() . 'account#credentials', 302);
     }
 
     private function deleteToken(Request $request, IndieInfo $indieInfo, $id)

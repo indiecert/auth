@@ -76,25 +76,40 @@
         </table>
         {% endif %}
 
-        <h2 id="micropub">Micropub</h2>
+        <h2 id="credentials">Credentials</h2>
         <p>
-            You can generate a token here for use by your own
-            <a href="https://indiewebcamp.com/micropub">micropub</a> endpoint.
-            See the <a href="faq#micropub">FAQ</a> for more information.
+            Here you can generate and review credential bearer tokens. They can
+            be used by services like
+            <a href="https://indiewebcamp.com/micropub">micropub</a> to validate
+            posts to your <a href="faq#micropub">micropub endpoint</a>.
         </p>
 
         {% if credential %}
-            <p>
-            Your token is <code>{{ credential.bearer_token|e }}</code>.
-            </p>
+            <table class="account">
+                <tr>
+                    <th>Purpose</th>
+                    <th>Token</th>
+                    <th>Issued ({{ date()|date("T") }})</th>
+                    <th>Actions</th>
+                </tr>
 
-            <form method="post" action="credential">
-                <input type="hidden" name="_METHOD" value="DELETE">
-                <input class="err" type="submit" value="Delete">
-            </form>
-        {% else %}
+                <tr>
+                    <td>micropub</td>
+                    <td><code>{{ credential.bearer_token|e }}</code></td>
+                    <td>{{ credential.issue_time|e|date("Y-m-d H:i:s") }}</td>
+                    <td>
+                        <form method="post" action="credential">
+                            <input type="hidden" name="_METHOD" value="DELETE">
+                            <input class="err" type="submit" value="Delete">
+                        </form>
+                    </td>
+                </tr>
+            </table>
+        {% endif %}
+
+        {% if not credential %}
             <form class="credentials" method="post" action="credential">
-                <input type="hidden" name="type" value="micropub">
+                <input type="text" name="type" placeholder="Purpose..." required="required">
                 <input class="info" type="submit" value="Generate">
             </form>
         {% endif %}

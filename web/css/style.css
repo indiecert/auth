@@ -138,7 +138,7 @@ input[type=submit].err {
     color: #fff; 
 }
 
-form.authenticate, form.askConfirmation {
+form.authenticate, form.askConfirmation, form.credentials {
     text-align: center;
     padding: 1em;
     margin: 1em auto;
