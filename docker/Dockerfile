@@ -18,6 +18,9 @@ RUN echo '' > /etc/httpd/conf.d/indiecert.conf
 # add httpd config for indiecert.example.org
 ADD indiecert.example.org-httpd.conf /etc/httpd/conf.d/indiecert.example.org.conf
 
+# Set PHP timezone, to suppress errors in the log
+RUN sed -i 's/;date.timezone =/date.timezone = UTC/' /etc/php.ini
+
 # Add CAcert as a valid CA (this is pointless here as we disable certificate
 # check anyway in the next step, but for production we use this)
 ADD CAcert.pem /etc/pki/ca-trust/source/anchors/CAcert.pem
