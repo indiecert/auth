@@ -118,6 +118,18 @@
 <pre>
 &lt;link rel="me" href="ni:///sha-256;ThIaJ7TJQ1oAIKCGKe0BdBO3Bh8NzxZeyAa-WCTuzpU?ct=application/x-x509-user-cert"&gt;
 </pre>
+        <p>
+            If you want to generate your own fingerprint, you can use OpenSSL
+            for this:
+        </p>
+
+<pre>
+$ openssl x509 -in client.crt -outform DER \
+    | openssl dgst -binary -sha256 \
+    | openssl base64 \
+    | tr +/ -_ \
+    | tr -d =
+</pre>
 
         <h3>How can I become a relying party?</h3>
         <p>
