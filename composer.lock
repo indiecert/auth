@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "97ef0b4b0c40ffc85fccb269a207eb1f",
+    "hash": "8029ac4e4ae24737812eebc5de587417",
     "packages": [
         {
             "name": "fkooman/cert-parser",
@@ -125,16 +125,16 @@
         },
         {
             "name": "fkooman/rest",
-            "version": "0.8.5",
+            "version": "0.8.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fkooman/php-lib-rest.git",
-                "reference": "66737e794eb277cd61737d7c349fa43c1ed91d1d"
+                "reference": "18eee9ae459f6005f07fa44928e417e0e4124184"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fkooman/php-lib-rest/zipball/66737e794eb277cd61737d7c349fa43c1ed91d1d",
-                "reference": "66737e794eb277cd61737d7c349fa43c1ed91d1d",
+                "url": "https://api.github.com/repos/fkooman/php-lib-rest/zipball/18eee9ae459f6005f07fa44928e417e0e4124184",
+                "reference": "18eee9ae459f6005f07fa44928e417e0e4124184",
                 "shasum": ""
             },
             "require": {
@@ -167,7 +167,7 @@
                 }
             ],
             "description": "Simple PHP library for writing REST services.",
-            "time": "2015-05-10 06:01:08"
+            "time": "2015-05-14 19:41:39"
         },
         {
             "name": "fkooman/rest-plugin-bearer",
@@ -561,17 +561,17 @@
         },
         {
             "name": "symfony/event-dispatcher",
-            "version": "v2.6.6",
+            "version": "v2.6.7",
             "target-dir": "Symfony/Component/EventDispatcher",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/EventDispatcher.git",
-                "reference": "70f7c8478739ad21e3deef0d977b38c77f1fb284"
+                "reference": "672593bc4b0043a0acf91903bb75a1c82d8f2e02"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/EventDispatcher/zipball/70f7c8478739ad21e3deef0d977b38c77f1fb284",
-                "reference": "70f7c8478739ad21e3deef0d977b38c77f1fb284",
+                "url": "https://api.github.com/repos/symfony/EventDispatcher/zipball/672593bc4b0043a0acf91903bb75a1c82d8f2e02",
+                "reference": "672593bc4b0043a0acf91903bb75a1c82d8f2e02",
                 "shasum": ""
             },
             "require": {
@@ -606,17 +606,17 @@
             ],
             "authors": [
                 {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                },
-                {
                     "name": "Fabien Potencier",
                     "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
                 }
             ],
             "description": "Symfony EventDispatcher Component",
-            "homepage": "http://symfony.com",
-            "time": "2015-03-13 17:37:22"
+            "homepage": "https://symfony.com",
+            "time": "2015-05-02 15:18:45"
         },
         {
             "name": "twig/twig",
