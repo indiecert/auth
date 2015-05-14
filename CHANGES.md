@@ -1,5 +1,16 @@
 # Changes
 
+## 0.4.7
+- update `fkooman/rest`
+- mention time + timezone in issue/expire dates on account page
+- make the website links that open, change the wording a bit on the account
+  page
+- remove purpose input field for now
+- add a little bit of padding to body, looks better on mobile
+- mention how to generate certificate fingerprint using openssl commandline, 
+  thanks @jansauer
+- no longer mention obsolete blog post in FAQ
+
 ## 0.4.6
 - use APCu (if available) to cache fetching the user's homepage instead of 
   downloading it twice: once on authentication and once on confirm. Initial
