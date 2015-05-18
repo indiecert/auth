@@ -1,5 +1,10 @@
 # Changes
 
+## 0.4.8
+- use `rel="publickey"` now instead of `rel="me"` for fingerprint, `rel="me"`
+  is still supported for now, but `faq` and `missingFingerprint` templates
+  updated to say `rel="publickey"` (issue #17)
+
 ## 0.4.7
 - update `fkooman/rest`
 - mention time + timezone in issue/expire dates on account page

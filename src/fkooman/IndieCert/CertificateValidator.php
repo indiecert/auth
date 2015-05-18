@@ -103,7 +103,11 @@ class CertificateValidator
             foreach ($elements as $element) {
                 $href = $element->getAttribute('href');
                 $rel = $element->getAttribute('rel');
+                // FIXME: 'me' should not be used for certificate fingerprint, use publickey instead
                 if ('me' === $rel) {
+                    $relMeLinks[] = $href;
+                }
+                if ('publickey' === $rel) {
                     $relMeLinks[] = $href;
                 }
             }
