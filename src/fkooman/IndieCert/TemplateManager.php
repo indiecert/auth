@@ -26,6 +26,9 @@ class TemplateManager
     /** @var Twig_Environment */
     private $twig;
 
+    /** @var array */
+    private $globalVariables;
+
     public function __construct($cacheDir = null)
     {
         $configTemplateDir = dirname(dirname(dirname(__DIR__))).'/config/views';
@@ -56,10 +59,24 @@ class TemplateManager
             ),
             $environmentOptions
         );
+
+        $this->globalVariables = array();
+    }
+
+    public function setGlobalVariables(array $globalVariables)
+    {
+        $this->globalVariables = $globalVariables;
     }
 
     public function render($templateName, array $variables = array())
     {
-        return $this->twig->render(sprintf('%s.twig', $templateName), $variables);
+        $variables = array_merge($this->globalVariables, $variables);
+        return $this->twig->render(
+            sprintf(
+                '%s.twig',
+                $templateName
+            ),
+            $variables
+        );
     }
 }
