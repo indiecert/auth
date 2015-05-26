@@ -1,12 +1,12 @@
 body {
-    text-align: justify;
     padding: 0.25em;
 }
 
 div#container {
+    text-align: justify;
     max-width: 600px;
     margin: 0 auto;
-    line-height: 1.4;
+    line-height: 1.5;
 }
 
 h1 {
