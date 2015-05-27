@@ -4,6 +4,8 @@
 - use `rel="publickey"` now instead of `rel="me"` for fingerprint, `rel="me"`
   is still supported for now, but `faq` and `missingFingerprint` templates
   updated to say `rel="publickey"` (issue #17)
+- update CSS style
+- update TemplateManager to support 'global' variables
 
 ## 0.4.7
 - update `fkooman/rest`
