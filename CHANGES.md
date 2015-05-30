@@ -1,5 +1,9 @@
 # Changes
 
+## 0.4.9
+- set the default background to white, it seems Firefox on Fedora 22 has grey
+  background by default?
+
 ## 0.4.8
 - use `rel="publickey"` now instead of `rel="me"` for fingerprint, `rel="me"`
   is still supported for now, but `faq` and `missingFingerprint` templates
