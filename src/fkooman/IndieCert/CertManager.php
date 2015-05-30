@@ -57,7 +57,7 @@ class CertManager
 
         return array(
             'crt' => $x509->saveX509($result),
-            'key' => $keyData['privatekey']
+            'key' => $keyData['privatekey'],
         );
     }
 
@@ -68,19 +68,19 @@ class CertManager
 
         if (false !== strpos($userAgent, 'Chrome')) {
             // Chrom(e)(ium) needs the certificate format to be DER
-            $format = CertManager::FORMAT_DER;
+            $format = self::FORMAT_DER;
         } else {
-            $format = CertManager::FORMAT_PEM;
+            $format = self::FORMAT_PEM;
         }
 
         // determine serialNumber
         $commonName = $this->io->getRandomHex();
         $serialNumber = $this->io->getRandomHex();
-        
+
         return $this->generateClientCertificate($spkac, $commonName, $serialNumber, $format);
     }
 
-    private function generateClientCertificate($spkac, $commonName, $serialNumber, $saveFormat = CertManager::FORMAT_PEM)
+    private function generateClientCertificate($spkac, $commonName, $serialNumber, $saveFormat = self::FORMAT_PEM)
     {
         $caPrivateKey = new Crypt_RSA();
         $caPrivateKey->loadKey($this->caKey);
@@ -110,7 +110,8 @@ class CertManager
         $x509->setExtension('id-ce-basicConstraints', array('cA' => false), true);
         $result = $x509->sign($issuer, $x509, 'sha256WithRSAEncryption');
 
-        $format = $saveFormat === CertManager::FORMAT_PEM ? FILE_X509_FORMAT_PEM : FILE_X509_FORMAT_DER;
+        $format = $saveFormat === self::FORMAT_PEM ? FILE_X509_FORMAT_PEM : FILE_X509_FORMAT_DER;
+
         return $x509->saveX509($result, $format);
     }
 }

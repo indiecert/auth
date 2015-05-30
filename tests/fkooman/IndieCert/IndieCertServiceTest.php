@@ -14,7 +14,6 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 namespace fkooman\IndieCert;
 
 use PDO;
@@ -57,7 +56,7 @@ class IndieCertServiceTest extends PHPUnit_Framework_TestCase
                     Stream::factory(
                         file_get_contents($this->dataDir.'/fkooman.html')
                     )
-                )
+                ),
             )
         );
         $client->getEmitter()->attach($mock);
@@ -76,7 +75,7 @@ class IndieCertServiceTest extends PHPUnit_Framework_TestCase
                     'me' => 'https://me.example/',
                     'client_id' => 'https://www.client.example/client/',
                     'redirect_uri' => 'https://www.client.example/client/callback',
-                    'state' => '12345'
+                    'state' => '12345',
                 )
             )
         );
@@ -85,7 +84,7 @@ class IndieCertServiceTest extends PHPUnit_Framework_TestCase
         $request->setPathInfo('/auth');
         $request->setHeaders(
             array(
-                'SSL_CLIENT_CERT' => file_get_contents($this->dataDir.'/2edb5c8c336b954ae2b85cb5db974ce6.pem')
+                'SSL_CLIENT_CERT' => file_get_contents($this->dataDir.'/2edb5c8c336b954ae2b85cb5db974ce6.pem'),
             )
         );
 
@@ -103,7 +102,7 @@ class IndieCertServiceTest extends PHPUnit_Framework_TestCase
                     'me' => 'https://me.example/',
                     'client_id' => 'https://www.client.example/client/',
                     'redirect_uri' => 'https://www.client.example/client/callback',
-                    'state' => '12345'
+                    'state' => '12345',
                 )
             )
         );
@@ -112,13 +111,13 @@ class IndieCertServiceTest extends PHPUnit_Framework_TestCase
         $request->setRoot('/');
         $request->setHeaders(
             array(
-                'HTTP_REFERER' => 'https://indiecert.example/auth?me=https://me.example/&client_id=https://www.client.example/client/&redirect_uri=https://www.client.example/client/callback&state=12345'
+                'HTTP_REFERER' => 'https://indiecert.example/auth?me=https://me.example/&client_id=https://www.client.example/client/&redirect_uri=https://www.client.example/client/callback&state=12345',
             )
         );
         $request->setPostParameters(array('x' => 'a'));
         $request->setHeaders(
             array(
-                'SSL_CLIENT_CERT' => file_get_contents($this->dataDir.'/2edb5c8c336b954ae2b85cb5db974ce6.pem')
+                'SSL_CLIENT_CERT' => file_get_contents($this->dataDir.'/2edb5c8c336b954ae2b85cb5db974ce6.pem'),
             )
         );
 
@@ -138,7 +137,7 @@ class IndieCertServiceTest extends PHPUnit_Framework_TestCase
                 'code' => '1234abcd',
                 'client_id' => 'https://www.client.example/client/',
                 'redirect_uri' => 'https://www.client.example/client/callback',
-                'state' => '12345'
+                'state' => '12345',
             )
         );
         $response = $this->service->run($request);
@@ -156,7 +155,7 @@ class IndieCertServiceTest extends PHPUnit_Framework_TestCase
                     'client_id' => 'https://www.client.example/client/',
                     'redirect_uri' => 'https://www.client.example/client/callback',
                     'state' => '12345',
-                    'scope' => 'post'
+                    'scope' => 'post',
                 )
             )
         );
@@ -165,7 +164,7 @@ class IndieCertServiceTest extends PHPUnit_Framework_TestCase
         $request->setPathInfo('/auth');
         $request->setHeaders(
             array(
-                'SSL_CLIENT_CERT' => file_get_contents($this->dataDir.'/2edb5c8c336b954ae2b85cb5db974ce6.pem')
+                'SSL_CLIENT_CERT' => file_get_contents($this->dataDir.'/2edb5c8c336b954ae2b85cb5db974ce6.pem'),
             )
         );
 
@@ -184,7 +183,7 @@ class IndieCertServiceTest extends PHPUnit_Framework_TestCase
                     'client_id' => 'https://www.client.example/client/',
                     'redirect_uri' => 'https://www.client.example/client/callback',
                     'state' => '12345',
-                    'scope' => 'post'
+                    'scope' => 'post',
                 )
             )
         );
@@ -193,13 +192,13 @@ class IndieCertServiceTest extends PHPUnit_Framework_TestCase
         $request->setRoot('/');
         $request->setHeaders(
             array(
-                'HTTP_REFERER' => 'https://indiecert.example/auth?me=https://me.example/&client_id=https://www.client.example/client/&redirect_uri=https://www.client.example/client/callback&state=12345'
+                'HTTP_REFERER' => 'https://indiecert.example/auth?me=https://me.example/&client_id=https://www.client.example/client/&redirect_uri=https://www.client.example/client/callback&state=12345',
             )
         );
         $request->setPostParameters(array('x' => 'a'));
         $request->setHeaders(
             array(
-                'SSL_CLIENT_CERT' => file_get_contents($this->dataDir.'/2edb5c8c336b954ae2b85cb5db974ce6.pem')
+                'SSL_CLIENT_CERT' => file_get_contents($this->dataDir.'/2edb5c8c336b954ae2b85cb5db974ce6.pem'),
             )
         );
 
@@ -219,7 +218,7 @@ class IndieCertServiceTest extends PHPUnit_Framework_TestCase
                 'code' => '1234abcd',
                 'client_id' => 'https://www.client.example/client/',
                 'redirect_uri' => 'https://www.client.example/client/callback',
-                'state' => '12345'
+                'state' => '12345',
             )
         );
         $response = $this->service->run($request);

@@ -67,7 +67,7 @@
             <code>https://john.example.com/</code>. URLs starting with <code>http://</code>
             MUST be rejected.
         </p>
-        
+
         <h4>Example</h4>
         <p>
             The following example shows a redirect to the IndieCert service:
@@ -82,7 +82,7 @@ Location: {{ authUri|e }}?client_id=https://app.example.org/&amp;me=https://john
             for later use when verifying the <code>code</code> parameter received with
             the authentication response callback.
         </p>
-        
+
         <h3>Authentication Response</h3>
         <p>
             IndieCert will redirect the browser back to the <code>redirect_uri</code>
@@ -96,7 +96,7 @@ Location: {{ authUri|e }}?client_id=https://app.example.org/&amp;me=https://john
 HTTP/1.1 302 Found
 Location: https://app.example.org/callback?code=wW3OLXJZn35d7zFwg9YGmWti&amp;state=PmctIM3J7O25NDSy
 </pre>
-     
+
         <h3>Verification Request</h3>
         <p>
             The relying party MUST verify that the <code>state</code> parameter matches the

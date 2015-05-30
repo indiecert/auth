@@ -3,7 +3,6 @@
 namespace fkooman\IndieCert;
 
 use fkooman\X509\CertParser;
-use fkooman\X509\CertParserException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Subscriber\History;
 use GuzzleHttp\Url;
@@ -12,7 +11,6 @@ use DomDocument;
 
 class CertificateValidator
 {
-
     /** @var fkooman\X509\CertParser */
     private $certParser;
 
@@ -30,7 +28,7 @@ class CertificateValidator
     }
 
     /**
-     * Get the fingerprint of the certificate in RFC 6920 format
+     * Get the fingerprint of the certificate in RFC 6920 format.
      */
     public function getFingerprint()
     {
@@ -42,7 +40,7 @@ class CertificateValidator
 
     /**
      * Check if the certificate fingerprint is mentioned on the specified
-     * URL
+     * URL.
      */
     public function hasFingerprint($homePageUrl)
     {

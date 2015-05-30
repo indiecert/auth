@@ -14,7 +14,6 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 namespace fkooman\IndieCert;
 
 use fkooman\Http\Exception\BadRequestException;
@@ -93,13 +92,14 @@ class InputValidation
     {
         // allow scope to be missing
         if (null === $scope) {
-            return null;
+            return;
         }
 
         // but if it is there, it needs to be a valid scope and also
         // 'normalized'
         try {
             $scopeObj = new Scope($scope);
+
             return $scopeObj->toString();
         } catch (InvalidArgumentException $e) {
             throw new BadRequestException('"scope" is invalid', $e->getMessage());
@@ -127,7 +127,7 @@ class InputValidation
 
         // redirectTo specified, using path relative to absRoot
         if (0 === strpos($redirectTo, '/')) {
-            $redirectTo = $absRoot . substr($redirectTo, 1);
+            $redirectTo = $absRoot.substr($redirectTo, 1);
         }
 
         // validate and normalize the URL
@@ -142,7 +142,7 @@ class InputValidation
         if (0 !== strpos($redirectTo, $absRoot)) {
             throw new BadRequestException('redirect_to needs to point to a URL relative to the application root');
         }
-        
+
         return $redirectTo;
     }
 }

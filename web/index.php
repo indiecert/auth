@@ -14,14 +14,11 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 require_once dirname(__DIR__).'/vendor/autoload.php';
 
 use fkooman\Ini\IniReader;
 use fkooman\Http\Request;
 use fkooman\Http\IncomingRequest;
-use fkooman\Http\Exception\HttpException;
-use fkooman\Http\Exception\InternalServerErrorException;
 use fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication;
 use fkooman\Rest\Plugin\Bearer\BearerAuthentication;
 use GuzzleHttp\Client;
@@ -57,8 +54,8 @@ try {
         array(
             'defaults' => array(
                 'verify' => !$disableServerCertCheck,
-                'timeout' => 10
-            )
+                'timeout' => 10,
+            ),
         )
     );
 
@@ -67,7 +64,7 @@ try {
 
     $request = Request::fromIncomingRequest(new IncomingRequest());
 
-    $indieAuth = new IndieAuthAuthentication($request->getAbsRoot() . 'auth');
+    $indieAuth = new IndieAuthAuthentication($request->getAbsRoot().'auth');
     $indieAuth->setClient($client);
     $indieAuth->setDiscovery(false);
     $indieAuth->setUnauthorizedRedirectUri('/login');
@@ -78,20 +75,20 @@ try {
     );
 
     $service = new IndieCertService($db, $certManager, $client, $templateManager);
-    
+
     // enable CSRF protection
     $service->setReferrerCheck(true);
 
     $service->registerOnMatchPlugin(
         $indieAuth,
         array(
-            'defaultDisable' => true
+            'defaultDisable' => true,
         )
     );
     $service->registerOnMatchPlugin(
         $bearerAuth,
         array(
-            'defaultDisable' => true
+            'defaultDisable' => true,
         )
     );
 

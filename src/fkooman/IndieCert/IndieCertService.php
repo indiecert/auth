@@ -14,7 +14,6 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 namespace fkooman\IndieCert;
 
 use fkooman\Http\Request;
@@ -26,11 +25,9 @@ use GuzzleHttp\Client;
 use fkooman\Http\Uri;
 use fkooman\Http\RedirectResponse;
 use fkooman\Http\Exception\BadRequestException;
-use fkooman\Http\Exception\ForbiddenException;
 use fkooman\Http\Exception\UnauthorizedException;
 use fkooman\Rest\Plugin\Bearer\TokenInfo;
 use fkooman\Rest\Plugin\IndieAuth\IndieInfo;
-use InvalidArgumentException;
 
 class IndieCertService extends Service
 {
@@ -61,13 +58,13 @@ class IndieCertService extends Service
             $client = new Client();
         }
         $this->client = $client;
-   
+
         // IO
         if (null === $io) {
             $io = new IO();
         }
         $this->io = $io;
-        
+
         // TemplateManager
         if (null === $templateManager) {
             $templateManager = new TemplateManager();
@@ -117,7 +114,7 @@ class IndieCertService extends Service
             },
             array('disableReferrerCheck' => true)
         );
-    
+
         $this->get(
             '/login',
             function (Request $request) {
@@ -132,16 +129,17 @@ class IndieCertService extends Service
                     // no bearer token authentication
                     return $this->postToken($request);
                 }
+
                 return $this->verifyToken($request, $tokenInfo);
             },
             array(
                 'enablePlugins' => array(
-                    'fkooman\Rest\Plugin\Bearer\BearerAuthentication'
+                    'fkooman\Rest\Plugin\Bearer\BearerAuthentication',
                 ),
                 'fkooman\Rest\Plugin\Bearer\BearerAuthentication' => array(
-                    'requireAuth' => false
+                    'requireAuth' => false,
                 ),
-                'disableReferrerCheck' => true
+                'disableReferrerCheck' => true,
             )
         );
 
@@ -152,11 +150,11 @@ class IndieCertService extends Service
             },
             array(
                 'enablePlugins' => array(
-                    'fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication'
-                )
+                    'fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication',
+                ),
             )
         );
-        
+
         $this->get(
             '/enroll',
             function (Request $request) {
@@ -179,11 +177,11 @@ class IndieCertService extends Service
             },
             array(
                 'enablePlugins' => array(
-                    'fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication'
-                )
+                    'fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication',
+                ),
             )
         );
-        
+
         $this->post(
             '/credential',
             function (Request $request, IndieInfo $indieInfo) {
@@ -191,8 +189,8 @@ class IndieCertService extends Service
             },
             array(
                 'enablePlugins' => array(
-                    'fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication'
-                )
+                    'fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication',
+                ),
             )
         );
 
@@ -203,15 +201,16 @@ class IndieCertService extends Service
             },
             array(
                 'enablePlugins' => array(
-                    'fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication'
-                )
+                    'fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication',
+                ),
             )
         );
     }
 
     private function getIndex(Request $request)
     {
-        $redirectUri = $request->getAbsRoot() . 'cb';
+        $redirectUri = $request->getAbsRoot().'cb';
+
         return $this->templateManager->render(
             'indexPage',
             array(
@@ -225,15 +224,15 @@ class IndieCertService extends Service
         return $this->templateManager->render(
             'faqPage',
             array(
-                'token_endpoint' => $request->getAbsRoot() . 'token'
+                'token_endpoint' => $request->getAbsRoot().'token',
             )
         );
     }
 
     private function getRp(Request $request)
     {
-        $authUri = $request->getAbsRoot() . 'auth';
-        $verifyPath = $request->getRoot() . 'auth';
+        $authUri = $request->getAbsRoot().'auth';
+        $verifyPath = $request->getRoot().'auth';
         $hostName = $request->getRequestUri()->getHost();
 
         return $this->templateManager->render(
@@ -241,7 +240,7 @@ class IndieCertService extends Service
             array(
                 'authUri' => $authUri,
                 'verifyPath' => $verifyPath,
-                'hostName' => $hostName
+                'hostName' => $hostName,
             )
         );
     }
@@ -256,7 +255,7 @@ class IndieCertService extends Service
         return $this->templateManager->render(
             'loginPage',
             array(
-                'redirect_to' => $redirectTo
+                'redirect_to' => $redirectTo,
             )
         );
     }
@@ -267,7 +266,7 @@ class IndieCertService extends Service
             'enrollPage',
             array(
                 'certChallenge' => $this->io->getRandomHex(),
-                'referrer' => $request->getHeader('HTTP_REFERER')
+                'referrer' => $request->getHeader('HTTP_REFERER'),
             )
         );
     }
@@ -292,14 +291,14 @@ class IndieCertService extends Service
         $redirectUri = InputValidation::validateUri($request->getQueryParameter('redirect_uri'), 'redirect_uri');
         $scope = InputValidation::validateScope($request->getQueryParameter('scope'));
         $state = InputValidation::validateState($request->getQueryParameter('state'));
-        
+
         $clientIdUriObj = new Uri($clientId);
         $redirectUriObj = new Uri($redirectUri);
 
         if ($clientIdUriObj->getHost() !== $redirectUriObj->getHost()) {
             throw new BadRequestException('client_id must have same host as redirect_uri');
         }
-    
+
         // FIXME: code duplication in the postConfirm method
         $fingerprintData = $request->getHeader('SSL_CLIENT_CERT');
         if (empty($fingerprintData)) {
@@ -311,8 +310,8 @@ class IndieCertService extends Service
         );
 
         if (false === $certificateValidator->hasFingerprint($me)) {
-            $authorizationEndpoint = $request->getAbsRoot() . 'auth';
-            $tokenEndpoint = $request->getAbsRoot() . 'token';
+            $authorizationEndpoint = $request->getAbsRoot().'auth';
+            $tokenEndpoint = $request->getAbsRoot().'token';
 
             return $this->templateManager->render(
                 'missingFingerprint',
@@ -320,7 +319,7 @@ class IndieCertService extends Service
                     'me' => $me,
                     'certFingerprint' => $certificateValidator->getFingerprint(),
                     'authorizationEndpoint' => $authorizationEndpoint,
-                    'tokenEndpoint' => $tokenEndpoint
+                    'tokenEndpoint' => $tokenEndpoint,
                 )
             );
         }
@@ -333,7 +332,7 @@ class IndieCertService extends Service
                 $approval = false;
             }
         }
-    
+
         if (false === $approval) {
 
             // store in apcu cache that the verification of the fingerprint
@@ -369,7 +368,7 @@ class IndieCertService extends Service
                     'me' => $me,
                     'clientId' => $clientId,
                     'redirectUri' => $redirectUri,
-                    'scope' => $scope
+                    'scope' => $scope,
                 )
             );
         }
@@ -408,8 +407,8 @@ class IndieCertService extends Service
             );
 
             if (false === $certificateValidator->hasFingerprint($me)) {
-                $authorizationEndpoint = $request->getAbsRoot() . 'auth';
-                $tokenEndpoint = $request->getAbsRoot() . 'token';
+                $authorizationEndpoint = $request->getAbsRoot().'auth';
+                $tokenEndpoint = $request->getAbsRoot().'token';
 
                 return $this->templateManager->render(
                     'missingFingerprint',
@@ -417,7 +416,7 @@ class IndieCertService extends Service
                         'me' => $me,
                         'certFingerprint' => $certificateValidator->getFingerprint(),
                         'authorizationEndpoint' => $authorizationEndpoint,
-                        'tokenEndpoint' => $tokenEndpoint
+                        'tokenEndpoint' => $tokenEndpoint,
                     )
                 );
             }
@@ -425,7 +424,7 @@ class IndieCertService extends Service
 
         // store approval if requested
         if (null !== $request->getPostParameter('remember')) {
-            $this->db->storeApproval($me, $clientId, $redirectUri, $scope, $this->io->getTime() + 3600*24*7);
+            $this->db->storeApproval($me, $clientId, $redirectUri, $scope, $this->io->getTime() + 3600 * 24 * 7);
         }
 
         return $this->indieCodeRedirect($me, $clientId, $redirectUri, $scope, $state);
@@ -440,7 +439,7 @@ class IndieCertService extends Service
     {
         return $this->postAuthToken($request, 'used_for_token');
     }
-    
+
     private function postAuthToken(Request $request, $usedFor)
     {
         $code = InputValidation::validateCode($request->getPostParameter('code'));
@@ -468,7 +467,7 @@ class IndieCertService extends Service
         if ($this->io->getTime() > $indieCode['issue_time'] + 600) {
             throw new BadRequestException('invalid_request', 'code expired');
         }
-    
+
         // default to "application/x-www-form-urlencoded" for now...
         if (false !== strpos($request->getHeader('Accept'), 'application/json')) {
             $response = new JsonResponse();
@@ -529,7 +528,7 @@ class IndieCertService extends Service
         if (!$tokenInfo->get('active')) {
             throw new UnauthorizedException('', '');
         }
-        
+
         $token = $request->getPostParameter('token');
         if (null === $token) {
             throw new BadRequestException('invalid_request', 'token parameter missing');
@@ -538,7 +537,7 @@ class IndieCertService extends Service
         $accessToken = $this->db->getAccessToken($token);
         if (false === $accessToken) {
             $tokenInfo = array(
-                'active' => false
+                'active' => false,
             );
         } else {
             $tokenInfo = array(
@@ -546,7 +545,7 @@ class IndieCertService extends Service
                 'sub' => $accessToken['me'],
                 'scope' => $accessToken['scope'],
                 'client_id' => $accessToken['client_id'],
-                'iat' => intval($accessToken['issue_time'])
+                'iat' => intval($accessToken['issue_time']),
             );
         }
 
@@ -569,7 +568,7 @@ class IndieCertService extends Service
                 'me' => $userId,
                 'approvals' => $approvals,
                 'tokens' => $accessTokens,
-                'credential' => $credential
+                'credential' => $credential,
             )
         );
     }
@@ -580,20 +579,20 @@ class IndieCertService extends Service
         $issueTime = $this->io->getTime();
         $this->db->storeCredential($indieInfo->getUserId(), $credential, $issueTime);
 
-        return new RedirectResponse($request->getAbsRoot() . 'account#credentials', 302);
+        return new RedirectResponse($request->getAbsRoot().'account#credentials', 302);
     }
 
     private function deleteCredential(Request $request, IndieInfo $indieInfo)
     {
         $this->db->deleteCredential($indieInfo->getUserId());
-        
-        return new RedirectResponse($request->getAbsRoot() . 'account#credentials', 302);
+
+        return new RedirectResponse($request->getAbsRoot().'account#credentials', 302);
     }
 
     private function deleteToken(Request $request, IndieInfo $indieInfo, $id)
     {
         $this->db->deleteAccessToken($indieInfo->getUserId(), $id);
 
-        return new RedirectResponse($request->getAbsRoot() . 'account#access_tokens', 302);
+        return new RedirectResponse($request->getAbsRoot().'account#access_tokens', 302);
     }
 }

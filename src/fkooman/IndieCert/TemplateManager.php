@@ -14,7 +14,6 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 namespace fkooman\IndieCert;
 
 use Twig_Loader_Filesystem;
@@ -41,7 +40,7 @@ class TemplateManager
         $templateDirs[] = $defaultTemplateDir;
 
         $environmentOptions = array(
-            'strict_variables' => true
+            'strict_variables' => true,
         );
 
         if (null !== $cacheDir) {
@@ -71,6 +70,7 @@ class TemplateManager
     public function render($templateName, array $variables = array())
     {
         $variables = array_merge($this->globalVariables, $variables);
+
         return $this->twig->render(
             sprintf(
                 '%s.twig',

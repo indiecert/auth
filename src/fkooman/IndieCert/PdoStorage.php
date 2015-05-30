@@ -14,7 +14,6 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 namespace fkooman\IndieCert;
 
 use PDO;
@@ -46,7 +45,7 @@ class PdoStorage
         $stmt->bindValue(':me', $me, PDO::PARAM_STR);
         $stmt->bindValue(':client_id', $clientId, PDO::PARAM_STR);
         $stmt->bindValue(':redirect_uri', $redirectUri, PDO::PARAM_STR);
-        $stmt->bindValue(':scope', $scope, PDO::PARAM_STR|PDO::PARAM_NULL);
+        $stmt->bindValue(':scope', $scope, PDO::PARAM_STR | PDO::PARAM_NULL);
         $stmt->bindValue(':issue_time', $issueTime, PDO::PARAM_INT);
         $stmt->execute();
 
@@ -101,7 +100,7 @@ class PdoStorage
         $stmt->bindValue(':access_token', $accessToken, PDO::PARAM_STR);
         $stmt->bindValue(':me', $me, PDO::PARAM_STR);
         $stmt->bindValue(':client_id', $clientId, PDO::PARAM_STR);
-        $stmt->bindValue(':scope', $scope, PDO::PARAM_STR|PDO::PARAM_NULL);
+        $stmt->bindValue(':scope', $scope, PDO::PARAM_STR | PDO::PARAM_NULL);
         $stmt->bindValue(':issue_time', $issueTime, PDO::PARAM_INT);
         $stmt->execute();
 
@@ -109,7 +108,7 @@ class PdoStorage
             throw new PdoStorageException('unable to add');
         }
     }
-    
+
     public function getAccessToken($accessToken)
     {
         $stmt = $this->db->prepare(
@@ -141,6 +140,7 @@ class PdoStorage
         for ($i = 0; $i < count($accessTokens); $i++) {
             $accessTokens[$i]['access_token'] = substr($accessTokens[$i]['access_token'], 0, 12);
         }
+
         return $accessTokens;
     }
 
@@ -154,7 +154,8 @@ class PdoStorage
         );
 
         $stmt->bindValue(':me', $me, PDO::PARAM_STR);
-        $stmt->bindValue(':access_token', $accessToken . '%', PDO::PARAM_STR);
+        $stmt->bindValue(':access_token', $accessToken.'%', PDO::PARAM_STR);
+
         return $stmt->execute();
     }
 
@@ -184,7 +185,7 @@ class PdoStorage
         $stmt->bindValue(':me', $me, PDO::PARAM_STR);
         $stmt->bindValue(':client_id', $clientId, PDO::PARAM_STR);
         $stmt->bindValue(':redirect_uri', $redirectUri, PDO::PARAM_STR);
-        $stmt->bindValue(':scope', $scope, PDO::PARAM_STR|PDO::PARAM_NULL);
+        $stmt->bindValue(':scope', $scope, PDO::PARAM_STR | PDO::PARAM_NULL);
         $stmt->bindValue(':expires_at', $expiresAt, PDO::PARAM_INT);
         $stmt->execute();
 
@@ -216,6 +217,7 @@ class PdoStorage
         $stmt->bindValue(':client_id', $clientId, PDO::PARAM_STR);
         $stmt->bindValue(':redirect_uri', $redirectUri, PDO::PARAM_STR);
         $stmt->execute();
+
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
@@ -304,6 +306,7 @@ class PdoStorage
         );
 
         $stmt->bindValue(':me', $me, PDO::PARAM_STR);
+
         return $stmt->execute();
     }
 
@@ -317,6 +320,7 @@ class PdoStorage
         );
 
         $stmt->bindValue(':current_time', $currentTime, PDO::PARAM_INT);
+
         return $stmt->execute();
     }
 
@@ -330,6 +334,7 @@ class PdoStorage
         );
 
         $stmt->bindValue(':current_time', $currentTime, PDO::PARAM_INT);
+
         return $stmt->execute();
     }
 
