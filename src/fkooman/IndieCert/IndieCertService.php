@@ -342,6 +342,8 @@ class IndieCertService extends Service
                 apc_add($me, true);
             }
 
+            // FIXME: we could just get the query parameters... they were
+            // validated anyway...
             if (null === $scope) {
                 $confirmUri = sprintf(
                     'confirm?client_id=%s&redirect_uri=%s&me=%s&state=%s',
