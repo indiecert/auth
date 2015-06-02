@@ -123,22 +123,24 @@ class IndieCertService extends Service
         );
 
         $this->post(
-            '/token',
-            function (Request $request, TokenInfo $tokenInfo = null) {
-                if (null === $tokenInfo) {
-                    // no bearer token authentication
-                    return $this->postToken($request);
-                }
-
+            '/introspect',
+            function (Request $request, TokenInfo $tokenInfo) {
                 return $this->verifyToken($request, $tokenInfo);
             },
             array(
                 'enablePlugins' => array(
                     'fkooman\Rest\Plugin\Bearer\BearerAuthentication',
                 ),
-                'fkooman\Rest\Plugin\Bearer\BearerAuthentication' => array(
-                    'requireAuth' => false,
-                ),
+                'disableReferrerCheck' => true,
+            )
+        );
+
+        $this->post(
+            '/token',
+            function (Request $request) {
+                return $this->postToken($request);
+            },
+            array(
                 'disableReferrerCheck' => true,
             )
         );
@@ -224,7 +226,7 @@ class IndieCertService extends Service
         return $this->templateManager->render(
             'faqPage',
             array(
-                'token_endpoint' => $request->getAbsRoot().'token',
+                'introspect_endpoint' => $request->getAbsRoot().'introspect',
             )
         );
     }

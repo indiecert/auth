@@ -3,6 +3,8 @@
 ## 0.4.9
 - set the default background to white, it seems Firefox on Fedora 22 has grey
   background by default?
+- implement introspection endpoint instead of overloading the token endpoint
+  for verification by resource servers, e.g. micropub
 
 ## 0.4.8
 - use `rel="publickey"` now instead of `rel="me"` for fingerprint, `rel="me"`
