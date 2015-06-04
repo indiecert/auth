@@ -17,7 +17,6 @@
 namespace fkooman\IndieCert;
 
 use fkooman\Http\Exception\BadRequestException;
-use fkooman\Http\Uri;
 use InvalidArgumentException;
 
 class InputValidation
@@ -30,22 +29,29 @@ class InputValidation
         if (0 !== stripos($me, 'http')) {
             $me = sprintf('https://%s', $me);
         }
-        try {
-            $uriObj = new Uri($me);
-            if ('https' !== $uriObj->getScheme()) {
-                throw new BadRequestException('"me" must be https uri');
-            }
-            if (null !== $uriObj->getQuery()) {
-                throw new BadRequestException('"me" cannot contain query parameters');
-            }
-            if (null !== $uriObj->getFragment()) {
-                throw new BadRequestException('"me" cannot contain fragment');
-            }
 
-            return $uriObj->getUri();
-        } catch (InvalidArgumentException $e) {
-            throw new BadRequestException('"me" is an invalid uri');
+        if (false === filter_var($me, FILTER_VALIDATE_URL)) {
+            throw new BadRequestException('"me" is an invalid URL');
         }
+
+        if ('https' !== parse_url($me, PHP_URL_SCHEME)) {
+            throw new BadRequestException('"me" MUST be a https URL');
+        }
+
+        if (null !== parse_url($me, PHP_URL_QUERY)) {
+            throw new BadRequestException('"me" MUST NOT contain query parameters');
+        }
+
+        if (null !== parse_url($me, PHP_URL_FRAGMENT)) {
+            throw new BadRequestException('"me" MUST NOT contain fragment');
+        }
+
+        // if no path is set, add '/'
+        if (null === parse_url($me, PHP_URL_PATH)) {
+            $me .= '/';
+        }
+
+        return $me;
     }
 
     public static function validateUri($uri, $fieldName)
@@ -55,25 +61,20 @@ class InputValidation
                 sprintf('missing parameter "%s"', $fieldName)
             );
         }
-        try {
-            $uriObj = new Uri($uri);
-            if ('https' !== $uriObj->getScheme()) {
-                throw new BadRequestException(
-                    sprintf('"%s" must be https uri', $fieldName)
-                );
-            }
-            if (null !== $uriObj->getFragment()) {
-                throw new BadRequestException(
-                    sprintf('"%s" cannot contain fragment', $fieldName)
-                );
-            }
 
-            return $uriObj->getUri();
-        } catch (InvalidArgumentException $e) {
-            throw new BadRequestException(
-                sprintf('"%s" is an invalid uri', $fieldName)
-            );
+        if (false === filter_var($uri, FILTER_VALIDATE_URL)) {
+            throw new BadRequestException(sprintf('"%s" is an invalid URL', $fieldName));
         }
+
+        if ('https' !== parse_url($uri, PHP_URL_SCHEME)) {
+            throw new BadRequestException(sprintf('"%s" MUST be a https URL', $fieldName));
+        }
+
+        if (null !== parse_url($uri, PHP_URL_FRAGMENT)) {
+            throw new BadRequestException(sprintf('"%s" MUST NOT contain fragment', $fieldName));
+        }
+
+        return $uri;
     }
 
     public static function validateCode($code)
@@ -118,28 +119,24 @@ class InputValidation
         return $state;
     }
 
-    public static function validateRedirectTo($absRoot, $redirectTo)
+    public static function validateRedirectTo($rootUrl, $redirectTo)
     {
         // no redirectTo specified
         if (null === $redirectTo) {
-            $redirectTo = $absRoot;
+            $redirectTo = $rootUrl;
         }
 
         // redirectTo specified, using path relative to absRoot
         if (0 === strpos($redirectTo, '/')) {
-            $redirectTo = $absRoot.substr($redirectTo, 1);
+            $redirectTo = $rootUrl.substr($redirectTo, 1);
         }
 
-        // validate and normalize the URL
-        try {
-            $redirectToObj = new Uri($redirectTo);
-            $redirectTo = $redirectToObj->getUri();
-        } catch (InvalidArgumentException $e) {
-            throw new BadRequestException('invalid redirect_to URL');
+        if (false === filter_var($redirectTo, FILTER_VALIDATE_URL)) { //, FILTER_FLAG_PATH_REQUIRED)) {
+            throw new BadRequestException(sprintf('invalid redirect_to URL "%s"', $redirectTo));
         }
 
         // URL needs to start with absRoot
-        if (0 !== strpos($redirectTo, $absRoot)) {
+        if (0 !== strpos($redirectTo, $rootUrl)) {
             throw new BadRequestException('redirect_to needs to point to a URL relative to the application root');
         }
 

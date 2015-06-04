@@ -16,83 +16,71 @@
  */
 require_once dirname(__DIR__).'/vendor/autoload.php';
 
-use fkooman\Ini\IniReader;
 use fkooman\Http\Request;
-use fkooman\Http\IncomingRequest;
-use fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication;
-use fkooman\Rest\Plugin\Bearer\BearerAuthentication;
-use GuzzleHttp\Client;
-use fkooman\IndieCert\CredentialValidator;
 use fkooman\IndieCert\CertManager;
+use fkooman\IndieCert\CredentialValidator;
 use fkooman\IndieCert\IndieCertService;
 use fkooman\IndieCert\PdoStorage;
 use fkooman\IndieCert\TemplateManager;
+use fkooman\Ini\IniReader;
+use fkooman\Rest\Plugin\Bearer\BearerAuthentication;
+use fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication;
+use fkooman\Rest\Plugin\ReferrerCheckPlugin;
+use fkooman\Rest\Plugin\Tls\TlsAuthentication;
+use fkooman\Rest\PluginRegistry;
+use GuzzleHttp\Client;
 
-try {
-    $iniReader = IniReader::fromFile(
-        dirname(__DIR__).'/config/config.ini'
-    );
+$iniReader = IniReader::fromFile(
+    dirname(__DIR__).'/config/config.ini'
+);
 
-    // PdoStorage
-    $pdo = new PDO(
-        $iniReader->v('PdoStorage', 'dsn'),
-        $iniReader->v('PdoStorage', 'username', false),
-        $iniReader->v('PdoStorage', 'password', false)
-    );
-    $db = new PdoStorage($pdo);
+// PdoStorage
+$pdo = new PDO(
+    $iniReader->v('PdoStorage', 'dsn'),
+    $iniReader->v('PdoStorage', 'username', false),
+    $iniReader->v('PdoStorage', 'password', false)
+);
+$db = new PdoStorage($pdo);
 
-    // CertManager
-    $caDir = $iniReader->v('CA', 'storageDir');
-    $caCrt = file_get_contents(sprintf('%s/ca.crt', $caDir));
-    $caKey = file_get_contents(sprintf('%s/ca.key', $caDir));
+// CertManager
+$caDir = $iniReader->v('CA', 'storageDir');
+$caCrt = file_get_contents(sprintf('%s/ca.crt', $caDir));
+$caKey = file_get_contents(sprintf('%s/ca.key', $caDir));
 
-    $certManager = new CertManager($caCrt, $caKey);
+$certManager = new CertManager($caCrt, $caKey);
 
-    // Guzzle
-    $disableServerCertCheck = $iniReader->v('disableServerCertCheck', false, false);
-    $client = new Client(
-        array(
-            'defaults' => array(
-                'verify' => !$disableServerCertCheck,
-                'timeout' => 10,
-            ),
-        )
-    );
+// Guzzle
+$disableServerCertCheck = $iniReader->v('disableServerCertCheck', false, false);
+$client = new Client(
+    array(
+        'defaults' => array(
+            'verify' => !$disableServerCertCheck,
+            'timeout' => 10,
+        ),
+    )
+);
 
-    // TemplateManager
-    $templateManager = new TemplateManager($iniReader->v('templateCache', false, null));
+// TemplateManager
+$templateManager = new TemplateManager($iniReader->v('templateCache', false, null));
 
-    $request = Request::fromIncomingRequest(new IncomingRequest());
+$request = new Request($_SERVER);
 
-    $indieAuth = new IndieAuthAuthentication($request->getAbsRoot().'auth');
-    $indieAuth->setClient($client);
-    $indieAuth->setDiscovery(false);
-    $indieAuth->setUnauthorizedRedirectUri('/login');
+$indieAuth = new IndieAuthAuthentication($request->getUrl()->getRootUrl().'auth');
+$indieAuth->setClient($client);
+$indieAuth->setDiscovery(false);
+$indieAuth->setUnauthorizedRedirectUri('/login');
 
-    $bearerAuth = new BearerAuthentication(
-        new CredentialValidator($db),
-        'IndieCert'
-    );
+$bearerAuth = new BearerAuthentication(
+    new CredentialValidator($db),
+    'IndieCert'
+);
 
-    $service = new IndieCertService($db, $certManager, $client, $templateManager);
+$service = new IndieCertService($db, $certManager, $client, $templateManager);
 
-    // enable CSRF protection
-    $service->setReferrerCheck(true);
-
-    $service->registerOnMatchPlugin(
-        $indieAuth,
-        array(
-            'defaultDisable' => true,
-        )
-    );
-    $service->registerOnMatchPlugin(
-        $bearerAuth,
-        array(
-            'defaultDisable' => true,
-        )
-    );
-
-    $service->run($request)->sendResponse();
-} catch (Exception $e) {
-    IndieCertService::handleException($e, false)->sendResponse();
-}
+$pluginRegistry = new PluginRegistry();
+$pluginRegistry->registerDefaultPlugin(new ReferrerCheckPlugin());
+$pluginRegistry->registerOptionalPlugin(new TlsAuthentication());
+$pluginRegistry->registerOptionalPlugin($indieAuth);
+$pluginRegistry->registerOptionalPlugin($bearerAuth);
+$service->setPluginRegistry($pluginRegistry);
+$service->run($request)->send();

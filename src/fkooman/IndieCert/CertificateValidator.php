@@ -2,7 +2,6 @@
 
 namespace fkooman\IndieCert;
 
-use fkooman\X509\CertParser;
 use GuzzleHttp\Client;
 use GuzzleHttp\Subscriber\History;
 use GuzzleHttp\Url;
@@ -11,16 +10,11 @@ use DomDocument;
 
 class CertificateValidator
 {
-    /** @var fkooman\X509\CertParser */
-    private $certParser;
-
     /** @var GuzzleHttp\Client */
     private $client;
 
-    public function __construct($certificateData, Client $client = null)
+    public function __construct(Client $client = null)
     {
-        $this->certParser = new CertParser($certificateData);
-
         if (null === $client) {
             $client = new Client();
         }
@@ -28,22 +22,13 @@ class CertificateValidator
     }
 
     /**
-     * Get the fingerprint of the certificate in RFC 6920 format.
-     */
-    public function getFingerprint()
-    {
-        return sprintf(
-            'ni:///sha-256;%s?ct=application/x-x509-user-cert',
-            $this->certParser->getFingerPrint('sha256', true)
-        );
-    }
-
-    /**
      * Check if the certificate fingerprint is mentioned on the specified
      * URL.
      */
-    public function hasFingerprint($homePageUrl)
+    public function hasFingerprint($homePageUrl, $fingerprint)
     {
+        $fingerprint = sprintf('ni:///sha-256;%s?ct=application/x-x509-user-cert', $fingerprint);
+
         $htmlResponse = $this->fetchPage($homePageUrl);
         $relMeLinks = $this->extractRelMeLinks($htmlResponse);
 
@@ -56,7 +41,7 @@ class CertificateValidator
             }
         }
 
-        if (!in_array($this->getFingerprint(), $certFingerprints)) {
+        if (!in_array($fingerprint, $certFingerprints)) {
             return false;
         }
 
@@ -101,7 +86,7 @@ class CertificateValidator
             foreach ($elements as $element) {
                 $href = $element->getAttribute('href');
                 $rel = $element->getAttribute('rel');
-                // FIXME: 'me' should not be used for certificate fingerprint, use publickey instead
+                // DEPRECATED: 'me' should not be used for certificate fingerprint, use publickey instead
                 if ('me' === $rel) {
                     $relMeLinks[] = $href;
                 }
