@@ -29,6 +29,9 @@ use fkooman\Rest\Plugin\ReferrerCheckPlugin;
 use fkooman\Rest\Plugin\Tls\TlsAuthentication;
 use fkooman\Rest\PluginRegistry;
 use GuzzleHttp\Client;
+use fkooman\Rest\ExceptionHandler;
+
+ExceptionHandler::register();
 
 $iniReader = IniReader::fromFile(
     dirname(__DIR__).'/config/config.ini'
