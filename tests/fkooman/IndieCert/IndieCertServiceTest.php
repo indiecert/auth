@@ -19,6 +19,8 @@ namespace fkooman\IndieCert;
 use PDO;
 use PHPUnit_Framework_TestCase;
 use fkooman\Http\Request;
+use fkooman\Rest\PluginRegistry;
+use fkooman\Rest\Plugin\Tls\TlsAuthentication;
 use GuzzleHttp\Client;
 use GuzzleHttp\Subscriber\Mock;
 use GuzzleHttp\Message\Response;
@@ -63,6 +65,9 @@ class IndieCertServiceTest extends PHPUnit_Framework_TestCase
         $certManager = new CertManager('crt', 'key', $ioStub);
 
         $this->service = new IndieCertService($storage, $certManager, $client, null, $ioStub);
+        $pluginRegistry = new PluginRegistry();
+        $pluginRegistry->registerOptionalPlugin(new TlsAuthentication());
+        $this->service->setPluginRegistry($pluginRegistry);
     }
 
     public function testAuthRequest()
@@ -111,7 +116,7 @@ class IndieCertServiceTest extends PHPUnit_Framework_TestCase
 
         $response = $this->service->run($request);
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals(file_get_contents($this->dataDir.'/askAuthorization.html'), $response->getContent());
+        $this->assertEquals(file_get_contents($this->dataDir.'/askAuthorization.html'), $response->getBody());
     }
 
 #    public function testAuthRequestConfirm()
@@ -163,7 +168,7 @@ class IndieCertServiceTest extends PHPUnit_Framework_TestCase
 #        );
 #        $response = $this->service->run($request);
 #        $this->assertEquals(200, $response->getStatusCode());
-#        $this->assertEquals(array('me' => 'https://me.example/'), $response->getContent());
+#        $this->assertEquals(array('me' => 'https://me.example/'), $response->getBody());
 #    }
 
 #    public function testAuthRequestScope()
@@ -191,7 +196,7 @@ class IndieCertServiceTest extends PHPUnit_Framework_TestCase
 
 #        $response = $this->service->run($request);
 #        $this->assertEquals(200, $response->getStatusCode());
-#        $this->assertEquals(file_get_contents($this->dataDir.'/askAuthorizationScope.html'), $response->getContent());
+#        $this->assertEquals(file_get_contents($this->dataDir.'/askAuthorizationScope.html'), $response->getBody());
 #    }
 
 #    public function testAuthRequestConfirmScope()
@@ -244,6 +249,6 @@ class IndieCertServiceTest extends PHPUnit_Framework_TestCase
 #        );
 #        $response = $this->service->run($request);
 #        $this->assertEquals(200, $response->getStatusCode());
-#        $this->assertEquals(array('me' => 'https://me.example/', 'scope' => 'post'), $response->getContent());
+#        $this->assertEquals(array('me' => 'https://me.example/', 'scope' => 'post'), $response->getBody());
 #    }
 }

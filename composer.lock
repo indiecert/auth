@@ -129,12 +129,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/fkooman/php-lib-rest.git",
-                "reference": "b5bc2423fdbfddc582cd9aad914b3c97171a9ee7"
+                "reference": "04eed334446f7fba0f41890ff1f094abf3468705"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fkooman/php-lib-rest/zipball/b5bc2423fdbfddc582cd9aad914b3c97171a9ee7",
-                "reference": "b5bc2423fdbfddc582cd9aad914b3c97171a9ee7",
+                "url": "https://api.github.com/repos/fkooman/php-lib-rest/zipball/04eed334446f7fba0f41890ff1f094abf3468705",
+                "reference": "04eed334446f7fba0f41890ff1f094abf3468705",
                 "shasum": ""
             },
             "require": {
@@ -170,7 +170,7 @@
                 }
             ],
             "description": "Simple PHP library for writing REST services.",
-            "time": "2015-06-04 09:53:49"
+            "time": "2015-06-05 10:11:05"
         },
         {
             "name": "fkooman/rest-plugin-bearer",
@@ -217,12 +217,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/fkooman/php-lib-rest-plugin-indieauth.git",
-                "reference": "4f232bf7010a4f152859498cf892db48a41c917f"
+                "reference": "8e5926c2ba69c00100f2f839db43b5310909207d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fkooman/php-lib-rest-plugin-indieauth/zipball/4f232bf7010a4f152859498cf892db48a41c917f",
-                "reference": "4f232bf7010a4f152859498cf892db48a41c917f",
+                "url": "https://api.github.com/repos/fkooman/php-lib-rest-plugin-indieauth/zipball/8e5926c2ba69c00100f2f839db43b5310909207d",
+                "reference": "8e5926c2ba69c00100f2f839db43b5310909207d",
                 "shasum": ""
             },
             "require": {
@@ -249,7 +249,7 @@
                 }
             ],
             "description": "IndieAuth plugin for fkooman/rest",
-            "time": "2015-06-04 10:20:22"
+            "time": "2015-06-05 10:29:11"
         },
         {
             "name": "fkooman/rest-plugin-tls",
