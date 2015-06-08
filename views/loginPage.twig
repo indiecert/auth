@@ -17,7 +17,7 @@
             Please login with your domain name.
         </p>
 
-        <form class="authenticate" method="post" action="indieauth/auth">
+        <form class="authenticate" method="post" action="_indieauth/auth">
             <label for="me">https://</label><input id="me" required type="text" name="me" placeholder="example.org">
             <input type="hidden" name="redirect_to" value="{{ redirect_to|e }}">
             <input class="info" type="submit" value="Sign In">

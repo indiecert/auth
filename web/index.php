@@ -75,7 +75,7 @@ $indieAuth->setUnauthorizedRedirectUri('/login');
 
 $bearerAuth = new BearerAuthentication(
     new CredentialValidator($db),
-    'IndieCert'
+    array('realm' => 'IndieCert')
 );
 
 $service = new IndieCertService($db, $certManager, $client, $templateManager);

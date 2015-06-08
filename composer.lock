@@ -129,12 +129,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/fkooman/php-lib-rest.git",
-                "reference": "04eed334446f7fba0f41890ff1f094abf3468705"
+                "reference": "f8f5d9b09fc0c8d0a0dea4ac69886dd09ab95bf0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fkooman/php-lib-rest/zipball/04eed334446f7fba0f41890ff1f094abf3468705",
-                "reference": "04eed334446f7fba0f41890ff1f094abf3468705",
+                "url": "https://api.github.com/repos/fkooman/php-lib-rest/zipball/f8f5d9b09fc0c8d0a0dea4ac69886dd09ab95bf0",
+                "reference": "f8f5d9b09fc0c8d0a0dea4ac69886dd09ab95bf0",
                 "shasum": ""
             },
             "require": {
@@ -170,7 +170,7 @@
                 }
             ],
             "description": "Simple PHP library for writing REST services.",
-            "time": "2015-06-05 10:11:05"
+            "time": "2015-06-08 12:09:50"
         },
         {
             "name": "fkooman/rest-plugin-bearer",
@@ -178,12 +178,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/fkooman/php-lib-rest-plugin-bearer.git",
-                "reference": "ab432831b84bd843ede8ede46bd5483b9fecec45"
+                "reference": "d6a722f703b0bc074f7ecae48e8ece9e45ba2394"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fkooman/php-lib-rest-plugin-bearer/zipball/ab432831b84bd843ede8ede46bd5483b9fecec45",
-                "reference": "ab432831b84bd843ede8ede46bd5483b9fecec45",
+                "url": "https://api.github.com/repos/fkooman/php-lib-rest-plugin-bearer/zipball/d6a722f703b0bc074f7ecae48e8ece9e45ba2394",
+                "reference": "d6a722f703b0bc074f7ecae48e8ece9e45ba2394",
                 "shasum": ""
             },
             "require": {
@@ -209,7 +209,7 @@
                 }
             ],
             "description": "Bearer (OAuth) Authentication plugin for fkooman/rest",
-            "time": "2015-06-04 10:28:35"
+            "time": "2015-06-06 16:06:37"
         },
         {
             "name": "fkooman/rest-plugin-indieauth",
@@ -217,12 +217,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/fkooman/php-lib-rest-plugin-indieauth.git",
-                "reference": "8e5926c2ba69c00100f2f839db43b5310909207d"
+                "reference": "60f5366616e302389f450145887c32466edcea64"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fkooman/php-lib-rest-plugin-indieauth/zipball/8e5926c2ba69c00100f2f839db43b5310909207d",
-                "reference": "8e5926c2ba69c00100f2f839db43b5310909207d",
+                "url": "https://api.github.com/repos/fkooman/php-lib-rest-plugin-indieauth/zipball/60f5366616e302389f450145887c32466edcea64",
+                "reference": "60f5366616e302389f450145887c32466edcea64",
                 "shasum": ""
             },
             "require": {
@@ -249,7 +249,7 @@
                 }
             ],
             "description": "IndieAuth plugin for fkooman/rest",
-            "time": "2015-06-05 10:29:11"
+            "time": "2015-06-08 12:19:08"
         },
         {
             "name": "fkooman/rest-plugin-tls",
@@ -665,12 +665,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "dfddd2e0ef39fd39e201fd89f469769740d5a4a1"
+                "reference": "e22fb8728b395b306a06785a3ae9b12f3fbc0294"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/dfddd2e0ef39fd39e201fd89f469769740d5a4a1",
-                "reference": "dfddd2e0ef39fd39e201fd89f469769740d5a4a1",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/e22fb8728b395b306a06785a3ae9b12f3fbc0294",
+                "reference": "e22fb8728b395b306a06785a3ae9b12f3fbc0294",
                 "shasum": ""
             },
             "require": {
@@ -714,7 +714,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2015-06-02 14:50:15"
+            "time": "2015-06-06 23:35:59"
         }
     ],
     "packages-dev": [],
