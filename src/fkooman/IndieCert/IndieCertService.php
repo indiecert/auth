@@ -121,7 +121,7 @@ class IndieCertService extends Service
                 return $this->postAuth($request);
             },
             array(
-                'fkooman\Rest\Plugin\ReferrerCheckPlugin' => array('enabled' => false),
+                'fkooman\Rest\Plugin\ReferrerCheck\ReferrerCheckPlugin' => array('enabled' => false),
             )
         );
 
@@ -139,7 +139,7 @@ class IndieCertService extends Service
             },
             array(
                 'fkooman\Rest\Plugin\Bearer\BearerAuthentication' => array('enabled' => true),
-                'fkooman\Rest\Plugin\ReferrerCheckPlugin' => array('enabled' => false),
+                'fkooman\Rest\Plugin\ReferrerCheck\ReferrerCheckPlugin' => array('enabled' => false),
             )
         );
 
@@ -151,7 +151,7 @@ class IndieCertService extends Service
                 return $this->postToken($request);
             },
             array(
-                'fkooman\Rest\Plugin\ReferrerCheckPlugin' => array('enabled' => false),
+                'fkooman\Rest\Plugin\ReferrerCheck\ReferrerCheckPlugin' => array('enabled' => false),
             )
         );
 

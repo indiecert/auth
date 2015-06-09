@@ -25,7 +25,7 @@ use fkooman\IndieCert\TemplateManager;
 use fkooman\Ini\IniReader;
 use fkooman\Rest\Plugin\Bearer\BearerAuthentication;
 use fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication;
-use fkooman\Rest\Plugin\ReferrerCheckPlugin;
+use fkooman\Rest\Plugin\ReferrerCheck\ReferrerCheckPlugin;
 use fkooman\Rest\Plugin\Tls\TlsAuthentication;
 use fkooman\Rest\PluginRegistry;
 use GuzzleHttp\Client;
