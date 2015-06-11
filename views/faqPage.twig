@@ -176,6 +176,46 @@ $ openssl x509 -in client.crt -outform DER \
             ideal for testing while developing your relying party!
         </p>
 
+        <h3 id="GitHub">Using GitHub Pages</h3>
+        <p>
+Not everyone will have their own domain and valid TLS certificate configured
+for it. So for testing it makes sense to use GitHub pages!
+        </p>
+
+        <p>
+If you already have a GitHub account you are good to go. Go to GitHub and
+create a new repository. If your GitHub account name is for example
+<code>fkooman</code>, create a repository called
+<code>fkooman.github.io</code>. In this repository add a file
+<code>index.html</code> and put the following content there:
+        </p>
+
+<pre>
+&lt;!DOCTYPE html&gt;
+
+&lt;html lang="en"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;link rel="publickey" href="<strong>{fingerprint}</strong>"/&gt;
+  &lt;link rel="authorization_endpoint" href="https://indiecert.net/auth"/&gt;
+  &lt;link rel="token_endpoint" href="https://indiecert.net/token"/&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  My GitHub Page
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+        <p>
+Now try to login to IndieCert using the identity
+<code>https://fkooman.github.io/</code>. Where you replace <code>fkooman</code>
+with your own GitHub account name. The authentication will fail because the
+fingerprint does not yet match. Replace <code>{fingerprint}</code> with the
+fingerprint mentioned on the IndieCert page. After saving this the
+authentication should work! You can use the identity mentioned above to
+authenticate to Distributed IndieAuth applications!
+        </p>
+
         <h3 id="Micropub">Micropub</h3>
         <p>
             If you have your own domain and run a
