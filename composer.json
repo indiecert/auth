@@ -11,6 +11,7 @@
     "require": {
         "ext-apcu": "*",
         "ext-openssl": "*",
+	"ext-pdo": "*",
         "fkooman/ini": "~0.2.0",
         "fkooman/rest": "dev-develop",
         "fkooman/rest-plugin-bearer": "dev-develop",
