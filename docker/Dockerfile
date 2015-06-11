@@ -1,11 +1,14 @@
-FROM       fedora:21
+FROM       centos:latest
 MAINTAINER François Kooman <fkooman@tuxed.net>
 
-RUN yum -y update; yum clean all
-RUN yum install -y yum-plugin-copr; yum clean all 
+# Add EPEL
+RUN yum -y install https://download.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm ; yum clean all
 
-RUN yum copr enable -y fkooman/php-base
-RUN yum copr enable -y fkooman/php-relmeauth
+# Enable COPR repositories
+RUN curl -s -L -o /etc/yum.repos.d/fkooman-php-base-epel-7.repo https://copr.fedoraproject.org/coprs/fkooman/php-base/repo/epel-7/fkooman-php-base-epel-7.repo
+RUN curl -s -L -o /etc/yum.repos.d/fkooman-php-oauth-epel-7.repo https://copr.fedoraproject.org/coprs/fkooman/php-oauth/repo/epel-7/fkooman-php-oauth-epel-7.repo
+
+RUN yum -y update ; yum clean all
 
 RUN yum install -y mod_ssl php-pecl-zendopcache indiecert; yum clean all
 
