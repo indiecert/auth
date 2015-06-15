@@ -129,12 +129,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/fkooman/php-lib-rest.git",
-                "reference": "a8795dd0866a1af8cfb7b23539827623f28b2ab2"
+                "reference": "fed2f73a894b20ddda54ae53dbffff852cfd2cc0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fkooman/php-lib-rest/zipball/a8795dd0866a1af8cfb7b23539827623f28b2ab2",
-                "reference": "a8795dd0866a1af8cfb7b23539827623f28b2ab2",
+                "url": "https://api.github.com/repos/fkooman/php-lib-rest/zipball/fed2f73a894b20ddda54ae53dbffff852cfd2cc0",
+                "reference": "fed2f73a894b20ddda54ae53dbffff852cfd2cc0",
                 "shasum": ""
             },
             "require": {
@@ -171,7 +171,7 @@
                 }
             ],
             "description": "Simple PHP library for writing REST services.",
-            "time": "2015-06-11 11:55:48"
+            "time": "2015-06-15 13:01:40"
         },
         {
             "name": "fkooman/rest-plugin-bearer",
@@ -609,12 +609,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/EventDispatcher.git",
-                "reference": "8766cebf28beac9a45b511d7dba053da9d35eb9f"
+                "reference": "d91fb729673cc8587d0471bab5be02c77d608e77"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/EventDispatcher/zipball/8766cebf28beac9a45b511d7dba053da9d35eb9f",
-                "reference": "8766cebf28beac9a45b511d7dba053da9d35eb9f",
+                "url": "https://api.github.com/repos/symfony/EventDispatcher/zipball/d91fb729673cc8587d0471bab5be02c77d608e77",
+                "reference": "d91fb729673cc8587d0471bab5be02c77d608e77",
                 "shasum": ""
             },
             "require": {
@@ -659,7 +659,7 @@
             ],
             "description": "Symfony EventDispatcher Component",
             "homepage": "https://symfony.com",
-            "time": "2015-05-12 15:16:46"
+            "time": "2015-06-11 17:27:52"
         },
         {
             "name": "twig/twig",
