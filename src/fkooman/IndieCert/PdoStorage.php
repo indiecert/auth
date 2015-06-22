@@ -14,6 +14,7 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 namespace fkooman\IndieCert;
 
 use PDO;
@@ -137,7 +138,7 @@ class PdoStorage
         $stmt->execute();
 
         $accessTokens = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        for ($i = 0; $i < count($accessTokens); $i++) {
+        for ($i = 0; $i < count($accessTokens); ++$i) {
             $accessTokens[$i]['access_token'] = substr($accessTokens[$i]['access_token'], 0, 12);
         }
 

@@ -14,6 +14,7 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 namespace fkooman\IndieCert;
 
 use fkooman\Http\Request;
@@ -27,7 +28,7 @@ use fkooman\Http\Exception\BadRequestException;
 use fkooman\Http\Exception\UnauthorizedException;
 use fkooman\Rest\Plugin\Bearer\TokenInfo;
 use fkooman\Rest\Plugin\IndieAuth\IndieInfo;
-use fkooman\X509\CertParser;
+use fkooman\Rest\Plugin\Tls\CertInfo;
 
 class IndieCertService extends Service
 {
@@ -95,8 +96,8 @@ class IndieCertService extends Service
 
         $this->get(
             '/auth',
-            function (Request $request, CertParser $certParser = null) {
-                return $this->getAuth($request, $certParser);
+            function (Request $request, CertInfo $certInfo = null) {
+                return $this->getAuth($request, $certInfo);
             },
             array(
                 'fkooman\Rest\Plugin\Tls\TlsAuthentication' => array('enabled' => true),
@@ -105,8 +106,8 @@ class IndieCertService extends Service
 
         $this->post(
             '/confirm',
-            function (Request $request, CertParser $certParser) {
-                return $this->postConfirm($request, $certParser);
+            function (Request $request, CertInfo $certInfo) {
+                return $this->postConfirm($request, $certInfo);
             },
             array(
                 'fkooman\Rest\Plugin\Tls\TlsAuthentication' => array('enabled' => true),
@@ -313,7 +314,7 @@ class IndieCertService extends Service
         return $response;
     }
 
-    private function getAuth(Request $request, CertParser $certParser = null)
+    private function getAuth(Request $request, CertInfo $certInfo = null)
     {
         $me = InputValidation::validateMe($request->getUrl()->getQueryParameter('me'));
         $clientId = InputValidation::validateUri($request->getUrl()->getQueryParameter('client_id'), 'client_id');
@@ -325,12 +326,12 @@ class IndieCertService extends Service
             throw new BadRequestException('invalid_request', 'client_id must have same host as redirect_uri');
         }
 
-        if (null === $certParser) {
+        if (null === $certInfo) {
             return $this->templateManager->render('noCert');
         }
 
         $certificateValidator = new CertificateValidator($this->client);
-        if (false === $certificateValidator->hasFingerprint($me, $certParser->getFingerprint('sha256', true))) {
+        if (false === $certificateValidator->hasFingerprint($me, $certInfo->getUserId())) {
             $authorizationEndpoint = $request->getUrl()->getRootUrl().'auth';
             $tokenEndpoint = $request->getUrl()->getRootUrl().'token';
 
@@ -409,7 +410,7 @@ class IndieCertService extends Service
         return $this->indieCodeRedirect($me, $clientId, $redirectUri, $scope, $state);
     }
 
-    private function postConfirm(Request $request, CertParser $certParser)
+    private function postConfirm(Request $request, CertInfo $certInfo)
     {
         $me = InputValidation::validateMe($request->getUrl()->getQueryParameter('me'));
         $clientId = InputValidation::validateUri($request->getUrl()->getQueryParameter('client_id'), 'client_id');
@@ -418,7 +419,7 @@ class IndieCertService extends Service
         $state = InputValidation::validateState($request->getUrl()->getQueryParameter('state'));
         $appRootUri = $request->getUrl()->getRootUrl();
 
-        if (null === $certParser) {
+        if (null === $certInfo) {
             $response = new Response();
             $response->setBody(
                 $this->templateManager->render('noCert')
@@ -440,7 +441,7 @@ class IndieCertService extends Service
         if (!$confirmedFingerprint) {
             $certificateValidator = new CertificateValidator($this->client);
 
-            if (false === $certificateValidator->hasFingerprint($me, $certParser->getFingerprint('sha256', true))) {
+            if (false === $certificateValidator->hasFingerprint($me, $certInfo->getUserId())) {
                 $authorizationEndpoint = $request->getUrl()->getRootUrl().'auth';
                 $tokenEndpoint = $request->getUrl()->getRootUrl().'token';
 

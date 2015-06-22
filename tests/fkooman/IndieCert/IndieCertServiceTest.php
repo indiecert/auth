@@ -14,6 +14,7 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 namespace fkooman\IndieCert;
 
 use PDO;
@@ -115,8 +116,18 @@ class IndieCertServiceTest extends PHPUnit_Framework_TestCase
 #        );
 
         $response = $this->service->run($request);
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals(file_get_contents($this->dataDir.'/askAuthorization.html'), $response->getBody());
+        $this->assertEquals(
+            array(
+                'HTTP/1.1 200 OK',
+                'Content-Type: text/html;charset=UTF-8',
+                '',
+                file_get_contents($this->dataDir.'/askAuthorization.html'),
+            ),
+            $response->toArray()
+        );
+
+#        $this->assertEquals(200, $response->getStatusCode());
+#        $this->assertEquals(file_get_contents($this->dataDir.'/askAuthorization.html'), $response->getBody());
     }
 
 #    public function testAuthRequestConfirm()
