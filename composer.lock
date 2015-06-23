@@ -129,12 +129,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/fkooman/php-lib-rest.git",
-                "reference": "ba66db3119b5a21133bb3c8d03c9d74e54c1d09e"
+                "reference": "3c34cc84a4406f11a60bd83f27fc8ed88acbb20a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fkooman/php-lib-rest/zipball/ba66db3119b5a21133bb3c8d03c9d74e54c1d09e",
-                "reference": "ba66db3119b5a21133bb3c8d03c9d74e54c1d09e",
+                "url": "https://api.github.com/repos/fkooman/php-lib-rest/zipball/3c34cc84a4406f11a60bd83f27fc8ed88acbb20a",
+                "reference": "3c34cc84a4406f11a60bd83f27fc8ed88acbb20a",
                 "shasum": ""
             },
             "require": {
@@ -168,7 +168,7 @@
                 }
             ],
             "description": "Simple PHP library for writing REST services.",
-            "time": "2015-06-22 17:06:42"
+            "time": "2015-06-23 09:59:44"
         },
         {
             "name": "fkooman/rest-plugin-bearer",
