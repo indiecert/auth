@@ -1,3 +1,5 @@
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/fkooman/indiecert/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/fkooman/indiecert/?branch=master)
+
 # Introduction
 IndieCert is an authentication service using client certificates. This 
 includes a CA and an easy way to enroll clients.
