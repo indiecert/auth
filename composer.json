@@ -1,12 +1,11 @@
 {
     "autoload": {
         "psr-0": {
-            "fkooman\\IndieCert": "src/"
+            "fkooman\\IndieCert\\": "src/"
         }
     },
     "description": "Authentication service using client certificates",
     "license": " AGPL-3.0",
-    "minimum-stability": "dev",
     "name": "fkooman/indiecert",
     "require": {
         "ext-apcu": "*",
