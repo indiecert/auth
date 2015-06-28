@@ -16,7 +16,7 @@ class CertManager
     /** @var string */
     private $caKey;
 
-    /** @var fkooman\IndieCert\IO */
+    /** @var IO */
     private $io;
 
     public function __construct($caCrt, $caKey, IO $io = null)

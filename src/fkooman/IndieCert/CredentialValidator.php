@@ -30,7 +30,7 @@ use fkooman\Rest\Plugin\Bearer\TokenInfo;
  */
 class CredentialValidator implements ValidatorInterface
 {
-    /** @var fkooman\IndieCert\PdoStorage */
+    /** @var PdoStorage */
     private $db;
 
     public function __construct(PdoStorage $db)

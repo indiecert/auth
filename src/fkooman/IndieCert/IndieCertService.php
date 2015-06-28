@@ -32,19 +32,19 @@ use fkooman\Rest\Plugin\Tls\CertInfo;
 
 class IndieCertService extends Service
 {
-    /** @var fkooman\RelMeAuth\PdoStorage */
+    /** @var PdoStorage */
     private $db;
 
-    /** @var fkooman\IndieCert\CertManager */
+    /** @var CertManager */
     private $certManager;
 
-    /** @var GuzzleHttp\Client */
+    /** @var \GuzzleHttp\Client */
     private $client;
 
-    /** @var fkooman\IndieCert\TemplateManager */
+    /** @var TemplateManager */
     private $templateManager;
 
-    /** @var fkooman\IndieCert\IO */
+    /** @var IO */
     private $io;
 
     public function __construct(PdoStorage $db, CertManager $certManager, Client $client = null, TemplateManager $templateManager = null, IO $io = null)
@@ -183,8 +183,8 @@ class IndieCertService extends Service
 
         $this->get(
             '/account',
-            function (Request $request, IndieInfo $indieInfo) {
-                return $this->getAccount($request, $indieInfo);
+            function (IndieInfo $indieInfo) {
+                return $this->getAccount($indieInfo);
             },
             array(
                 'fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication' => array('enabled' => true),
@@ -417,7 +417,6 @@ class IndieCertService extends Service
         $redirectUri = InputValidation::validateUri($request->getUrl()->getQueryParameter('redirect_uri'), 'redirect_uri');
         $scope = InputValidation::validateScope($request->getUrl()->getQueryParameter('scope'));
         $state = InputValidation::validateState($request->getUrl()->getQueryParameter('state'));
-        $appRootUri = $request->getUrl()->getRootUrl();
 
         if (null === $certInfo) {
             $response = new Response();
@@ -592,7 +591,7 @@ class IndieCertService extends Service
         return $response;
     }
 
-    private function getAccount(Request $request, IndieInfo $indieInfo)
+    private function getAccount(IndieInfo $indieInfo)
     {
         $userId = $indieInfo->getUserId();
         $accessTokens = $this->db->getAccessTokens($userId);

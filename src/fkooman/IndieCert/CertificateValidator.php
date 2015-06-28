@@ -10,7 +10,7 @@ use DomDocument;
 
 class CertificateValidator
 {
-    /** @var GuzzleHttp\Client */
+    /** @var \GuzzleHttp\Client */
     private $client;
 
     public function __construct(Client $client = null)
