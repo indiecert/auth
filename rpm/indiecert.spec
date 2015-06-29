@@ -20,6 +20,7 @@ Requires:   php-openssl
 Requires:   php-pdo
 Requires:   httpd
 Requires:   php-pecl-apcu
+Requires:   php-opcache
 
 Requires:   php-composer(guzzlehttp/guzzle) >= 4.0
 Requires:   php-composer(guzzlehttp/guzzle) < 5.0
@@ -33,9 +34,10 @@ Requires:   php-composer(fkooman/rest-plugin-indieauth) >= 0.5.0
 Requires:   php-composer(fkooman/rest-plugin-indieauth) < 0.6.0
 Requires:   php-composer(fkooman/rest-plugin-bearer) >= 0.5.0
 Requires:   php-composer(fkooman/rest-plugin-bearer) < 0.6.0
+Requires:   php-composer(fkooman/rest-plugin-tls) >= 0.1.0
+Requires:   php-composer(fkooman/rest-plugin-tls) < 0.2.0
 Requires:   php-composer(fkooman/cert-parser) >= 0.2.0
 Requires:   php-composer(fkooman/cert-parser) < 0.3.0
-
 Requires:   php-pear(pear.twig-project.org/Twig) >= 1.15
 Requires:   php-pear(pear.twig-project.org/Twig) < 2.0
 Requires:   php-pear(phpseclib.sourceforge.net/File_X509) >= 0.3.9
