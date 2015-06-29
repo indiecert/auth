@@ -1,5 +1,8 @@
 # Changes
 
+## 0.5.0
+- major new release, rebase on new `fkooman/rest`
+
 ## 0.4.9
 - set the default background to white, it seems Firefox on Fedora 22 has grey
   background by default?
