@@ -15,6 +15,7 @@ Source2:    indiecert-autoload.php
 
 BuildArch:  noarch
 
+Requires:   mod_ssl
 Requires:   php >= 5.4
 Requires:   php-openssl
 Requires:   php-pdo
