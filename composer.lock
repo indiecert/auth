@@ -172,16 +172,16 @@
         },
         {
             "name": "fkooman/rest-plugin-bearer",
-            "version": "0.5.0",
+            "version": "0.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fkooman/php-lib-rest-plugin-bearer.git",
-                "reference": "8001f1b8bb9f3ab29b19db02299897ed4ee7d0d2"
+                "reference": "214d7cd51084f98403e367f3aaccb9bdd9180784"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fkooman/php-lib-rest-plugin-bearer/zipball/8001f1b8bb9f3ab29b19db02299897ed4ee7d0d2",
-                "reference": "8001f1b8bb9f3ab29b19db02299897ed4ee7d0d2",
+                "url": "https://api.github.com/repos/fkooman/php-lib-rest-plugin-bearer/zipball/214d7cd51084f98403e367f3aaccb9bdd9180784",
+                "reference": "214d7cd51084f98403e367f3aaccb9bdd9180784",
                 "shasum": ""
             },
             "require": {
@@ -207,7 +207,7 @@
                 }
             ],
             "description": "Bearer (OAuth) Authentication plugin for fkooman/rest",
-            "time": "2015-06-28 11:51:45"
+            "time": "2015-06-29 18:56:32"
         },
         {
             "name": "fkooman/rest-plugin-indieauth",
@@ -252,16 +252,16 @@
         },
         {
             "name": "fkooman/rest-plugin-tls",
-            "version": "0.1.0",
+            "version": "0.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fkooman/php-lib-rest-plugin-tls.git",
-                "reference": "7144cc5b9a8203e6258442797ff5c47237472d64"
+                "reference": "bc02a795b25a31ceeeacd0a89d815081c143b3bc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fkooman/php-lib-rest-plugin-tls/zipball/7144cc5b9a8203e6258442797ff5c47237472d64",
-                "reference": "7144cc5b9a8203e6258442797ff5c47237472d64",
+                "url": "https://api.github.com/repos/fkooman/php-lib-rest-plugin-tls/zipball/bc02a795b25a31ceeeacd0a89d815081c143b3bc",
+                "reference": "bc02a795b25a31ceeeacd0a89d815081c143b3bc",
                 "shasum": ""
             },
             "require": {
@@ -287,7 +287,7 @@
                 }
             ],
             "description": "TLS Client Certificate Authentication plugin for fkooman/rest",
-            "time": "2015-06-28 11:53:32"
+            "time": "2015-06-29 17:20:11"
         },
         {
             "name": "guzzle/guzzle",
