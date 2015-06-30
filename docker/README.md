@@ -4,7 +4,7 @@ IndieCert.
 
 To build the Docker image:
 
-    docker build --rm -t fkooman/indiecert .
+    docker build -t fkooman/indiecert .
 
 To run the container:
 
