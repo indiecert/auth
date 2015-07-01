@@ -25,6 +25,7 @@
 
         <form method="post">
             <keygen name="spkac" challenge="{{ certChallenge|e }}" keytype="RSA">
+            <label>WebID+TLS URI<input type="text" name="me" value="{{ me|e }}"></label>
             <input type="submit" value="Generate">
         </form>
 

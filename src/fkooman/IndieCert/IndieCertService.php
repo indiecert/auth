@@ -100,7 +100,7 @@ class IndieCertService extends Service
                 return $this->getAuth($request, $certInfo);
             },
             array(
-                'fkooman\Rest\Plugin\Tls\TlsAuthentication' => array('enabled' => true),
+                'fkooman\Rest\Plugin\Tls\TlsAuthentication' => array('enabled' => true, 'requireAuth' => false),
             )
         );
 
@@ -292,6 +292,7 @@ class IndieCertService extends Service
             $this->templateManager->render(
                 'enrollPage',
                 array(
+                    'me' => $request->getUrl()->getQueryParameter('me'),
                     'certChallenge' => $this->io->getRandomHex(),
                     'referrer' => $request->getHeader('HTTP_REFERER'),
                 )
@@ -305,6 +306,7 @@ class IndieCertService extends Service
     {
         $userCert = $this->certManager->enroll(
             $request->getPostParameter('spkac'),
+            $request->getPostParameter('me'),
             $request->getHeader('USER_AGENT')
         );
 
@@ -327,7 +329,12 @@ class IndieCertService extends Service
         }
 
         if (null === $certInfo) {
-            return $this->templateManager->render('noCert');
+            return $this->templateManager->render(
+                'noCert',
+                array(
+                    'me' => $me,
+                )
+            );
         }
 
         $certificateValidator = new CertificateValidator($this->client);
@@ -421,7 +428,12 @@ class IndieCertService extends Service
         if (null === $certInfo) {
             $response = new Response();
             $response->setBody(
-                $this->templateManager->render('noCert')
+                $this->templateManager->render(
+                    'noCert',
+                    array(
+                        'me' => $me,
+                    )
+                )
             );
 
             return $response;

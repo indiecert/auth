@@ -61,10 +61,11 @@ class CertManager
         );
     }
 
-    public function enroll($spkac, $userAgent)
+    public function enroll($spkac, $me, $userAgent)
     {
         // FIXME: validate the key size
         // FIXME: validate the challenge
+        // FIXME: validate me
 
         if (false !== strpos($userAgent, 'Chrome')) {
             // Chrom(e)(ium) needs the certificate format to be DER
@@ -77,10 +78,10 @@ class CertManager
         $commonName = $this->io->getRandomHex();
         $serialNumber = $this->io->getRandomHex();
 
-        return $this->generateClientCertificate($spkac, $commonName, $serialNumber, $format);
+        return $this->generateClientCertificate($spkac, $me, $commonName, $serialNumber, $format);
     }
 
-    private function generateClientCertificate($spkac, $commonName, $serialNumber, $saveFormat = self::FORMAT_PEM)
+    private function generateClientCertificate($spkac, $me, $commonName, $serialNumber, $saveFormat = self::FORMAT_PEM)
     {
         $caPrivateKey = new Crypt_RSA();
         $caPrivateKey->loadKey($this->caKey);
@@ -105,6 +106,15 @@ class CertManager
 
         $x509->loadX509($result);
         // https://stackoverflow.com/questions/17355088/how-do-i-set-extkeyusage-with-phpseclib
+
+        if(null !== $me && 0 !== strlen($me)) {
+            $x509->setExtension(
+                'id-ce-subjectAltName',
+                array(
+                    array('uniformResourceIdentifier' => $me),
+                )
+            );
+        }
         $x509->setExtension('id-ce-keyUsage', array('digitalSignature', 'keyEncipherment'), true);
         $x509->setExtension('id-ce-extKeyUsage', array('id-kp-clientAuth'));
         $x509->setExtension('id-ce-basicConstraints', array('cA' => false), true);
