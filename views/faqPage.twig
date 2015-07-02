@@ -12,8 +12,8 @@
         <p>
             I got interested in decentralized authentication systems after working on SAML,
             OpenID, OAuth and ran into <a href="http://webid.info/">WebID</a> and
-            <a href="https://indieauth.com">IndieAuth</a>. So I though, I can do something
-            similar, but then with client certificates instead of "social" login using
+            <a href="https://indieauth.com">IndieAuth</a>. So I thought about doing something
+            comparable to IndieAuth, but with client certificates instead of "social" login using
             Twitter and GitHub.
         </p>
 
@@ -21,9 +21,9 @@
         <p>
             They always fascinated me. This secure technology is available in almost every
             browser, but no one uses it! Of course, this is due to the difficulty in
-            deploying it and browser support for actually generating these beautiful
-            client certificates... So it is not perfect, but at least on some browsers and
-            mobile devices it works really well.
+            deploying it and browser support for actually generating client
+            certificates... So it is not perfect, but at least on some browsers and mobile
+            devices it works really well.
         </p>
 
         <h3>Supported Browsers</h3>
@@ -37,20 +37,16 @@
             seems to want to download the certificate instead of installing it in Keychain.
             It seems possible to then manually install the certificate though.
         </p>
-
-        <h3>What about Internet Explorer?</h3>
         <p>
-            Well... it is possible to get it to work somehow with an ActiveX control or
+            Regarding Internet Explorer... it is possible to get it to work somehow with an ActiveX control or
             so I've read somewhere. So far I haven't investigated it any further... Of
             course it is possible to generate a certificate in Firefox, export it to
-            PKCS#12 format and import it the Windows certificate manager. What also works
-            is enrolling in Google Chrome on Windows and after that use Internet Explorer,
-            Google Chrome will actually install the certificate in Windows.
+            PKCS#12 format and import it the Windows certificate manager. What is even more smooth is
+            enrolling with Google Chrome and after that use Internet Explorer,
+            Google Chrome will actually install the certificate in the Windows certificate store.
         </p>
-
-        <h3>And my iDevice?</h3>
         <p>
-            Well. It seems the easiest is to generate a certificate using Firefox and
+            On iOS it seems the easiest is to generate a certificate using Firefox and
             exporting it to PKCS#12 and then import it on your iDevice. As
             far as I know Safari on iOS does not support <code>&lt;keygen&gt;</code> at
             all, but I don't have an iDevice to test with, so it remains speculation.
@@ -61,17 +57,9 @@
             You can do both. The IndieCert service will follow your URL or domain by
             performing a HTTPS request, follow the redirects and determine the 'effective'
             URL to extract the fingerprints. If you specify <code>example.org</code>
-            IndieCert will try to fetch <code>https://example.org/</code> and possibly
+            IndieCert will try to fetch <code>https://example.org/</code> and
             follow any redirects. You can also specify a full URL, e.g.:
             <code>https://www.example.org/johndoe/</code>.
-        </p>
-
-        <h3>Is this the end game?</h3>
-        <p>
-            No. It is an intermediate step towards better browser authentication. See for
-            example <a href="http://browserauth.net/">http://browserauth.net/</a> for more
-            discussion on the topic. IndieCert (partly) solves some of the issues presented
-            there.
         </p>
 
         <h3>Do I need a HTTPS home page?</h3>
@@ -85,26 +73,22 @@
             the <a href="http://www.cacert.org">CAcert</a> CA is supported.
         </p>
 
-        <h3>Supported Services</h3>
+        <h3 id="supportedServices">Supported Services</h3>
         <p>
-            There is a "Distributed IndieAuth" demo
-            <a href="https://www.tuxed.net/distributed-indieauth-demo/">here</a>. It checks
-            the <code>authorization_endpoint</code> on your home page and uses the
-            service mentioned there. If it is not set
-            <code>https://indiecert.net/auth</code> will be used.
+            A list of services and sites that support IndieCert is maintained at the
+            <a href="https://indiewebcamp.com/distributed-indieauth#Sites_that_support_distributed_IndieAuth">IndieWebCamp wiki</a>.
         </p>
         <p>
-            A list of sites that support "Distributed IndieAuth" can also be found on the
-            <a href="https://indiewebcamp.com/distributed-indieauth#Sites_that_support_distributed_IndieAuth">IndieWebCamp</a> wiki.
+            An experimental service not yet mentioned there is <a href="https://phubble.tuxed.net/">Phubble</a>. A group messaging service.
         </p>
 
-        <h3>Fingerprints?</h3>
+        <h3>Fingerprints</h3>
         <p>
-            You need to place the fingerprint of the certificate that was installed in your
+            You need to put the fingerprint of the certificate that was installed in your
             browser on your home page. You can add multiple fingerprints to your home page
             for multiple browsers and/or devices. IndieCert will help you by showing the
             fingerprint to put on your home page if it is not (yet) there when you try to
-            authenticate.
+            login.
         </p>
         <p>
             The fingerprint of the certificate is generated by calculating the SHA-256 hash
@@ -119,7 +103,7 @@
 &lt;link rel="publickey" href="ni:///sha-256;ThIaJ7TJQ1oAIKCGKe0BdBO3Bh8NzxZeyAa-WCTuzpU?ct=application/x-x509-user-cert"&gt;
 </pre>
         <p>
-            If you want to generate your own fingerprint, you can use OpenSSL
+            If you want to generate your own fingerprint from a certificate, you can use OpenSSL
             for this:
         </p>
 
@@ -131,9 +115,9 @@ $ openssl x509 -in client.crt -outform DER \
     | tr -d =
 </pre>
 
-        <h3>How can I become a relying party?</h3>
+        <h3>Can I become a relying party?</h3>
         <p>
-            See the relying party instructions <a href="rp">here</a>.
+            Yes! See the relying party instructions <a href="rp">here</a>.
         </p>
 
         <h3>How secure is this?</h3>
@@ -147,7 +131,7 @@ $ openssl x509 -in client.crt -outform DER \
             endpoint, by specifying this instance in
             <code>authorization_endpoint</code> on your home page, all relying
             parties that use "Distributed IndieAuth" will be vulnerable to
-            impersonation of your account by the attacker.
+            impersonation of your account by an attacker.
         </p>
 
         <h4>As Default Server</h4>
@@ -170,13 +154,14 @@ $ openssl x509 -in client.crt -outform DER \
             Yes! This is one of the design principles that it is easy to run your own
             instance of IndieCert. You can find the code and installation instructions in
             the GitHub <a href="https://github.com/fkooman/indiecert">repository</a>. RPMs
-            are available for CentOS/Red Hat Enterprise Linux and Fedora. You can also run
+            are <a href="https://copr.fedoraproject.org/coprs/fkooman/indiecert/">available</a>
+            for CentOS/Red Hat Enterprise Linux and Fedora. You can also run
             a Docker
             <a href="https://github.com/fkooman/indiecert/tree/master/docker">instance</a>,
             ideal for testing while developing your relying party!
         </p>
 
-        <h3 id="GitHub">Using GitHub Pages</h3>
+        <h3 id="GitHub">Using GitHub Pages instead of your own domain</h3>
         <p>
 Not everyone will have their own domain and valid TLS certificate configured
 for it. So for testing it makes sense to use GitHub pages!
@@ -216,7 +201,30 @@ authentication should work! You can use the identity mentioned above to
 authenticate to Distributed IndieAuth applications!
         </p>
 
+        <h3>Is IndieCert the end game?</h3>
+        <p>
+            No. It is an intermediate step towards better browser authentication. See for
+            example <a href="http://browserauth.net/">http://browserauth.net/</a> for more
+            discussion on the topic. IndieCert (partly) solves some of the issues presented
+            there.
+        </p>
+
+        <h3>How can I help or get help?</h3>
+        <p>
+            Test it out on as many browsers and devices possible and create issues on
+            <a href="https://github.com/fkooman/indiecert/issues">GitHub</a>, and if you
+            can patches to get Safari to work better, IE at all and come up with solutions
+            for iDevices :-)
+        </p>
+        <p>
+            If you have any questions, please post them as a GitHub issue as well, or
+            contact me directly. Look <a href="https://www.tuxed.net/fkooman/">here</a> to
+            find ways of contacting me.
+        </p>
+
         <h3 id="Micropub">Micropub</h3>
+        <p class="warn">In the future the "authorization" capability of IndieCert will move to a separate domain.
+</p>
         <p>
             If you have your own domain and run a
             <a href="https://indiewebcamp.com/micropub">micropub</a> service,
@@ -247,19 +255,6 @@ $ curl \
     "sub": "https://user.example/"
 }
 </pre>
-
-        <h3>How can I help or get help?</h3>
-        <p>
-            Test it out on as many browsers and devices possible and create issues on
-            <a href="https://github.com/fkooman/indiecert/issues">GitHub</a>, and if you
-            can patches to get Safari to work better, IE at all and come up with solutions
-            for iDevices :-)
-        </p>
-        <p>
-            If you have any questions, please post them as a GitHub issue as well, or
-            contact me directly. Look <a href="https://www.tuxed.net/fkooman/">here</a> to
-            find ways of contacting me.
-        </p>
 
         {% include 'footer.html' %}
     </div> <!-- /container -->
