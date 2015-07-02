@@ -39,12 +39,10 @@ Requires:   php-composer(fkooman/rest-plugin-tls) >= 0.1.1
 Requires:   php-composer(fkooman/rest-plugin-tls) < 0.2.0
 Requires:   php-composer(fkooman/cert-parser) >= 0.2.0
 Requires:   php-composer(fkooman/cert-parser) < 0.3.0
+Requires:   php-composer(phpseclib/phpseclib) >= 2.0
+Requires:   php-composer(phpseclib/phpseclib) < 3.0
 Requires:   php-pear(pear.twig-project.org/Twig) >= 1.15
 Requires:   php-pear(pear.twig-project.org/Twig) < 2.0
-Requires:   php-pear(phpseclib.sourceforge.net/File_X509) >= 0.3.9
-Requires:   php-pear(phpseclib.sourceforge.net/File_X509) < 0.4.0
-Requires:   php-pear(phpseclib.sourceforge.net/Crypt_RSA) >= 0.3.9
-Requires:   php-pear(phpseclib.sourceforge.net/Crypt_RSA) < 0.4.0
 
 #Starting F21 we can use the composer dependency for Symfony
 #Requires:   php-composer(symfony/classloader) >= 2.3.9
