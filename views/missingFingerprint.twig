@@ -25,7 +25,7 @@
 &lt;html&gt;
   &lt;head&gt;
     ...
-    <strong>&lt;link rel="publickey" href="{{ certFingerprint|e }}"&gt;</strong>
+    <strong>&lt;link rel="publickey" href="ni:///sha-256;{{ certFingerprint|e }}?ct=application/x-x509-user-cert"&gt;</strong>
     ...
   &lt;/head&gt;
   &lt;body&gt;

@@ -348,7 +348,7 @@ class IndieCertService extends Service
                     'missingFingerprint',
                     array(
                         'me' => $me,
-                        'certFingerprint' => $certificateValidator->getFingerprint(),
+                        'certFingerprint' => $certInfo->getUserId(),
                         'authorizationEndpoint' => $authorizationEndpoint,
                         'tokenEndpoint' => $tokenEndpoint,
                     )

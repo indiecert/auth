@@ -1,5 +1,8 @@
 # Changes
 
+## 0.5.2
+- fix backtrace when the selected certificate was not found on the homepage
+
 ## 0.5.1
 - update `phpseclib/phpseclib` to 2.0 dev branch, to benefit from PSR-4
 - allow to specify SAN in the generated client certificate
