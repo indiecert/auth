@@ -19,14 +19,15 @@ $loader->registerNamespaces(
         'fkooman\\Http' => $vendorDir,
         'GuzzleHttp\\Stream' => $vendorDir,
         'GuzzleHttp' => $vendorDir,
+        'phpseclib' => $vendorDir,
     )
 );
 
-$loader->registerPrefixes(array(
-    'Twig_' => array($pearDir, $vendorDir),
-    'File_' => array($pearDir, $vendorDir),
-    'Crypt_' => array($pearDir, $vendorDir),
-));
+$loader->registerPrefixes(
+    array(
+        'Twig_' => array($pearDir, $vendorDir),
+    )
+);
 
 $loader->register();
 
