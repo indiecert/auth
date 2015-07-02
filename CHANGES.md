@@ -1,5 +1,9 @@
 # Changes
 
+## 0.5.1
+- update `phpseclib/phpseclib` to 2.0 dev branch, to benefit from PSR-4
+- allow to specify SAN in the generated client certificate
+
 ## 0.5.0
 - major new release, rebase on new `fkooman/rest`
 - set the default background to white, it seems Firefox on Fedora 22 has grey
