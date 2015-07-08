@@ -146,13 +146,6 @@ form.authenticate, form.askConfirmation, form.credentials {
     margin: 1em auto;
 }
 
-form.authenticate label {
-    padding: 0.4em 0.25em;
-    background-color: #ddd;
-    border: 1px solid #bbb;
-    border-right: 0;
-}
-
 table.askConfirmation {
     width: 100%;
     border-collapse: collapse;
