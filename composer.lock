@@ -4,24 +4,60 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "5d2660eddb20a5b18fd118febf428542",
+    "hash": "92e2565701174ffa8a224273b23705bf",
     "packages": [
         {
-            "name": "fkooman/cert-parser",
-            "version": "0.2.0",
+            "name": "fkooman/base64",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/fkooman/php-cert-parser.git",
-                "reference": "d05eb0ab457dd152a5af69903e14ec52e0563e20"
+                "url": "https://github.com/fkooman/php-base64.git",
+                "reference": "48e0869cb05ad8eba6bbc205f31e4509910d038e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fkooman/php-cert-parser/zipball/d05eb0ab457dd152a5af69903e14ec52e0563e20",
-                "reference": "d05eb0ab457dd152a5af69903e14ec52e0563e20",
+                "url": "https://api.github.com/repos/fkooman/php-base64/zipball/48e0869cb05ad8eba6bbc205f31e4509910d038e",
+                "reference": "48e0869cb05ad8eba6bbc205f31e4509910d038e",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "fkooman\\Base64\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "François Kooman",
+                    "email": "fkooman@tuxed.net"
+                }
+            ],
+            "description": "A base64 encoder and decoder",
+            "time": "2015-07-07 21:32:33"
+        },
+        {
+            "name": "fkooman/cert-parser",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fkooman/php-cert-parser.git",
+                "reference": "c71d31af3b6295ef34100d0d4af86260cd8d94bf"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fkooman/php-cert-parser/zipball/c71d31af3b6295ef34100d0d4af86260cd8d94bf",
+                "reference": "c71d31af3b6295ef34100d0d4af86260cd8d94bf",
                 "shasum": ""
             },
             "require": {
+                "ext-hash": "*",
                 "ext-openssl": "*",
+                "ext-pcre": "*",
+                "ext-spl": "*",
                 "php": ">=5.3.3"
             },
             "type": "library",
@@ -47,7 +83,7 @@
                 }
             ],
             "description": "Simple OpenSSL based X.509 certificate parser",
-            "time": "2015-06-26 19:58:51"
+            "time": "2015-07-08 10:37:35"
         },
         {
             "name": "fkooman/ini",
@@ -252,20 +288,21 @@
         },
         {
             "name": "fkooman/rest-plugin-tls",
-            "version": "0.1.1",
+            "version": "0.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fkooman/php-lib-rest-plugin-tls.git",
-                "reference": "bc02a795b25a31ceeeacd0a89d815081c143b3bc"
+                "reference": "fbe0d207f198990c99e9f699f3ad70fad7ccaf1b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fkooman/php-lib-rest-plugin-tls/zipball/bc02a795b25a31ceeeacd0a89d815081c143b3bc",
-                "reference": "bc02a795b25a31ceeeacd0a89d815081c143b3bc",
+                "url": "https://api.github.com/repos/fkooman/php-lib-rest-plugin-tls/zipball/fbe0d207f198990c99e9f699f3ad70fad7ccaf1b",
+                "reference": "fbe0d207f198990c99e9f699f3ad70fad7ccaf1b",
                 "shasum": ""
             },
             "require": {
-                "fkooman/cert-parser": "~0.2.0",
+                "fkooman/base64": "~1.0.0",
+                "fkooman/cert-parser": "~1.0.0",
                 "fkooman/rest": "~0.9.0",
                 "php": ">=5.3.3"
             },
@@ -287,7 +324,7 @@
                 }
             ],
             "description": "TLS Client Certificate Authentication plugin for fkooman/rest",
-            "time": "2015-06-29 17:20:11"
+            "time": "2015-07-08 10:46:40"
         },
         {
             "name": "guzzle/guzzle",
@@ -508,12 +545,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpseclib/phpseclib.git",
-                "reference": "483c2538795e97d0d98a012b90d3465ce64c950f"
+                "reference": "f782005a3f33cdb267c0431d210284e85407ecab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/483c2538795e97d0d98a012b90d3465ce64c950f",
-                "reference": "483c2538795e97d0d98a012b90d3465ce64c950f",
+                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/f782005a3f33cdb267c0431d210284e85407ecab",
+                "reference": "f782005a3f33cdb267c0431d210284e85407ecab",
                 "shasum": ""
             },
             "require": {
@@ -585,7 +622,7 @@
                 "x.509",
                 "x509"
             ],
-            "time": "2015-06-30 10:27:06"
+            "time": "2015-07-06 21:48:28"
         },
         {
             "name": "symfony/event-dispatcher",
@@ -712,10 +749,16 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "ext-apcu": "*",
+        "ext-apc": "*",
+        "ext-date": "*",
+        "ext-dom": "*",
+        "ext-filter": "*",
+        "ext-libxml": "*",
         "ext-openssl": "*",
+        "ext-pcre": "*",
         "ext-pdo": "*",
-        "php": ">=5.4.0"
+        "ext-spl": "*",
+        "php": ">=5.4"
     },
     "platform-dev": []
 }

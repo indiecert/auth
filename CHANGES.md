@@ -1,5 +1,8 @@
 # Changes
 
+## 0.5.3
+- update and fix dependencies
+
 ## 0.5.2
 - fix backtrace when the selected certificate was not found on the homepage
 
