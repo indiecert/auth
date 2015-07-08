@@ -1,5 +1,9 @@
 # Changes
 
+## 0.5.5
+- cleanup indexPage by removing commented out HTML
+- remove label from sign in box, was never properly aligned anyway...
+
 ## 0.5.4
 - fix autoloader when using RPM package
 
