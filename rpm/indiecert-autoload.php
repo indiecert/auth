@@ -12,6 +12,7 @@ $loader = new UniversalClassLoader();
 $loader->registerNamespaces(
     array(
         'fkooman\\IndieCert' => $baseDir.'/src',
+        'fkooman\\Base64' => $vendorDir,
         'fkooman\\Rest' => $vendorDir,
         'fkooman\\Json' => $vendorDir,
         'fkooman\\Ini' => $vendorDir,

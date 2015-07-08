@@ -1,5 +1,8 @@
 # Changes
 
+## 0.5.4
+- fix autoloader when using RPM package
+
 ## 0.5.3
 - update and fix dependencies
 
