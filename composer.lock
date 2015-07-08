@@ -545,12 +545,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpseclib/phpseclib.git",
-                "reference": "f782005a3f33cdb267c0431d210284e85407ecab"
+                "reference": "f2773847a2a0a8cc4507af5dd1fc78bbe4150100"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/f782005a3f33cdb267c0431d210284e85407ecab",
-                "reference": "f782005a3f33cdb267c0431d210284e85407ecab",
+                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/f2773847a2a0a8cc4507af5dd1fc78bbe4150100",
+                "reference": "f2773847a2a0a8cc4507af5dd1fc78bbe4150100",
                 "shasum": ""
             },
             "require": {
@@ -622,7 +622,7 @@
                 "x.509",
                 "x509"
             ],
-            "time": "2015-07-06 21:48:28"
+            "time": "2015-07-08 13:45:53"
         },
         {
             "name": "symfony/event-dispatcher",
