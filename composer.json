@@ -20,10 +20,10 @@
         "fkooman/ini": "~0.2.0",
         "fkooman/rest": "~0.9.0",
         "fkooman/rest-plugin-bearer": "~0.5.1",
-        "fkooman/rest-plugin-indieauth": "~0.5.0",
+        "fkooman/rest-plugin-indieauth": "~0.5.1",
         "fkooman/rest-plugin-tls": "~0.1.2",
-        "guzzlehttp/guzzle": "~4.0",
-        "php": ">=5.4",
+        "guzzlehttp/guzzle": "~5.3",
+        "php": ">=5.3.3",
         "phpseclib/phpseclib": "2.0.x-dev",
         "twig/twig": "~1.15"
     }

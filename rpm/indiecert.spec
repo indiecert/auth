@@ -36,12 +36,12 @@ Requires:   php-composer(fkooman/rest) >= 0.9.0
 Requires:   php-composer(fkooman/rest) < 0.10.0
 Requires:   php-composer(fkooman/rest-plugin-bearer) >= 0.5.1
 Requires:   php-composer(fkooman/rest-plugin-bearer) < 0.6.0
-Requires:   php-composer(fkooman/rest-plugin-indieauth) >= 0.5.0
+Requires:   php-composer(fkooman/rest-plugin-indieauth) >= 0.5.1
 Requires:   php-composer(fkooman/rest-plugin-indieauth) < 0.6.0
 Requires:   php-composer(fkooman/rest-plugin-tls) >= 0.1.2
 Requires:   php-composer(fkooman/rest-plugin-tls) < 0.2.0
-Requires:   php-composer(guzzlehttp/guzzle) >= 4.0
-Requires:   php-composer(guzzlehttp/guzzle) < 5.0
+Requires:   php-composer(guzzlehttp/guzzle) >= 5.3
+Requires:   php-composer(guzzlehttp/guzzle) < 6.0
 Requires:   php-composer(phpseclib/phpseclib) >= 2.0
 Requires:   php-composer(phpseclib/phpseclib) < 3.0
 Requires:   php-pear(pear.twig-project.org/Twig) >= 1.15
