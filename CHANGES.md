@@ -1,5 +1,8 @@
 # Changes
 
+## 0.5.6
+- update `guzzlehttp/guzzle`
+
 ## 0.5.5
 - cleanup indexPage by removing commented out HTML
 - remove label from sign in box, was never properly aligned anyway...
