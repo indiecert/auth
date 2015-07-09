@@ -36,7 +36,7 @@ Requires:   php-composer(fkooman/rest) >= 0.9.0
 Requires:   php-composer(fkooman/rest) < 0.10.0
 Requires:   php-composer(fkooman/rest-plugin-bearer) >= 0.5.3
 Requires:   php-composer(fkooman/rest-plugin-bearer) < 0.6.0
-Requires:   php-composer(fkooman/rest-plugin-indieauth) >= 0.5.1
+Requires:   php-composer(fkooman/rest-plugin-indieauth) >= 0.5.2
 Requires:   php-composer(fkooman/rest-plugin-indieauth) < 0.6.0
 Requires:   php-composer(fkooman/rest-plugin-tls) >= 0.1.2
 Requires:   php-composer(fkooman/rest-plugin-tls) < 0.2.0
