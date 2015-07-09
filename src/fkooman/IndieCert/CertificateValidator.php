@@ -3,9 +3,6 @@
 namespace fkooman\IndieCert;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Subscriber\History;
-use GuzzleHttp\Url;
-use RuntimeException;
 use DomDocument;
 
 class CertificateValidator
@@ -48,26 +45,17 @@ class CertificateValidator
         return true;
     }
 
-    private function fetchPage($pageUri)
+    private function fetchPage($pageUrl)
     {
-        // we track all URLs on the redirect path (if any) and make sure none
-        // of them redirect to a HTTP URL. Unfortunately Guzzle 3/4 can not do
-        // this by default but we need this "hack". This is fixed in Guzzle 5+
-        // see https://github.com/guzzle/guzzle/issues/841
-        $history = new History();
-        $this->client->getEmitter()->attach($history);
-
-        $request = $this->client->createRequest('GET', $pageUri);
-        $response = $this->client->send($request);
-
-        foreach ($history as $transaction) {
-            $u = Url::fromString($transaction['request']->getUrl());
-            if ('https' !== $u->getScheme()) {
-                throw new RuntimeException('redirect path contains non-HTTPS URLs');
-            }
-        }
-
-        return $response->getBody();
+        // do not allow redirects to http URLs
+        return $this->client->get(
+            $pageUrl,
+            array(
+                'allow_redirects' => array(
+                    'protocols' => array('https'),
+                ),
+            )
+        )->getBody();
     }
 
     private function extractRelMeLinks($htmlString)

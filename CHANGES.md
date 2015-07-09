@@ -1,5 +1,9 @@
 # Changes
 
+## 0.5.7
+- fetch validating certificate on home page to not work when redirecting
+  to HTTP URLs
+
 ## 0.5.6
 - update `guzzlehttp/guzzle`
 
