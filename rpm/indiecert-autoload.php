@@ -20,6 +20,7 @@ $loader->registerNamespaces(
         'fkooman\\Http' => $vendorDir,
         'GuzzleHttp\\Stream' => $vendorDir,
         'GuzzleHttp' => $vendorDir,
+        'React\\Promise' => $vendorDir,
         'phpseclib' => $vendorDir,
     )
 );
@@ -32,5 +33,4 @@ $loader->registerPrefixes(
 
 $loader->register();
 
-require_once $vendorDir.'/GuzzleHttp/functions.php';
-require_once $vendorDir.'/GuzzleHttp/Stream/functions.php';
+require_once $vendorDir.'/React/Promise/functions_include.php';
