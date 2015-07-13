@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "fkooman/base64",
-            "version": "1.0.1",
+            "version": "1.0.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/fkooman/php-base64.git",
-                "reference": "3c9d182d3da4bc59b5d865cfaf03f3c4b3e82a2a"
+                "url": "https://github.com/fkooman/php-lib-base64.git",
+                "reference": "f29179c593efb344e470b4a1dcffd2819bd6e084"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fkooman/php-base64/zipball/3c9d182d3da4bc59b5d865cfaf03f3c4b3e82a2a",
-                "reference": "3c9d182d3da4bc59b5d865cfaf03f3c4b3e82a2a",
+                "url": "https://api.github.com/repos/fkooman/php-lib-base64/zipball/f29179c593efb344e470b4a1dcffd2819bd6e084",
+                "reference": "f29179c593efb344e470b4a1dcffd2819bd6e084",
                 "shasum": ""
             },
             "require": {
@@ -41,7 +41,7 @@
                 }
             ],
             "description": "A base64 encoder and decoder",
-            "time": "2015-07-13 12:26:10"
+            "time": "2015-07-13 16:08:09"
         },
         {
             "name": "fkooman/cert-parser",
