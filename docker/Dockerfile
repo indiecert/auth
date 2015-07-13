@@ -10,7 +10,7 @@ RUN curl -s -L -o /etc/yum.repos.d/fkooman-indiecert-epel-7.repo https://copr.fe
 
 RUN yum -y update ; yum clean all
 
-RUN yum install -y mod_ssl httpd php-fpm php-pecl-zendopcache indiecert; yum clean all
+RUN yum install -y mod_ssl httpd php-fpm php-opcache indiecert; yum clean all
 
 # generate the server certificate
 RUN openssl req -subj '/CN=indiecert.example' -new -x509 -nodes -out /etc/pki/tls/certs/indiecert.example.crt -keyout /etc/pki/tls/private/indiecert.example.key

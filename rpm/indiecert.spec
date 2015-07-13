@@ -30,8 +30,8 @@ Requires:   php-pdo
 Requires:   php-spl
 Requires:   php-standard
 
-Requires:   php-composer(fkooman/ini) >= 0.2.0
-Requires:   php-composer(fkooman/ini) < 0.3.0
+Requires:   php-composer(fkooman/ini) >= 1.0.0
+Requires:   php-composer(fkooman/ini) < 2.0.0
 Requires:   php-composer(fkooman/rest) >= 0.9.0
 Requires:   php-composer(fkooman/rest) < 0.10.0
 Requires:   php-composer(fkooman/rest-plugin-bearer) >= 0.5.3

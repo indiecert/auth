@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c24a60d051255544d6f5a431515680a1",
+    "hash": "fb779e7cc9c666fc656a4da610956a13",
     "packages": [
         {
             "name": "fkooman/base64",
@@ -87,25 +87,26 @@
         },
         {
             "name": "fkooman/ini",
-            "version": "0.2.0",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fkooman/php-lib-ini.git",
-                "reference": "53bef8aaa28862b68b553f742ee3ecf54394f121"
+                "reference": "b380a88e42ce2184e822cc8b89223cd777c484be"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fkooman/php-lib-ini/zipball/53bef8aaa28862b68b553f742ee3ecf54394f121",
-                "reference": "53bef8aaa28862b68b553f742ee3ecf54394f121",
+                "url": "https://api.github.com/repos/fkooman/php-lib-ini/zipball/b380a88e42ce2184e822cc8b89223cd777c484be",
+                "reference": "b380a88e42ce2184e822cc8b89223cd777c484be",
                 "shasum": ""
             },
             "require": {
+                "ext-spl": "*",
                 "php": ">=5.3.3"
             },
             "type": "library",
             "autoload": {
                 "psr-0": {
-                    "fkooman\\Ini": "src/"
+                    "fkooman\\Ini\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -120,7 +121,7 @@
                 }
             ],
             "description": "Handle INI configuration files",
-            "time": "2014-10-23 15:33:28"
+            "time": "2015-07-13 12:06:01"
         },
         {
             "name": "fkooman/json",
