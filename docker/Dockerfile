@@ -1,12 +1,14 @@
 FROM       centos:latest
 MAINTAINER François Kooman <fkooman@tuxed.net>
 
+RUN yum -y update; yum clean all
+RUN yum -y install epel-release; yum clean all
+
 # Enable COPR repositories
 RUN curl -s -L -o /etc/yum.repos.d/fkooman-php-base-epel-7.repo https://copr.fedoraproject.org/coprs/fkooman/php-base/repo/epel-7/fkooman-php-base-epel-7.repo
 RUN curl -s -L -o /etc/yum.repos.d/fkooman-indiecert-epel-7.repo https://copr.fedoraproject.org/coprs/fkooman/indiecert/repo/epel-7/fkooman-indiecert-epel-7.repo
 
-RUN yum -y update; yum clean all
-RUN yum install -y epel-release mod_ssl httpd php-fpm php-opcache indiecert; yum clean all
+RUN yum install -y mod_ssl httpd php-fpm php-opcache indiecert; yum clean all
 
 # generate the server certificate
 RUN openssl req -subj '/CN=indiecert.example' -new -x509 -nodes -out /etc/pki/tls/certs/indiecert.example.crt -keyout /etc/pki/tls/private/indiecert.example.key
