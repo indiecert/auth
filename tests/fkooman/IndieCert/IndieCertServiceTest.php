@@ -44,7 +44,7 @@ class IndieCertServiceTest extends PHPUnit_Framework_TestCase
         );
         $storage->initDatabase();
 
-        $ioStub = $this->getMockBuilder('fkooman\IndieCert\IO')->getMock();
+        $ioStub = $this->getMockBuilder('fkooman\IO\IO')->getMock();
         $ioStub->method('getRandomHex')->willReturn('1234abcd');
         $ioStub->method('getTime')->willReturn(1111111111);
 

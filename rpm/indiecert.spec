@@ -20,11 +20,9 @@ Requires:   mod_ssl
 
 Requires:   php(language) >= 5.4
 Requires:   php-apc
-Requires:   php-date
 Requires:   php-dom
 Requires:   php-filter
 Requires:   php-libxml
-Requires:   php-openssl
 Requires:   php-pcre
 Requires:   php-pdo
 Requires:   php-spl
@@ -32,6 +30,8 @@ Requires:   php-standard
 
 Requires:   php-composer(fkooman/ini) >= 1.0.0
 Requires:   php-composer(fkooman/ini) < 2.0.0
+Requires:   php-composer(fkooman/io) >= 1.0.0
+Requires:   php-composer(fkooman/io) < 2.0.0
 Requires:   php-composer(fkooman/rest) >= 1.0.1
 Requires:   php-composer(fkooman/rest) < 2.0.0
 Requires:   php-composer(fkooman/rest-plugin-authentication-bearer) >= 1.0.0

@@ -17,6 +17,7 @@
 
 namespace fkooman\IndieCert;
 
+use fkooman\IO\IO;
 use fkooman\Http\Request;
 use fkooman\Http\Response;
 use fkooman\Http\JsonResponse;
@@ -44,7 +45,7 @@ class IndieCertService extends Service
     /** @var TemplateManager */
     private $templateManager;
 
-    /** @var IO */
+    /** @var \fkooman\IO\IO */
     private $io;
 
     public function __construct(PdoStorage $db, CertManager $certManager, Client $client = null, TemplateManager $templateManager = null, IO $io = null)
@@ -286,7 +287,7 @@ class IndieCertService extends Service
                 'enrollPage',
                 array(
                     'me' => $request->getUrl()->getQueryParameter('me'),
-                    'certChallenge' => $this->io->getRandomHex(),
+                    'certChallenge' => $this->io->getRandom(),
                     'referrer' => $request->getHeader('HTTP_REFERER'),
                 )
             )
@@ -526,7 +527,7 @@ class IndieCertService extends Service
 
             if ('used_for_token' === $usedFor) {
                 // generate access token and add it to the response as well
-                $accessToken = $this->io->getRandomHex();
+                $accessToken = $this->io->getRandom();
                 $this->db->storeAccessToken(
                     $accessToken,
                     $indieCode['me'],
@@ -546,7 +547,7 @@ class IndieCertService extends Service
     private function indieCodeRedirect($me, $clientId, $redirectUri, $scope, $state)
     {
         // create indiecode
-        $code = $this->io->getRandomHex();
+        $code = $this->io->getRandom();
         $this->db->storeIndieCode(
             $code,
             $me,
@@ -621,7 +622,7 @@ class IndieCertService extends Service
 
     private function generateCredential(Request $request, IndieInfo $indieInfo)
     {
-        $credential = $this->io->getRandomHex();
+        $credential = $this->io->getRandom();
         $issueTime = $this->io->getTime();
         $this->db->storeCredential($indieInfo->getUserId(), $credential, $issueTime);
 

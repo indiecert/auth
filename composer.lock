@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "e5a986d3eb94d3c80e80cb30dd6c806a",
+    "hash": "295959c0032a950cf421ded0a0a3538e",
     "packages": [
         {
             "name": "fkooman/base64",
@@ -126,6 +126,45 @@
             ],
             "description": "Handle INI configuration files",
             "time": "2015-07-13 12:06:01"
+        },
+        {
+            "name": "fkooman/io",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fkooman/php-lib-io.git",
+                "reference": "c529a4815a4534c3118bc248e419c2e06f5bed5c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fkooman/php-lib-io/zipball/c529a4815a4534c3118bc248e419c2e06f5bed5c",
+                "reference": "c529a4815a4534c3118bc248e419c2e06f5bed5c",
+                "shasum": ""
+            },
+            "require": {
+                "ext-date": "*",
+                "ext-openssl": "*",
+                "ext-spl": "*",
+                "php": ">= 5.3.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "fkooman\\IO\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "François Kooman",
+                    "email": "fkooman@tuxed.net"
+                }
+            ],
+            "description": "Simple IO library",
+            "time": "2015-07-21 15:48:18"
         },
         {
             "name": "fkooman/json",
@@ -552,12 +591,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpseclib/phpseclib.git",
-                "reference": "713a9c7ccfde01219490ef3d9dbc61c18d6cbd30"
+                "reference": "7c69f3f86650b0d44e10d482a249a33c276b5716"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/713a9c7ccfde01219490ef3d9dbc61c18d6cbd30",
-                "reference": "713a9c7ccfde01219490ef3d9dbc61c18d6cbd30",
+                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/7c69f3f86650b0d44e10d482a249a33c276b5716",
+                "reference": "7c69f3f86650b0d44e10d482a249a33c276b5716",
                 "shasum": ""
             },
             "require": {
@@ -629,7 +668,7 @@
                 "x.509",
                 "x509"
             ],
-            "time": "2015-07-17 23:06:09"
+            "time": "2015-07-21 10:53:36"
         },
         {
             "name": "react/promise",
@@ -743,11 +782,9 @@
     "prefer-lowest": false,
     "platform": {
         "ext-apc": "*",
-        "ext-date": "*",
         "ext-dom": "*",
         "ext-filter": "*",
         "ext-libxml": "*",
-        "ext-openssl": "*",
         "ext-pcre": "*",
         "ext-pdo": "*",
         "ext-spl": "*",

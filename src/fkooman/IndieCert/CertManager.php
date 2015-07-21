@@ -4,6 +4,7 @@ namespace fkooman\IndieCert;
 
 use phpseclib\Crypt\RSA;
 use phpseclib\File\X509;
+use fkooman\IO\IO;
 
 class CertManager
 {
@@ -16,7 +17,7 @@ class CertManager
     /** @var string */
     private $caKey;
 
-    /** @var IO */
+    /** @var \fkooman\IO\IO */
     private $io;
 
     public function __construct($caCrt, $caKey, IO $io = null)
@@ -75,8 +76,8 @@ class CertManager
         }
 
         // determine serialNumber
-        $commonName = $this->io->getRandomHex();
-        $serialNumber = $this->io->getRandomHex();
+        $commonName = $this->io->getRandom();
+        $serialNumber = $this->io->getRandom();
 
         return $this->generateClientCertificate($spkac, $me, $commonName, $serialNumber, $format);
     }
