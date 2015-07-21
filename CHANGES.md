@@ -1,5 +1,8 @@
 # Changes
 
+## 0.6.0
+- update dependencies to 1.x releases
+
 ## 0.5.8
 - update dependencies
 

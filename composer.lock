@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "fb779e7cc9c666fc656a4da610956a13",
+    "hash": "e5a986d3eb94d3c80e80cb30dd6c806a",
     "packages": [
         {
             "name": "fkooman/base64",
@@ -168,16 +168,16 @@
         },
         {
             "name": "fkooman/rest",
-            "version": "0.9.1",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fkooman/php-lib-rest.git",
-                "reference": "ede6f39c51f7445ea9b22138853e2e98b1babe82"
+                "reference": "55564781fe97fd3121fccdd7d1250f8b1f267f2b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fkooman/php-lib-rest/zipball/ede6f39c51f7445ea9b22138853e2e98b1babe82",
-                "reference": "ede6f39c51f7445ea9b22138853e2e98b1babe82",
+                "url": "https://api.github.com/repos/fkooman/php-lib-rest/zipball/55564781fe97fd3121fccdd7d1250f8b1f267f2b",
+                "reference": "55564781fe97fd3121fccdd7d1250f8b1f267f2b",
                 "shasum": ""
             },
             "require": {
@@ -189,11 +189,7 @@
                 "php": ">=5.3.3"
             },
             "suggest": {
-                "fkooman/rest-plugin-basic": "Basic Authentication plugin",
-                "fkooman/rest-plugin-bearer": "Bearer (OAuth) Authentication plugin",
-                "fkooman/rest-plugin-indieauth": "IndieAuth Authentication plugin",
-                "fkooman/rest-plugin-mellon": "Mellon (SAML) Authentication plugin",
-                "fkooman/rest-plugin-tls": "TLS Client Certificate Authentication plugin"
+                "fkooman/rest-plugin-authentication": "Authentication plugin"
             },
             "type": "library",
             "autoload": {
@@ -214,33 +210,80 @@
                 }
             ],
             "description": "Simple PHP library for writing REST services.",
-            "time": "2015-07-13 12:18:54"
+            "time": "2015-07-20 21:02:38"
         },
         {
-            "name": "fkooman/rest-plugin-bearer",
-            "version": "0.5.3",
+            "name": "fkooman/rest-plugin-authentication",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/fkooman/php-lib-rest-plugin-bearer.git",
-                "reference": "c1b2b2b80b482067e0f46736b841f06c1b5ed7b0"
+                "url": "https://github.com/fkooman/php-lib-rest-plugin-authentication.git",
+                "reference": "6a711f23add7c9cc35d04e223305633a5d7d38e2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fkooman/php-lib-rest-plugin-bearer/zipball/c1b2b2b80b482067e0f46736b841f06c1b5ed7b0",
-                "reference": "c1b2b2b80b482067e0f46736b841f06c1b5ed7b0",
+                "url": "https://api.github.com/repos/fkooman/php-lib-rest-plugin-authentication/zipball/6a711f23add7c9cc35d04e223305633a5d7d38e2",
+                "reference": "6a711f23add7c9cc35d04e223305633a5d7d38e2",
+                "shasum": ""
+            },
+            "require": {
+                "ext-spl": "*",
+                "fkooman/rest": "^1.0.0",
+                "php": ">=5.4"
+            },
+            "suggest": {
+                "fkooman/rest-plugin-authentication-basic": "Basic Authentication plugin",
+                "fkooman/rest-plugin-authentication-bearer": "Bearer (OAuth) Authentication plugin",
+                "fkooman/rest-plugin-authentication-indieauth": "IndieAuth Authentication plugin",
+                "fkooman/rest-plugin-authentication-mellon": "Mellon (SAML) Authentication plugin",
+                "fkooman/rest-plugin-authentication-tls": "TLS Client Certificate Authentication plugin"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "fkooman\\Rest\\Plugin\\Authentication\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "François Kooman",
+                    "email": "fkooman@tuxed.net",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Authentication plugin for fkooman/rest",
+            "time": "2015-07-20 13:04:00"
+        },
+        {
+            "name": "fkooman/rest-plugin-authentication-bearer",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fkooman/php-lib-rest-plugin-authentication-bearer.git",
+                "reference": "7ffdc242b1e19824cd7af61ce589c096021842e5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fkooman/php-lib-rest-plugin-authentication-bearer/zipball/7ffdc242b1e19824cd7af61ce589c096021842e5",
+                "reference": "7ffdc242b1e19824cd7af61ce589c096021842e5",
                 "shasum": ""
             },
             "require": {
                 "ext-pcre": "*",
                 "ext-spl": "*",
-                "fkooman/rest": "~0.9.0",
+                "fkooman/rest": "^1.0.0",
+                "fkooman/rest-plugin-authentication": "^1.0.0",
                 "guzzlehttp/guzzle": "~5.3",
-                "php": ">=5.3.3"
+                "php": ">=5.4"
             },
             "type": "library",
             "autoload": {
                 "psr-0": {
-                    "fkooman\\Rest\\Plugin\\Bearer\\": "src/"
+                    "fkooman\\Rest\\Plugin\\Authentication\\Bearer\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -255,20 +298,20 @@
                 }
             ],
             "description": "Bearer (OAuth) Authentication plugin for fkooman/rest",
-            "time": "2015-07-09 13:19:59"
+            "time": "2015-07-20 15:03:57"
         },
         {
-            "name": "fkooman/rest-plugin-indieauth",
-            "version": "0.5.2",
+            "name": "fkooman/rest-plugin-authentication-indieauth",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/fkooman/php-lib-rest-plugin-indieauth.git",
-                "reference": "e0eccd524d73de10ad4c885c4ad792c41b9d9d03"
+                "url": "https://github.com/fkooman/php-lib-rest-plugin-authentication-indieauth.git",
+                "reference": "b9cc1da8bcd6fdc1387f1a16949b8f198d5ade6e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fkooman/php-lib-rest-plugin-indieauth/zipball/e0eccd524d73de10ad4c885c4ad792c41b9d9d03",
-                "reference": "e0eccd524d73de10ad4c885c4ad792c41b9d9d03",
+                "url": "https://api.github.com/repos/fkooman/php-lib-rest-plugin-authentication-indieauth/zipball/b9cc1da8bcd6fdc1387f1a16949b8f198d5ade6e",
+                "reference": "b9cc1da8bcd6fdc1387f1a16949b8f198d5ade6e",
                 "shasum": ""
             },
             "require": {
@@ -278,14 +321,15 @@
                 "ext-openssl": "*",
                 "ext-pcre": "*",
                 "ext-spl": "*",
-                "fkooman/rest": "~0.9.0",
+                "fkooman/rest": "^1.0.0",
+                "fkooman/rest-plugin-authentication": "^1.0.0",
                 "guzzlehttp/guzzle": "~5.3",
                 "php": ">=5.4"
             },
             "type": "library",
             "autoload": {
                 "psr-0": {
-                    "fkooman\\Rest\\Plugin\\IndieAuth\\": "src/"
+                    "fkooman\\Rest\\Plugin\\Authentication\\IndieAuth\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -300,32 +344,33 @@
                 }
             ],
             "description": "IndieAuth plugin for fkooman/rest",
-            "time": "2015-07-09 12:44:08"
+            "time": "2015-07-20 15:51:31"
         },
         {
-            "name": "fkooman/rest-plugin-tls",
-            "version": "0.1.2",
+            "name": "fkooman/rest-plugin-authentication-tls",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/fkooman/php-lib-rest-plugin-tls.git",
-                "reference": "fbe0d207f198990c99e9f699f3ad70fad7ccaf1b"
+                "url": "https://github.com/fkooman/php-lib-rest-plugin-authentication-tls.git",
+                "reference": "954d818bf86be43e2fa8463afe0eab42d7fbe6ae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fkooman/php-lib-rest-plugin-tls/zipball/fbe0d207f198990c99e9f699f3ad70fad7ccaf1b",
-                "reference": "fbe0d207f198990c99e9f699f3ad70fad7ccaf1b",
+                "url": "https://api.github.com/repos/fkooman/php-lib-rest-plugin-authentication-tls/zipball/954d818bf86be43e2fa8463afe0eab42d7fbe6ae",
+                "reference": "954d818bf86be43e2fa8463afe0eab42d7fbe6ae",
                 "shasum": ""
             },
             "require": {
-                "fkooman/base64": "~1.0.0",
-                "fkooman/cert-parser": "~1.0.0",
-                "fkooman/rest": "~0.9.0",
-                "php": ">=5.3.3"
+                "fkooman/base64": "^1.0.0",
+                "fkooman/cert-parser": "^1.0.0",
+                "fkooman/rest": "^1.0.0",
+                "fkooman/rest-plugin-authentication": "^1.0.0",
+                "php": ">=5.4"
             },
             "type": "library",
             "autoload": {
                 "psr-0": {
-                    "fkooman\\Rest\\Plugin\\Tls\\": "src/"
+                    "fkooman\\Rest\\Plugin\\Authentication\\Tls\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -340,7 +385,7 @@
                 }
             ],
             "description": "TLS Client Certificate Authentication plugin for fkooman/rest",
-            "time": "2015-07-08 10:46:40"
+            "time": "2015-07-20 15:23:14"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -507,12 +552,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpseclib/phpseclib.git",
-                "reference": "f2773847a2a0a8cc4507af5dd1fc78bbe4150100"
+                "reference": "713a9c7ccfde01219490ef3d9dbc61c18d6cbd30"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/f2773847a2a0a8cc4507af5dd1fc78bbe4150100",
-                "reference": "f2773847a2a0a8cc4507af5dd1fc78bbe4150100",
+                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/713a9c7ccfde01219490ef3d9dbc61c18d6cbd30",
+                "reference": "713a9c7ccfde01219490ef3d9dbc61c18d6cbd30",
                 "shasum": ""
             },
             "require": {
@@ -522,7 +567,7 @@
                 "phing/phing": "~2.7",
                 "phpunit/phpunit": "~4.0",
                 "sami/sami": "~2.0",
-                "squizlabs/php_codesniffer": "~1.5"
+                "squizlabs/php_codesniffer": "~2.0"
             },
             "suggest": {
                 "ext-gmp": "Install the GMP (GNU Multiple Precision) extension in order to speed up arbitrary precision integer arithmetic operations.",
@@ -584,7 +629,7 @@
                 "x.509",
                 "x509"
             ],
-            "time": "2015-07-08 13:45:53"
+            "time": "2015-07-17 23:06:09"
         },
         {
             "name": "react/promise",
@@ -706,7 +751,7 @@
         "ext-pcre": "*",
         "ext-pdo": "*",
         "ext-spl": "*",
-        "php": ">=5.3.3"
+        "php": ">=5.4"
     },
     "platform-dev": []
 }

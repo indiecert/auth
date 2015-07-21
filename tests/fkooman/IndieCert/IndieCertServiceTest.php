@@ -20,8 +20,7 @@ namespace fkooman\IndieCert;
 use PDO;
 use PHPUnit_Framework_TestCase;
 use fkooman\Http\Request;
-use fkooman\Rest\PluginRegistry;
-use fkooman\Rest\Plugin\Tls\TlsAuthentication;
+use fkooman\Rest\Plugin\Authentication\Tls\TlsAuthentication;
 use GuzzleHttp\Client;
 use GuzzleHttp\Subscriber\Mock;
 use GuzzleHttp\Message\Response;
@@ -66,9 +65,7 @@ class IndieCertServiceTest extends PHPUnit_Framework_TestCase
         $certManager = new CertManager('crt', 'key', $ioStub);
 
         $this->service = new IndieCertService($storage, $certManager, $client, null, $ioStub);
-        $pluginRegistry = new PluginRegistry();
-        $pluginRegistry->registerOptionalPlugin(new TlsAuthentication());
-        $this->service->setPluginRegistry($pluginRegistry);
+        $this->service->getPluginRegistry()->registerOptionalPlugin(new TlsAuthentication());
     }
 
     public function testAuthRequest()

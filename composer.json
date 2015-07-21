@@ -18,12 +18,12 @@
         "ext-pdo": "*",
         "ext-spl": "*",
         "fkooman/ini": "^1.0.0",
-        "fkooman/rest": "~0.9.0",
-        "fkooman/rest-plugin-bearer": "~0.5.3",
-        "fkooman/rest-plugin-indieauth": "~0.5.2",
-        "fkooman/rest-plugin-tls": "~0.1.2",
+        "fkooman/rest": "^1.0.1",
+        "fkooman/rest-plugin-authentication-bearer": "^1.0.0",
+        "fkooman/rest-plugin-authentication-indieauth": "^1.0.0",
+        "fkooman/rest-plugin-authentication-tls": "^1.0.0",
         "guzzlehttp/guzzle": "~5.3",
-        "php": ">=5.3.3",
+        "php": ">=5.4",
         "phpseclib/phpseclib": "2.0.x-dev",
         "twig/twig": "~1.15"
     }

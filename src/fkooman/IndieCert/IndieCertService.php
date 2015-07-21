@@ -26,9 +26,9 @@ use GuzzleHttp\Client;
 use fkooman\Http\RedirectResponse;
 use fkooman\Http\Exception\BadRequestException;
 use fkooman\Http\Exception\UnauthorizedException;
-use fkooman\Rest\Plugin\Bearer\TokenInfo;
-use fkooman\Rest\Plugin\IndieAuth\IndieInfo;
-use fkooman\Rest\Plugin\Tls\CertInfo;
+use fkooman\Rest\Plugin\Authentication\Bearer\TokenInfo;
+use fkooman\Rest\Plugin\Authentication\IndieAuth\IndieInfo;
+use fkooman\Rest\Plugin\Authentication\Tls\CertInfo;
 
 class IndieCertService extends Service
 {
@@ -100,7 +100,7 @@ class IndieCertService extends Service
                 return $this->getAuth($request, $certInfo);
             },
             array(
-                'fkooman\Rest\Plugin\Tls\TlsAuthentication' => array('enabled' => true, 'requireAuth' => false),
+                'fkooman\Rest\Plugin\Authentication\Tls\TlsAuthentication' => array('enabled' => true, 'requireAuth' => false),
             )
         );
 
@@ -110,7 +110,7 @@ class IndieCertService extends Service
                 return $this->postConfirm($request, $certInfo);
             },
             array(
-                'fkooman\Rest\Plugin\Tls\TlsAuthentication' => array('enabled' => true),
+                'fkooman\Rest\Plugin\Authentication\Tls\TlsAuthentication' => array('enabled' => true),
             )
         );
 
@@ -120,10 +120,7 @@ class IndieCertService extends Service
             '/auth',
             function (Request $request) {
                 return $this->postAuth($request);
-            },
-            array(
-                'fkooman\Rest\Plugin\ReferrerCheck\ReferrerCheckPlugin' => array('enabled' => false),
-            )
+            }
         );
 
         $this->get(
@@ -139,8 +136,7 @@ class IndieCertService extends Service
                 return $this->verifyToken($request, $tokenInfo);
             },
             array(
-                'fkooman\Rest\Plugin\Bearer\BearerAuthentication' => array('enabled' => true),
-                'fkooman\Rest\Plugin\ReferrerCheck\ReferrerCheckPlugin' => array('enabled' => false),
+                'fkooman\Rest\Plugin\Authentication\Bearer\BearerAuthentication' => array('enabled' => true),
             )
         );
 
@@ -150,10 +146,7 @@ class IndieCertService extends Service
             '/token',
             function (Request $request) {
                 return $this->postToken($request);
-            },
-            array(
-                'fkooman\Rest\Plugin\ReferrerCheck\ReferrerCheckPlugin' => array('enabled' => false),
-            )
+            }
         );
 
         $this->get(
@@ -177,7 +170,7 @@ class IndieCertService extends Service
                 return $this->deleteToken($request, $indieInfo, $id);
             },
             array(
-                'fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication' => array('enabled' => true),
+                'fkooman\Rest\Plugin\Authentication\IndieAuth\IndieAuthAuthentication' => array('enabled' => true),
             )
         );
 
@@ -187,7 +180,7 @@ class IndieCertService extends Service
                 return $this->getAccount($indieInfo);
             },
             array(
-                'fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication' => array('enabled' => true),
+                'fkooman\Rest\Plugin\Authentication\IndieAuth\IndieAuthAuthentication' => array('enabled' => true),
             )
         );
 
@@ -197,7 +190,7 @@ class IndieCertService extends Service
                 return $this->generateCredential($request, $indieInfo);
             },
             array(
-                'fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication' => array('enabled' => true),
+                'fkooman\Rest\Plugin\Authentication\IndieAuth\IndieAuthAuthentication' => array('enabled' => true),
             )
         );
 
@@ -207,7 +200,7 @@ class IndieCertService extends Service
                 return $this->deleteCredential($request, $indieInfo);
             },
             array(
-                'fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication' => array('enabled' => true),
+                'fkooman\Rest\Plugin\Authentication\IndieAuth\IndieAuthAuthentication' => array('enabled' => true),
             )
         );
     }

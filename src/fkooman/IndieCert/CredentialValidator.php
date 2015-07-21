@@ -18,8 +18,8 @@
 
 namespace fkooman\IndieCert;
 
-use fkooman\Rest\Plugin\Bearer\ValidatorInterface;
-use fkooman\Rest\Plugin\Bearer\TokenInfo;
+use fkooman\Rest\Plugin\Authentication\Bearer\ValidatorInterface;
+use fkooman\Rest\Plugin\Authentication\Bearer\TokenInfo;
 
 /**
  * Check whether the credentials used to authenticate to the introspection

@@ -23,15 +23,10 @@ use fkooman\IndieCert\IndieCertService;
 use fkooman\IndieCert\PdoStorage;
 use fkooman\IndieCert\TemplateManager;
 use fkooman\Ini\IniReader;
-use fkooman\Rest\Plugin\Bearer\BearerAuthentication;
-use fkooman\Rest\Plugin\IndieAuth\IndieAuthAuthentication;
-use fkooman\Rest\Plugin\ReferrerCheck\ReferrerCheckPlugin;
-use fkooman\Rest\Plugin\Tls\TlsAuthentication;
-use fkooman\Rest\PluginRegistry;
+use fkooman\Rest\Plugin\Authentication\Bearer\BearerAuthentication;
+use fkooman\Rest\Plugin\Authentication\IndieAuth\IndieAuthAuthentication;
+use fkooman\Rest\Plugin\Authentication\Tls\TlsAuthentication;
 use GuzzleHttp\Client;
-use fkooman\Rest\ExceptionHandler;
-
-ExceptionHandler::register();
 
 $iniReader = IniReader::fromFile(
     dirname(__DIR__).'/config/config.ini'
@@ -79,11 +74,8 @@ $bearerAuth = new BearerAuthentication(
 );
 
 $service = new IndieCertService($db, $certManager, $client, $templateManager);
+$service->getPluginRegistry()->registerOptionalPlugin(new TlsAuthentication());
+$service->getPluginRegistry()->registerOptionalPlugin($bearerAuth);
+$service->getPluginRegistry()->registerOptionalPlugin($indieAuth);
 
-$pluginRegistry = new PluginRegistry();
-$pluginRegistry->registerDefaultPlugin(new ReferrerCheckPlugin());
-$pluginRegistry->registerOptionalPlugin(new TlsAuthentication());
-$pluginRegistry->registerOptionalPlugin($indieAuth);
-$pluginRegistry->registerOptionalPlugin($bearerAuth);
-$service->setPluginRegistry($pluginRegistry);
 $service->run($request)->send();
