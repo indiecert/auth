@@ -1,6 +1,6 @@
 # Changes
 
-## 0.6.1
+## 0.6.1 (2015-07-28)
 - update TLS authentication, `requireAuth` -> `require`
 
 ## 0.6.0
