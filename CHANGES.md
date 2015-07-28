@@ -1,7 +1,11 @@
 # Changes
 
+## 0.6.2 (2015-07-29)
+- add `fkooman/io` to autoloader
+
 ## 0.6.1 (2015-07-28)
 - update TLS authentication, `requireAuth` -> `require`
+- use `fkooman/io`
 
 ## 0.6.0
 - update dependencies to 1.x releases

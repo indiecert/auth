@@ -2,7 +2,7 @@
 %global github_name      indiecert
 
 Name:       indiecert
-Version:    0.6.1
+Version:    0.6.2
 Release:    1%{?dist}
 Summary:    Authentication service using client certificates
 
@@ -119,6 +119,9 @@ fi
 %license agpl-3.0.txt
 
 %changelog
+* Tue Jul 28 2015 François Kooman <fkooman@tuxed.net> - 0.6.2-1
+- update to 0.6.2
+
 * Tue Jul 28 2015 François Kooman <fkooman@tuxed.net> - 0.6.1-1
 - update to 0.6.1
 
