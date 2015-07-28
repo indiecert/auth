@@ -1,5 +1,8 @@
 # Changes
 
+## 0.6.1
+- update TLS authentication, `requireAuth` -> `require`
+
 ## 0.6.0
 - update dependencies to 1.x releases
 

@@ -101,7 +101,7 @@ class IndieCertService extends Service
                 return $this->getAuth($request, $certInfo);
             },
             array(
-                'fkooman\Rest\Plugin\Authentication\Tls\TlsAuthentication' => array('enabled' => true, 'requireAuth' => false),
+                'fkooman\Rest\Plugin\Authentication\Tls\TlsAuthentication' => array('enabled' => true, 'require' => false),
             )
         );
 
