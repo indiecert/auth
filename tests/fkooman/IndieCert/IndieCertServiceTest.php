@@ -25,6 +25,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Subscriber\Mock;
 use GuzzleHttp\Message\Response;
 use GuzzleHttp\Stream\Stream;
+use fkooman\Tpl\TwigTemplateManager;
 
 class IndieCertServiceTest extends PHPUnit_Framework_TestCase
 {
@@ -64,7 +65,10 @@ class IndieCertServiceTest extends PHPUnit_Framework_TestCase
 
         $certManager = new CertManager('crt', 'key', $ioStub);
 
-        $this->service = new IndieCertService($storage, $certManager, $client, null, $ioStub);
+        $tplManager = new TwigTemplateManager(
+            array(dirname(dirname(dirname(__DIR__))).'/views')
+        );
+        $this->service = new IndieCertService($storage, $certManager, $tplManager, $client, $ioStub);
         $this->service->getPluginRegistry()->registerOptionalPlugin(new TlsAuthentication());
     }
 

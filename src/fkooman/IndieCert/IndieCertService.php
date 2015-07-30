@@ -30,6 +30,7 @@ use fkooman\Http\Exception\UnauthorizedException;
 use fkooman\Rest\Plugin\Authentication\Bearer\TokenInfo;
 use fkooman\Rest\Plugin\Authentication\IndieAuth\IndieInfo;
 use fkooman\Rest\Plugin\Authentication\Tls\CertInfo;
+use fkooman\Tpl\TemplateManagerInterface;
 
 class IndieCertService extends Service
 {
@@ -39,21 +40,22 @@ class IndieCertService extends Service
     /** @var CertManager */
     private $certManager;
 
+    /** @var \fkooman\Tpl\TemplateManagerInterface */
+    private $templateManager;
+
     /** @var \GuzzleHttp\Client */
     private $client;
-
-    /** @var TemplateManager */
-    private $templateManager;
 
     /** @var \fkooman\IO\IO */
     private $io;
 
-    public function __construct(PdoStorage $db, CertManager $certManager, Client $client = null, TemplateManager $templateManager = null, IO $io = null)
+    public function __construct(PdoStorage $db, CertManager $certManager, TemplateManagerInterface $templateManager, Client $client = null, IO $io = null)
     {
         parent::__construct();
 
         $this->db = $db;
         $this->certManager = $certManager;
+        $this->templateManager = $templateManager;
 
         // Guzzle
         if (null === $client) {
@@ -66,12 +68,6 @@ class IndieCertService extends Service
             $io = new IO();
         }
         $this->io = $io;
-
-        // TemplateManager
-        if (null === $templateManager) {
-            $templateManager = new TemplateManager();
-        }
-        $this->templateManager = $templateManager;
 
         // Autentication NOT needed
         $this->get(

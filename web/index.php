@@ -21,7 +21,7 @@ use fkooman\IndieCert\CertManager;
 use fkooman\IndieCert\CredentialValidator;
 use fkooman\IndieCert\IndieCertService;
 use fkooman\IndieCert\PdoStorage;
-use fkooman\IndieCert\TemplateManager;
+use fkooman\Tpl\TwigTemplateManager;
 use fkooman\Ini\IniReader;
 use fkooman\Rest\Plugin\Authentication\Bearer\BearerAuthentication;
 use fkooman\Rest\Plugin\Authentication\IndieAuth\IndieAuthAuthentication;
@@ -59,7 +59,13 @@ $client = new Client(
 );
 
 // TemplateManager
-$templateManager = new TemplateManager($iniReader->v('templateCache', false, null));
+$templateManager = new TwigTemplateManager(
+    array(
+        dirname(__DIR__).'/views',
+        dirname(__DIR__).'/config/views',
+    ),
+    $iniReader->v('templateCache', false, null)
+);
 
 $request = new Request($_SERVER);
 
@@ -73,7 +79,7 @@ $bearerAuth = new BearerAuthentication(
     array('realm' => 'IndieCert')
 );
 
-$service = new IndieCertService($db, $certManager, $client, $templateManager);
+$service = new IndieCertService($db, $certManager, $templateManager, $client);
 $service->getPluginRegistry()->registerOptionalPlugin(new TlsAuthentication());
 $service->getPluginRegistry()->registerOptionalPlugin($bearerAuth);
 $service->getPluginRegistry()->registerOptionalPlugin($indieAuth);

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "295959c0032a950cf421ded0a0a3538e",
+    "hash": "be1693a5d4381366634c0ccf45f29973",
     "packages": [
         {
             "name": "fkooman/base64",
@@ -427,6 +427,44 @@
             "time": "2015-07-20 15:23:14"
         },
         {
+            "name": "fkooman/tpl",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fkooman/php-lib-tpl.git",
+                "reference": "4a7e2211dd4b214b30b276e0f01724776ffaf955"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fkooman/php-lib-tpl/zipball/4a7e2211dd4b214b30b276e0f01724776ffaf955",
+                "reference": "4a7e2211dd4b214b30b276e0f01724776ffaf955",
+                "shasum": ""
+            },
+            "require": {
+                "ext-spl": "*",
+                "php": ">= 5.3.3",
+                "twig/twig": "^1.18"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "fkooman\\Tpl\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "François Kooman",
+                    "email": "fkooman@tuxed.net"
+                }
+            ],
+            "description": "Simple Template Abstraction Library",
+            "time": "2015-07-30 17:10:24"
+        },
+        {
             "name": "guzzlehttp/guzzle",
             "version": "5.3.0",
             "source": {
@@ -591,12 +629,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpseclib/phpseclib.git",
-                "reference": "7c69f3f86650b0d44e10d482a249a33c276b5716"
+                "reference": "772d4df5975a721d9c2cc79ca4da1339798c2c86"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/7c69f3f86650b0d44e10d482a249a33c276b5716",
-                "reference": "7c69f3f86650b0d44e10d482a249a33c276b5716",
+                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/772d4df5975a721d9c2cc79ca4da1339798c2c86",
+                "reference": "772d4df5975a721d9c2cc79ca4da1339798c2c86",
                 "shasum": ""
             },
             "require": {
@@ -610,6 +648,7 @@
             },
             "suggest": {
                 "ext-gmp": "Install the GMP (GNU Multiple Precision) extension in order to speed up arbitrary precision integer arithmetic operations.",
+                "ext-libsodium": "SSH2/SFTP can make use of some algorithms provided by the libsodium-php extension.",
                 "ext-mcrypt": "Install the Mcrypt extension in order to speed up a wide variety of cryptographic operations."
             },
             "type": "library",
@@ -668,7 +707,7 @@
                 "x.509",
                 "x509"
             ],
-            "time": "2015-07-21 10:53:36"
+            "time": "2015-07-28 23:09:20"
         },
         {
             "name": "react/promise",

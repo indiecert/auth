@@ -1,5 +1,8 @@
 # Changes
 
+## 0.6.3 (...)
+- use `fkooman/tpl` instead of including template class
+
 ## 0.6.2 (2015-07-29)
 - add `fkooman/io` to autoloader
 
