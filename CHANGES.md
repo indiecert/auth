@@ -1,6 +1,6 @@
 # Changes
 
-## 0.6.3 (...)
+## 0.6.3 (2015-07-30)
 - use `fkooman/tpl` instead of including template class
 
 ## 0.6.2 (2015-07-29)
