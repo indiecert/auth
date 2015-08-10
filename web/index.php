@@ -21,7 +21,7 @@ use fkooman\IndieCert\CertManager;
 use fkooman\IndieCert\CredentialValidator;
 use fkooman\IndieCert\IndieCertService;
 use fkooman\IndieCert\PdoStorage;
-use fkooman\Tpl\TwigTemplateManager;
+use fkooman\Tpl\Twig\TwigTemplateManager;
 use fkooman\Ini\IniReader;
 use fkooman\Rest\Plugin\Authentication\Bearer\BearerAuthentication;
 use fkooman\Rest\Plugin\Authentication\IndieAuth\IndieAuthAuthentication;

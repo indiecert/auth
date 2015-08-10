@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 namespace fkooman\IndieCert;
 
 use fkooman\Rest\Plugin\Authentication\Bearer\ValidatorInterface;
