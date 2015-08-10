@@ -1,7 +1,8 @@
 # Changes
 
-## 0.6.4 (...)
+## 0.6.4 (2015-08-10)
 - update `fkooman/tpl` and use `fkooman/tpl-twig`
+- update phpseclib to 2.0.0
 
 ## 0.6.3 (2015-07-30)
 - use `fkooman/tpl` instead of including template class
