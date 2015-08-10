@@ -1,5 +1,8 @@
 # Changes
 
+## 0.6.4 (...)
+- update `fkooman/tpl` and use `fkooman/tpl-twig`
+
 ## 0.6.3 (2015-07-30)
 - use `fkooman/tpl` instead of including template class
 

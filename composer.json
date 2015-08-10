@@ -21,9 +21,9 @@
         "fkooman/rest-plugin-authentication-bearer": "^1.0.0",
         "fkooman/rest-plugin-authentication-indieauth": "^1.0.0",
         "fkooman/rest-plugin-authentication-tls": "^1.0.0",
-        "fkooman/tpl": "^1.0.0",
+        "fkooman/tpl-twig": "^1.0.0",
         "guzzlehttp/guzzle": "~5.3",
         "php": ">=5.4",
-        "phpseclib/phpseclib": "2.0.x-dev"
+        "phpseclib/phpseclib": "^2.0.0"
     }
 }

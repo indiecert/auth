@@ -25,7 +25,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Subscriber\Mock;
 use GuzzleHttp\Message\Response;
 use GuzzleHttp\Stream\Stream;
-use fkooman\Tpl\TwigTemplateManager;
+use fkooman\Tpl\Twig\TwigTemplateManager;
 
 class IndieCertServiceTest extends PHPUnit_Framework_TestCase
 {

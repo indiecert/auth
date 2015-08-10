@@ -34,8 +34,8 @@ Requires:   php-composer(fkooman/io) >= 1.0.0
 Requires:   php-composer(fkooman/io) < 2.0.0
 Requires:   php-composer(fkooman/rest) >= 1.0.1
 Requires:   php-composer(fkooman/rest) < 2.0.0
-Requires:   php-composer(fkooman/tpl) >= 1.0.0
-Requires:   php-composer(fkooman/tpl) < 2.0.0
+Requires:   php-composer(fkooman/tpl-twig) >= 1.0.0
+Requires:   php-composer(fkooman/tpl-twig) < 2.0.0
 
 Requires:   php-composer(fkooman/rest-plugin-authentication-bearer) >= 1.0.0
 Requires:   php-composer(fkooman/rest-plugin-authentication-bearer) < 2.0.0
@@ -45,8 +45,8 @@ Requires:   php-composer(fkooman/rest-plugin-authentication-tls) >= 1.0.0
 Requires:   php-composer(fkooman/rest-plugin-authentication-tls) < 2.0.0
 Requires:   php-composer(guzzlehttp/guzzle) >= 5.3
 Requires:   php-composer(guzzlehttp/guzzle) < 6.0
-Requires:   php-composer(phpseclib/phpseclib) >= 2.0
-Requires:   php-composer(phpseclib/phpseclib) < 3.0
+Requires:   php-composer(phpseclib/phpseclib) >= 2.0.0
+Requires:   php-composer(phpseclib/phpseclib) < 3.0.0
 Requires:   php-pear(pear.symfony.com/ClassLoader) >= 2.3.9
 Requires:   php-pear(pear.symfony.com/ClassLoader) < 3.0
 
