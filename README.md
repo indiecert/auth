@@ -5,12 +5,18 @@ IndieCert is an authentication service using client certificates. This
 includes a CA and an easy way to enroll clients.
 
 # Installation
-RPM packages are available for Fedora and CentOS/RHEL:
+RPM packages are available for Fedora and CentOS/RHEL. On Fedora:
 
-    $ sudo yum -y install yum-plugin-copr
-    $ yum copr enable -y fkooman/php-base
-    $ yum copr enable -y fkooman/php-relmeauth
-    $ yum install -y indiecert
+    $ sudo dnf copr enable fkooman/php-base
+    $ sudo dnf copr enable fkooman/indiecert
+    $ sudo dnf install indiecert
+
+On CentOS:
+
+    $ sudo yum install epel-release
+    $ sudo curl -s -L -o /etc/yum.repos.d/fkooman-php-base-epel-7.repo https://copr.fedoraproject.org/coprs/fkooman/php-base/repo/epel-7/fkooman-php-base-epel-7.repo
+    $ sudo curl -s -L -o /etc/yum.repos.d/fkooman-indiecert-epel-7.repo https://copr.fedoraproject.org/coprs/fkooman/indiecert/repo/epel-7/fkooman-indiecert-epel-7.repo
+    $ sudo yum install indiecert
 
 Restart Apache:
 
