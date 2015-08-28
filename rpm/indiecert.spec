@@ -37,8 +37,6 @@ Requires:   php-composer(fkooman/rest) < 2.0.0
 Requires:   php-composer(fkooman/tpl-twig) >= 1.0.0
 Requires:   php-composer(fkooman/tpl-twig) < 2.0.0
 
-Requires:   php-composer(fkooman/rest-plugin-authentication-bearer) >= 1.0.0
-Requires:   php-composer(fkooman/rest-plugin-authentication-bearer) < 2.0.0
 Requires:   php-composer(fkooman/rest-plugin-authentication-indieauth) >= 1.0.0
 Requires:   php-composer(fkooman/rest-plugin-authentication-indieauth) < 2.0.0
 Requires:   php-composer(fkooman/rest-plugin-authentication-tls) >= 1.0.0

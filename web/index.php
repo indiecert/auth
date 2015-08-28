@@ -23,7 +23,6 @@ use fkooman\IndieCert\IndieCertService;
 use fkooman\IndieCert\PdoStorage;
 use fkooman\Tpl\Twig\TwigTemplateManager;
 use fkooman\Ini\IniReader;
-use fkooman\Rest\Plugin\Authentication\Bearer\BearerAuthentication;
 use fkooman\Rest\Plugin\Authentication\IndieAuth\IndieAuthAuthentication;
 use fkooman\Rest\Plugin\Authentication\Tls\TlsAuthentication;
 use GuzzleHttp\Client;
@@ -74,14 +73,8 @@ $indieAuth->setClient($client);
 $indieAuth->setDiscovery(false);
 $indieAuth->setUnauthorizedRedirectUri('/login');
 
-$bearerAuth = new BearerAuthentication(
-    new CredentialValidator($db),
-    array('realm' => 'IndieCert')
-);
-
 $service = new IndieCertService($db, $certManager, $templateManager, $client);
 $service->getPluginRegistry()->registerOptionalPlugin(new TlsAuthentication());
-$service->getPluginRegistry()->registerOptionalPlugin($bearerAuth);
 $service->getPluginRegistry()->registerOptionalPlugin($indieAuth);
 
 $service->run($request)->send();

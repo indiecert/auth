@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "ecdafbd48f4ea87030bb479661f33f81",
+    "hash": "ddc8858735d0d9413a4ef5ff575621ae",
     "packages": [
         {
             "name": "fkooman/base64",
@@ -296,48 +296,6 @@
             ],
             "description": "Authentication plugin for fkooman/rest",
             "time": "2015-07-20 13:04:00"
-        },
-        {
-            "name": "fkooman/rest-plugin-authentication-bearer",
-            "version": "1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/fkooman/php-lib-rest-plugin-authentication-bearer.git",
-                "reference": "7ffdc242b1e19824cd7af61ce589c096021842e5"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/fkooman/php-lib-rest-plugin-authentication-bearer/zipball/7ffdc242b1e19824cd7af61ce589c096021842e5",
-                "reference": "7ffdc242b1e19824cd7af61ce589c096021842e5",
-                "shasum": ""
-            },
-            "require": {
-                "ext-pcre": "*",
-                "ext-spl": "*",
-                "fkooman/rest": "^1.0.0",
-                "fkooman/rest-plugin-authentication": "^1.0.0",
-                "guzzlehttp/guzzle": "~5.3",
-                "php": ">=5.4"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "fkooman\\Rest\\Plugin\\Authentication\\Bearer\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "François Kooman",
-                    "email": "fkooman@tuxed.net",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Bearer (OAuth) Authentication plugin for fkooman/rest",
-            "time": "2015-07-20 15:03:57"
         },
         {
             "name": "fkooman/rest-plugin-authentication-indieauth",
@@ -794,25 +752,29 @@
         },
         {
             "name": "twig/twig",
-            "version": "v1.19.0",
+            "version": "v1.21.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "edbeaf43b0a606cdaadc32a11d2673614a377b90"
+                "reference": "ca8d3aa90b6a01c82e07909fe815d6b443e75a23"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/edbeaf43b0a606cdaadc32a11d2673614a377b90",
-                "reference": "edbeaf43b0a606cdaadc32a11d2673614a377b90",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/ca8d3aa90b6a01c82e07909fe815d6b443e75a23",
+                "reference": "ca8d3aa90b6a01c82e07909fe815d6b443e75a23",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.2.7"
             },
+            "require-dev": {
+                "symfony/debug": "~2.7",
+                "symfony/phpunit-bridge": "~2.7"
+            },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.19-dev"
+                    "dev-master": "1.21-dev"
                 }
             },
             "autoload": {
@@ -847,7 +809,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2015-07-31 13:45:26"
+            "time": "2015-08-26 08:58:31"
         }
     ],
     "packages-dev": [],

@@ -26,7 +26,6 @@ use GuzzleHttp\Client;
 use fkooman\Http\RedirectResponse;
 use fkooman\Http\Exception\BadRequestException;
 use fkooman\Http\Exception\UnauthorizedException;
-use fkooman\Rest\Plugin\Authentication\Bearer\TokenInfo;
 use fkooman\Rest\Plugin\Authentication\IndieAuth\IndieInfo;
 use fkooman\Rest\Plugin\Authentication\Tls\CertInfo;
 use fkooman\Tpl\TemplateManagerInterface;
@@ -124,16 +123,6 @@ class IndieCertService extends Service
             function (Request $request) {
                 return $this->getLogin($request);
             }
-        );
-
-        $this->post(
-            '/introspect',
-            function (Request $request, TokenInfo $tokenInfo) {
-                return $this->verifyToken($request, $tokenInfo);
-            },
-            array(
-                'fkooman\Rest\Plugin\Authentication\Bearer\BearerAuthentication' => array('enabled' => true),
-            )
         );
 
         // this endpoint is used by clients to exchange authorization_code
@@ -555,41 +544,6 @@ class IndieCertService extends Service
         $responseUri = sprintf('%s?me=%s&code=%s&state=%s', $redirectUri, $me, $code, $state);
 
         return new RedirectResponse($responseUri, 302);
-    }
-
-    private function verifyToken(Request $request, TokenInfo $tokenInfo)
-    {
-        // validate the request is properly authenticated
-        // FIXME: this is never triggered, we MUST assume if bearer authorization
-        // token is set it is an attempt at verifying the token...
-        if (!$tokenInfo->get('active')) {
-            throw new UnauthorizedException('', '');
-        }
-
-        $token = $request->getPostParameter('token');
-        if (null === $token) {
-            throw new BadRequestException('invalid_request', 'token parameter missing');
-        }
-
-        $accessToken = $this->db->getAccessToken($token);
-        if (false === $accessToken) {
-            $tokenInfo = array(
-                'active' => false,
-            );
-        } else {
-            $tokenInfo = array(
-                'active' => true,
-                'sub' => $accessToken['me'],
-                'scope' => $accessToken['scope'],
-                'client_id' => $accessToken['client_id'],
-                'iat' => intval($accessToken['issue_time']),
-            );
-        }
-
-        $response = new JsonResponse();
-        $response->setBody($tokenInfo);
-
-        return $response;
     }
 
     private function getAccount(IndieInfo $indieInfo)
