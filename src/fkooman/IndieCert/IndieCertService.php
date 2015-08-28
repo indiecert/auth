@@ -306,7 +306,6 @@ class IndieCertService extends Service
         }
 
         if (false === $approval) {
-
             // store in apcu cache that the verification of the fingerprint
             // was successful, we do not have a user session to keep track of
             // this kind of stuff
