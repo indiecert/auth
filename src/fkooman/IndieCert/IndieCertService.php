@@ -177,7 +177,8 @@ class IndieCertService extends Service
         $response = new Response();
         $response->setBody(
             $this->templateManager->render(
-                'faqPage'
+                'faqPage',
+                array()
             )
         );
 
@@ -279,7 +280,6 @@ class IndieCertService extends Service
         $certificateValidator = new CertificateValidator($this->client);
         if (false === $certificateValidator->hasFingerprint($me, $certInfo->getUserId())) {
             $authorizationEndpoint = $request->getUrl()->getRootUrl().'auth';
-            $tokenEndpoint = $request->getUrl()->getRootUrl().'token';
 
             $response = new Response();
             $response->setBody(
@@ -289,7 +289,6 @@ class IndieCertService extends Service
                         'me' => $me,
                         'certFingerprint' => $certInfo->getUserId(),
                         'authorizationEndpoint' => $authorizationEndpoint,
-                        'tokenEndpoint' => $tokenEndpoint,
                     )
                 )
             );
@@ -380,7 +379,6 @@ class IndieCertService extends Service
 
             if (false === $certificateValidator->hasFingerprint($me, $certInfo->getUserId())) {
                 $authorizationEndpoint = $request->getUrl()->getRootUrl().'auth';
-                $tokenEndpoint = $request->getUrl()->getRootUrl().'token';
 
                 $response = new Response();
                 $response->setBody(
@@ -390,7 +388,6 @@ class IndieCertService extends Service
                             'me' => $me,
                             'certFingerprint' => $certificateValidator->getFingerprint(),
                             'authorizationEndpoint' => $authorizationEndpoint,
-                            'tokenEndpoint' => $tokenEndpoint,
                         )
                     )
                 );
