@@ -14,9 +14,6 @@
         <table class="askConfirmation">
             <tr><th>Website</th><td><code title="{{ redirectUri|e }}">{{ clientId|e }}</code></td></tr>
             <tr><th>Your Identity</th><td><code>{{ me|e }}</code></td></tr>
-            {% if scope %}
-                <tr><th>Scope</th><td><code>{{ scope|e }}</code></td></tr>
-            {% endif %}
         </table>
 
         <form class="askConfirmation" method="post" action="{{ confirmUri|e }}">

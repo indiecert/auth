@@ -18,7 +18,6 @@ require_once dirname(__DIR__).'/vendor/autoload.php';
 
 use fkooman\Http\Request;
 use fkooman\IndieCert\CertManager;
-use fkooman\IndieCert\CredentialValidator;
 use fkooman\IndieCert\IndieCertService;
 use fkooman\IndieCert\PdoStorage;
 use fkooman\Tpl\Twig\TwigTemplateManager;
@@ -74,7 +73,9 @@ $indieAuth->setDiscovery(false);
 $indieAuth->setUnauthorizedRedirectUri('/login');
 
 $service = new IndieCertService($db, $certManager, $templateManager, $client);
-$service->getPluginRegistry()->registerOptionalPlugin(new TlsAuthentication());
+$service->getPluginRegistry()->registerOptionalPlugin(
+    new TlsAuthentication()
+);
 $service->getPluginRegistry()->registerOptionalPlugin($indieAuth);
 
 $service->run($request)->send();

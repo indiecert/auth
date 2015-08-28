@@ -222,40 +222,6 @@ authenticate to Distributed IndieAuth applications!
             find ways of contacting me.
         </p>
 
-        <h3 id="Micropub">Micropub</h3>
-        <p class="warn">In the future the "authorization" capability of IndieCert will move to a separate domain.
-</p>
-        <p>
-            If you have your own domain and run a
-            <a href="https://indiewebcamp.com/micropub">micropub</a> service,
-            you need to use a credential generated on your
-            <a href="account#credentials">account</a> page. The token is used to
-            authenticate to the <a href="https://tools.ietf.org/html/draft-ietf-oauth-introspection">introspection</a> endpoint available
-            at <code>{{ introspect_endpoint|e }}</code>. For example:
-        </p>
-<pre>
-$ curl \
-    -H "Authorization: Bearer 5f361f597d465578c245e816778fa059" \
-    -d "token=37ab6853eaf6116e9216b31e40dbd3b6" \
-    {{ introspect_endpoint|e }}
-</pre>
-
-        <p>
-            This will give you the response you can use to determine who
-            authorized the token and accept or deny requests to the micropub
-            endpoint, for example:
-        </p>
-
-<pre>
-{
-    "active": true,
-    "client_id": "https://app.example/",
-    "iat": 1430394445,
-    "scope": "post",
-    "sub": "https://user.example/"
-}
-</pre>
-
         {% include 'footer.html' %}
     </div> <!-- /container -->
 </body>

@@ -17,7 +17,6 @@
 namespace fkooman\IndieCert;
 
 use fkooman\Http\Exception\BadRequestException;
-use InvalidArgumentException;
 
 class InputValidation
 {
@@ -87,24 +86,6 @@ class InputValidation
         }
 
         return $code;
-    }
-
-    public static function validateScope($scope)
-    {
-        // allow scope to be missing
-        if (null === $scope) {
-            return;
-        }
-
-        // but if it is there, it needs to be a valid scope and also
-        // 'normalized'
-        try {
-            $scopeObj = new Scope($scope);
-
-            return $scopeObj->toString();
-        } catch (InvalidArgumentException $e) {
-            throw new BadRequestException('"scope" is invalid', $e->getMessage());
-        }
     }
 
     public static function validateState($state)

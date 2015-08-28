@@ -25,93 +25,16 @@
         <table class="account">
             <tr>
                 <th>Website</th>
-                <th>Scope</th>
                 <th>Expires ({{ date()|date("T") }})</th>
             </tr>
 
             {% for approval in approvals %}
                 <tr>
                     <td><a href="{{ approval.client_id|e }}">{{ approval.client_id|e }}</a></td>
-                    <td>
-                        {% if approval.scope %}
-                            <code>{{ approval.scope|e }}</code>
-                        {% else %}
-                            <small><em>n/a</em></small>
-                        {% endif %}
-                    </td>
                     <td>{{ approval.expires_at|e|date("Y-m-d H:i:s") }}</td>
                 </tr>
             {% endfor %}
         </table>
-        {% endif %}
-
-        {% if tokens %}
-        <h2 id="access_tokens">Access Tokens</h2>
-        <p>
-            This table shows a list of websites that have access tokens granted
-            to them.
-        </p>
-
-        <table class="account">
-            <tr>
-                <th>Website</th>
-                <th>Scope</th>
-                <th>Issued ({{ date()|date("T") }})</th>
-                <th>Actions</th>
-            </tr>
-
-            {% for token in tokens %}
-                <tr>
-                    <td><a href="{{ token.client_id|e }}">{{ token.client_id|e }}</a></td>
-                    <td><code>{{ token.scope|e }}</code></td>
-                    <td>{{ token.issue_time|e|date("Y-m-d H:i:s") }}</td>
-                    <td>
-                        <form method="post" action="token/{{ token.access_token|e }}">
-                            <input type="hidden" name="_METHOD" value="DELETE">
-                            <input class="err" type="submit" value="Delete">
-                        </form>
-                    </td>
-                </tr>
-            {% endfor %}
-        </table>
-        {% endif %}
-
-        <h2 id="credentials">Credentials</h2>
-        <p>
-            Here you can generate and review credential bearer tokens. They can
-            be used by services like
-            <a href="https://indiewebcamp.com/micropub">micropub</a> to validate
-            posts to your <a href="faq#Micropub">micropub endpoint</a>.
-        </p>
-
-        {% if credential %}
-            <table class="account">
-                <tr>
-                    <th>Purpose</th>
-                    <th>Token</th>
-                    <th>Issued ({{ date()|date("T") }})</th>
-                    <th>Actions</th>
-                </tr>
-
-                <tr>
-                    <td>micropub</td>
-                    <td><code>{{ credential.bearer_token|e }}</code></td>
-                    <td>{{ credential.issue_time|e|date("Y-m-d H:i:s") }}</td>
-                    <td>
-                        <form method="post" action="credential">
-                            <input type="hidden" name="_METHOD" value="DELETE">
-                            <input class="err" type="submit" value="Delete">
-                        </form>
-                    </td>
-                </tr>
-            </table>
-        {% endif %}
-
-        {% if not credential %}
-            <form class="credentials" method="post" action="credential">
-                <!-- <input type="text" name="type" placeholder="Purpose..." required="required"> -->
-                <input class="info" type="submit" value="Generate">
-            </form>
         {% endif %}
 
         {% include 'footer.html' %}

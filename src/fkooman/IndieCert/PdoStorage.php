@@ -33,11 +33,11 @@ class PdoStorage
         $this->prefix = $prefix;
     }
 
-    public function storeIndieCode($code, $me, $clientId, $redirectUri, $scope, $issueTime)
+    public function storeIndieCode($code, $me, $clientId, $redirectUri, $issueTime)
     {
         $stmt = $this->db->prepare(
             sprintf(
-                'INSERT INTO %s (code, me, client_id, redirect_uri, scope, issue_time) VALUES(:code, :me, :client_id, :redirect_uri, :scope, :issue_time)',
+                'INSERT INTO %s (code, me, client_id, redirect_uri, issue_time) VALUES(:code, :me, :client_id, :redirect_uri, :issue_time)',
                 $this->prefix.'indie_codes'
             )
         );
@@ -45,7 +45,6 @@ class PdoStorage
         $stmt->bindValue(':me', $me, PDO::PARAM_STR);
         $stmt->bindValue(':client_id', $clientId, PDO::PARAM_STR);
         $stmt->bindValue(':redirect_uri', $redirectUri, PDO::PARAM_STR);
-        $stmt->bindValue(':scope', $scope, PDO::PARAM_STR | PDO::PARAM_NULL);
         $stmt->bindValue(':issue_time', $issueTime, PDO::PARAM_INT);
         $stmt->execute();
 
@@ -54,7 +53,7 @@ class PdoStorage
         }
     }
 
-    public function getCode($code, $clientId, $redirectUri, $usedFor)
+    public function getCode($code, $clientId, $redirectUri)
     {
         $stmt = $this->db->prepare(
             sprintf(
@@ -71,9 +70,8 @@ class PdoStorage
         // mark it as used for codeUse
         $stmt = $this->db->prepare(
             sprintf(
-                'UPDATE %s SET %s = 1 WHERE code = :code AND client_id = :client_id AND redirect_uri = :redirect_uri',
-                $this->prefix.'indie_codes',
-                $usedFor
+                'DELETE FROM %s WHERE code = :code AND client_id = :client_id AND redirect_uri = :redirect_uri',
+                $this->prefix.'indie_codes'
             )
         );
         $stmt->bindValue(':code', $code, PDO::PARAM_STR);
@@ -89,82 +87,12 @@ class PdoStorage
         return false;
     }
 
-    public function storeAccessToken($accessToken, $me, $clientId, $scope, $issueTime)
-    {
-        $stmt = $this->db->prepare(
-            sprintf(
-                'INSERT INTO %s (access_token, me, client_id, scope, issue_time) VALUES(:access_token, :me, :client_id, :scope, :issue_time)',
-                $this->prefix.'indie_access_tokens'
-            )
-        );
-        $stmt->bindValue(':access_token', $accessToken, PDO::PARAM_STR);
-        $stmt->bindValue(':me', $me, PDO::PARAM_STR);
-        $stmt->bindValue(':client_id', $clientId, PDO::PARAM_STR);
-        $stmt->bindValue(':scope', $scope, PDO::PARAM_STR | PDO::PARAM_NULL);
-        $stmt->bindValue(':issue_time', $issueTime, PDO::PARAM_INT);
-        $stmt->execute();
-
-        if (1 !== $stmt->rowCount()) {
-            throw new PdoStorageException('unable to add');
-        }
-    }
-
-    public function getAccessToken($accessToken)
-    {
-        $stmt = $this->db->prepare(
-            sprintf(
-                'SELECT * FROM %s WHERE access_token = :access_token',
-                $this->prefix.'indie_access_tokens'
-            )
-        );
-        $stmt->bindValue(':access_token', $accessToken, PDO::PARAM_STR);
-        $stmt->execute();
-
-        // FIXME: return false if non available!
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
-
-    public function getAccessTokens($me)
-    {
-        // FIXME: do we need an index on the me column as well?
-        $stmt = $this->db->prepare(
-            sprintf(
-                'SELECT * FROM %s WHERE me = :me',
-                $this->prefix.'indie_access_tokens'
-            )
-        );
-        $stmt->bindValue(':me', $me, PDO::PARAM_STR);
-        $stmt->execute();
-
-        $accessTokens = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        for ($i = 0; $i < count($accessTokens); ++$i) {
-            $accessTokens[$i]['access_token'] = substr($accessTokens[$i]['access_token'], 0, 12);
-        }
-
-        return $accessTokens;
-    }
-
-    public function deleteAccessToken($me, $accessToken)
-    {
-        $stmt = $this->db->prepare(
-            sprintf(
-                'DELETE FROM %s WHERE me = :me AND access_token LIKE :access_token',
-                $this->prefix.'indie_access_tokens'
-            )
-        );
-
-        $stmt->bindValue(':me', $me, PDO::PARAM_STR);
-        $stmt->bindValue(':access_token', $accessToken.'%', PDO::PARAM_STR);
-
-        return $stmt->execute();
-    }
-
     public function getApprovals($me)
     {
         // FIXME: do we need an index on the me column as well?
         $stmt = $this->db->prepare(
             sprintf(
-                'SELECT client_id, scope, expires_at FROM %s WHERE me = :me',
+                'SELECT client_id, expires_at FROM %s WHERE me = :me',
                 $this->prefix.'indie_approvals'
             )
         );
@@ -174,18 +102,17 @@ class PdoStorage
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function storeApproval($me, $clientId, $redirectUri, $scope, $expiresAt)
+    public function storeApproval($me, $clientId, $redirectUri, $expiresAt)
     {
         $stmt = $this->db->prepare(
             sprintf(
-                'INSERT INTO %s (me, client_id, redirect_uri, scope, expires_at) VALUES(:me, :client_id, :redirect_uri, :scope, :expires_at)',
+                'INSERT INTO %s (me, client_id, redirect_uri, expires_at) VALUES(:me, :client_id, :redirect_uri, :expires_at)',
                 $this->prefix.'indie_approvals'
             )
         );
         $stmt->bindValue(':me', $me, PDO::PARAM_STR);
         $stmt->bindValue(':client_id', $clientId, PDO::PARAM_STR);
         $stmt->bindValue(':redirect_uri', $redirectUri, PDO::PARAM_STR);
-        $stmt->bindValue(':scope', $scope, PDO::PARAM_STR | PDO::PARAM_NULL);
         $stmt->bindValue(':expires_at', $expiresAt, PDO::PARAM_INT);
         $stmt->execute();
 
@@ -194,24 +121,14 @@ class PdoStorage
         }
     }
 
-    public function getApproval($me, $clientId, $redirectUri, $scope)
+    public function getApproval($me, $clientId, $redirectUri)
     {
-        if (null === $scope) {
-            $stmt = $this->db->prepare(
-                sprintf(
-                    'SELECT * FROM %s WHERE me = :me AND client_id = :client_id AND redirect_uri = :redirect_uri AND scope IS NULL',
-                    $this->prefix.'indie_approvals'
-                )
-            );
-        } else {
-            $stmt = $this->db->prepare(
-                sprintf(
-                    'SELECT * FROM %s WHERE me = :me AND client_id = :client_id AND redirect_uri = :redirect_uri AND scope = :scope',
-                    $this->prefix.'indie_approvals'
-                )
-            );
-            $stmt->bindValue(':scope', $scope, PDO::PARAM_STR);
-        }
+        $stmt = $this->db->prepare(
+            sprintf(
+                'SELECT * FROM %s WHERE me = :me AND client_id = :client_id AND redirect_uri = :redirect_uri',
+                $this->prefix.'indie_approvals'
+            )
+        );
 
         $stmt->bindValue(':me', $me, PDO::PARAM_STR);
         $stmt->bindValue(':client_id', $clientId, PDO::PARAM_STR);
@@ -221,24 +138,15 @@ class PdoStorage
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function deleteApproval($me, $clientId, $redirectUri, $scope)
+    public function deleteApproval($me, $clientId, $redirectUri)
     {
-        if (null === $scope) {
-            $stmt = $this->db->prepare(
-                sprintf(
-                    'DELETE FROM %s WHERE me = :me AND client_id = :client_id AND redirect_uri = :redirect_uri AND scope IS NULL',
-                    $this->prefix.'indie_approvals'
-                )
-            );
-        } else {
-            $stmt = $this->db->prepare(
-                sprintf(
-                    'DELETE FROM %s WHERE me = :me AND client_id = :client_id AND redirect_uri = :redirect_uri AND scope = :scope',
-                    $this->prefix.'indie_approvals'
-                )
-            );
-            $stmt->bindValue(':scope', $scope, PDO::PARAM_STR);
-        }
+        $stmt = $this->db->prepare(
+            sprintf(
+                'DELETE FROM %s WHERE me = :me AND client_id = :client_id AND redirect_uri = :redirect_uri',
+                $this->prefix.'indie_approvals'
+            )
+        );
+
         $stmt->bindValue(':me', $me, PDO::PARAM_STR);
         $stmt->bindValue(':client_id', $clientId, PDO::PARAM_STR);
         $stmt->bindValue(':redirect_uri', $redirectUri, PDO::PARAM_STR);
@@ -246,68 +154,6 @@ class PdoStorage
         if (1 !== $stmt->rowCount()) {
             throw new PdoStorageException('unable to delete');
         }
-    }
-
-    public function getCredential($bearerToken)
-    {
-        $stmt = $this->db->prepare(
-            sprintf(
-                'SELECT * FROM %s WHERE bearer_token = :bearer_token',
-                $this->prefix.'indie_credentials'
-            )
-        );
-        $stmt->bindValue(':bearer_token', $bearerToken, PDO::PARAM_STR);
-        $stmt->execute();
-
-        // FIXME: return false if non available!
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
-
-    public function getCredentialForUser($me)
-    {
-        $stmt = $this->db->prepare(
-            sprintf(
-                'SELECT * FROM %s WHERE me = :me',
-                $this->prefix.'indie_credentials'
-            )
-        );
-        $stmt->bindValue(':me', $me, PDO::PARAM_STR);
-        $stmt->execute();
-
-        // FIXME: return false if non available!
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
-
-    public function storeCredential($me, $bearerToken, $issueTime)
-    {
-        $stmt = $this->db->prepare(
-            sprintf(
-                'INSERT INTO %s (me, bearer_token, issue_time) VALUES(:me, :bearer_token, :issue_time)',
-                $this->prefix.'indie_credentials'
-            )
-        );
-        $stmt->bindValue(':me', $me, PDO::PARAM_STR);
-        $stmt->bindValue(':bearer_token', $bearerToken, PDO::PARAM_STR);
-        $stmt->bindValue(':issue_time', $issueTime, PDO::PARAM_INT);
-        $stmt->execute();
-
-        if (1 !== $stmt->rowCount()) {
-            throw new PdoStorageException('unable to add');
-        }
-    }
-
-    public function deleteCredential($me)
-    {
-        $stmt = $this->db->prepare(
-            sprintf(
-                'DELETE FROM %s WHERE me = :me',
-                $this->prefix.'indie_credentials'
-            )
-        );
-
-        $stmt->bindValue(':me', $me, PDO::PARAM_STR);
-
-        return $stmt->execute();
     }
 
     public function deleteExpiredApprovals($currentTime)
@@ -347,7 +193,6 @@ class PdoStorage
                 me VARCHAR(255) NOT NULL,
                 client_id VARCHAR(255) NOT NULL,
                 redirect_uri VARCHAR(255) NOT NULL,
-                scope VARCHAR(255) DEFAULT NULL,
                 expires_at INT NOT NULL
             )',
             $prefix.'indie_approvals'
@@ -359,35 +204,10 @@ class PdoStorage
                 me VARCHAR(255) NOT NULL,
                 client_id VARCHAR(255) NOT NULL,
                 redirect_uri VARCHAR(255) NOT NULL,
-                scope VARCHAR(255) DEFAULT NULL,
                 issue_time INT NOT NULL,
-                used_for_auth INT DEFAULT 0,
-                used_for_token INT DEFAULT 0,
                 PRIMARY KEY (code)
             )',
             $prefix.'indie_codes'
-        );
-
-        $query[] = sprintf(
-            'CREATE TABLE IF NOT EXISTS %s (
-                access_token VARCHAR(255) NOT NULL,
-                me VARCHAR(255) NOT NULL,
-                client_id VARCHAR(255) NOT NULL,
-                scope VARCHAR(255) DEFAULT NULL,
-                issue_time INT NOT NULL,
-                PRIMARY KEY (access_token)
-            )',
-            $prefix.'indie_access_tokens'
-        );
-
-        $query[] = sprintf(
-            'CREATE TABLE IF NOT EXISTS %s (
-                bearer_token VARCHAR(255) NOT NULL,
-                me VARCHAR(255) NOT NULL,
-                issue_time INT NOT NULL,
-                PRIMARY KEY (bearer_token)
-            )',
-            $prefix.'indie_credentials'
         );
 
         return $query;
@@ -400,7 +220,7 @@ class PdoStorage
             $this->db->query($q);
         }
 
-        $tables = array('indie_approvals', 'indie_codes', 'indie_access_tokens', 'indie_credentials');
+        $tables = array('indie_approvals', 'indie_codes');
         foreach ($tables as $t) {
             // make sure the tables are empty
             $this->db->query(

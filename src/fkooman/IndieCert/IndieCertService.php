@@ -25,7 +25,6 @@ use fkooman\Rest\Service;
 use GuzzleHttp\Client;
 use fkooman\Http\RedirectResponse;
 use fkooman\Http\Exception\BadRequestException;
-use fkooman\Http\Exception\UnauthorizedException;
 use fkooman\Rest\Plugin\Authentication\IndieAuth\IndieInfo;
 use fkooman\Rest\Plugin\Authentication\Tls\CertInfo;
 use fkooman\Tpl\TemplateManagerInterface;
@@ -95,7 +94,10 @@ class IndieCertService extends Service
                 return $this->getAuth($request, $certInfo);
             },
             array(
-                'fkooman\Rest\Plugin\Authentication\Tls\TlsAuthentication' => array('enabled' => true, 'require' => false),
+                'fkooman\Rest\Plugin\Authentication\Tls\TlsAuthentication' => array(
+                    'enabled' => true,
+                    'require' => false,
+                ),
             )
         );
 
@@ -105,12 +107,13 @@ class IndieCertService extends Service
                 return $this->postConfirm($request, $certInfo);
             },
             array(
-                'fkooman\Rest\Plugin\Authentication\Tls\TlsAuthentication' => array('enabled' => true),
+                'fkooman\Rest\Plugin\Authentication\Tls\TlsAuthentication' => array(
+                    'enabled' => true,
+                ),
             )
         );
 
-        // this endpoint is used for verifying authorization_code by clients that
-        // only want to use authentication and not obtain an access_token
+        // this endpoint is used for verifying authorization_code by clients
         $this->post(
             '/auth',
             function (Request $request) {
@@ -122,15 +125,6 @@ class IndieCertService extends Service
             '/login',
             function (Request $request) {
                 return $this->getLogin($request);
-            }
-        );
-
-        // this endpoint is used by clients to exchange authorization_code
-        // for an access_token in case a scope was requested
-        $this->post(
-            '/token',
-            function (Request $request) {
-                return $this->postToken($request);
             }
         );
 
@@ -148,44 +142,15 @@ class IndieCertService extends Service
             }
         );
 
-        // MUST be authenticated
-        $this->delete(
-            '/token/:id',
-            function (Request $request, IndieInfo $indieInfo, $id) {
-                return $this->deleteToken($request, $indieInfo, $id);
-            },
-            array(
-                'fkooman\Rest\Plugin\Authentication\IndieAuth\IndieAuthAuthentication' => array('enabled' => true),
-            )
-        );
-
         $this->get(
             '/account',
             function (IndieInfo $indieInfo) {
                 return $this->getAccount($indieInfo);
             },
             array(
-                'fkooman\Rest\Plugin\Authentication\IndieAuth\IndieAuthAuthentication' => array('enabled' => true),
-            )
-        );
-
-        $this->post(
-            '/credential',
-            function (Request $request, IndieInfo $indieInfo) {
-                return $this->generateCredential($request, $indieInfo);
-            },
-            array(
-                'fkooman\Rest\Plugin\Authentication\IndieAuth\IndieAuthAuthentication' => array('enabled' => true),
-            )
-        );
-
-        $this->delete(
-            '/credential',
-            function (Request $request, IndieInfo $indieInfo) {
-                return $this->deleteCredential($request, $indieInfo);
-            },
-            array(
-                'fkooman\Rest\Plugin\Authentication\IndieAuth\IndieAuthAuthentication' => array('enabled' => true),
+                'fkooman\Rest\Plugin\Authentication\IndieAuth\IndieAuthAuthentication' => array(
+                    'enabled' => true,
+                ),
             )
         );
     }
@@ -212,10 +177,7 @@ class IndieCertService extends Service
         $response = new Response();
         $response->setBody(
             $this->templateManager->render(
-                'faqPage',
-                array(
-                    'introspect_endpoint' => $request->getUrl()->getRootUrl().'introspect',
-                )
+                'faqPage'
             )
         );
 
@@ -299,7 +261,6 @@ class IndieCertService extends Service
         $me = InputValidation::validateMe($request->getUrl()->getQueryParameter('me'));
         $clientId = InputValidation::validateUri($request->getUrl()->getQueryParameter('client_id'), 'client_id');
         $redirectUri = InputValidation::validateUri($request->getUrl()->getQueryParameter('redirect_uri'), 'redirect_uri');
-        $scope = InputValidation::validateScope($request->getUrl()->getQueryParameter('scope'));
         $state = InputValidation::validateState($request->getUrl()->getQueryParameter('state'));
 
         if (false === self::sameHost($clientId, $redirectUri)) {
@@ -336,11 +297,11 @@ class IndieCertService extends Service
             return $response;
         }
 
-        $approval = $this->db->getApproval($me, $clientId, $redirectUri, $scope);
+        $approval = $this->db->getApproval($me, $clientId, $redirectUri);
         if (false !== $approval) {
             // check if not expired
             if ($this->io->getTime() >= $approval['expires_at']) {
-                $this->db->deleteApproval($me, $clientId, $redirectUri, $scope);
+                $this->db->deleteApproval($me, $clientId, $redirectUri);
                 $approval = false;
             }
         }
@@ -356,24 +317,13 @@ class IndieCertService extends Service
 
             // FIXME: we could just get the query parameters... they were
             // validated anyway...
-            if (null === $scope) {
-                $confirmUri = sprintf(
-                    'confirm?client_id=%s&redirect_uri=%s&me=%s&state=%s',
-                    $clientId,
-                    $redirectUri,
-                    $me,
-                    $state
-                );
-            } else {
-                $confirmUri = sprintf(
-                    'confirm?client_id=%s&redirect_uri=%s&me=%s&scope=%s&state=%s',
-                    $clientId,
-                    $redirectUri,
-                    $me,
-                    $scope,
-                    $state
-                );
-            }
+            $confirmUri = sprintf(
+                'confirm?client_id=%s&redirect_uri=%s&me=%s&state=%s',
+                $clientId,
+                $redirectUri,
+                $me,
+                $state
+            );
 
             $response = new Response();
             $response->setBody(
@@ -384,7 +334,6 @@ class IndieCertService extends Service
                         'me' => $me,
                         'clientId' => $clientId,
                         'redirectUri' => $redirectUri,
-                        'scope' => $scope,
                     )
                 )
             );
@@ -392,7 +341,7 @@ class IndieCertService extends Service
             return $response;
         }
 
-        return $this->indieCodeRedirect($me, $clientId, $redirectUri, $scope, $state);
+        return $this->indieCodeRedirect($me, $clientId, $redirectUri, $state);
     }
 
     private function postConfirm(Request $request, CertInfo $certInfo)
@@ -400,7 +349,6 @@ class IndieCertService extends Service
         $me = InputValidation::validateMe($request->getUrl()->getQueryParameter('me'));
         $clientId = InputValidation::validateUri($request->getUrl()->getQueryParameter('client_id'), 'client_id');
         $redirectUri = InputValidation::validateUri($request->getUrl()->getQueryParameter('redirect_uri'), 'redirect_uri');
-        $scope = InputValidation::validateScope($request->getUrl()->getQueryParameter('scope'));
         $state = InputValidation::validateState($request->getUrl()->getQueryParameter('state'));
 
         if (null === $certInfo) {
@@ -453,23 +401,13 @@ class IndieCertService extends Service
 
         // store approval if requested
         if (null !== $request->getPostParameter('remember')) {
-            $this->db->storeApproval($me, $clientId, $redirectUri, $scope, $this->io->getTime() + 3600 * 24 * 7);
+            $this->db->storeApproval($me, $clientId, $redirectUri, $this->io->getTime() + 3600 * 24 * 7);
         }
 
-        return $this->indieCodeRedirect($me, $clientId, $redirectUri, $scope, $state);
+        return $this->indieCodeRedirect($me, $clientId, $redirectUri, $state);
     }
 
     private function postAuth(Request $request)
-    {
-        return $this->postAuthToken($request, 'used_for_auth');
-    }
-
-    private function postToken(Request $request)
-    {
-        return $this->postAuthToken($request, 'used_for_token');
-    }
-
-    private function postAuthToken(Request $request, $usedFor)
     {
         $code = InputValidation::validateCode($request->getPostParameter('code'));
         $clientId = InputValidation::validateUri($request->getPostParameter('client_id'), 'client_id');
@@ -479,15 +417,10 @@ class IndieCertService extends Service
             throw new BadRequestException('invalid_request', 'client_id must have same host as redirect_uri');
         }
 
-        $indieCode = $this->db->getCode($code, $clientId, $redirectUri, $usedFor);
+        $indieCode = $this->db->getCode($code, $clientId, $redirectUri);
 
         if (false === $indieCode) {
             throw new BadRequestException('invalid_request', 'code not found');
-        }
-
-        // the db return value is a string, not an integer, so not using !== here
-        if (0 != $indieCode[$usedFor]) {
-            throw new BadRequestException('invalid_request', 'code already used');
         }
 
         if ($this->io->getTime() > $indieCode['issue_time'] + 600) {
@@ -504,31 +437,12 @@ class IndieCertService extends Service
         $responseData = array(
             'me' => $indieCode['me'],
         );
-
-        if (null !== $indieCode['scope']) {
-            // add granted scope to response
-            $responseData['scope'] = $indieCode['scope'];
-
-            if ('used_for_token' === $usedFor) {
-                // generate access token and add it to the response as well
-                $accessToken = $this->io->getRandom();
-                $this->db->storeAccessToken(
-                    $accessToken,
-                    $indieCode['me'],
-                    $clientId,
-                    $indieCode['scope'],
-                    $this->io->getTime()
-                );
-                $responseData['access_token'] = $accessToken;
-            }
-        }
-
         $response->setBody($responseData);
 
         return $response;
     }
 
-    private function indieCodeRedirect($me, $clientId, $redirectUri, $scope, $state)
+    private function indieCodeRedirect($me, $clientId, $redirectUri, $state)
     {
         // create indiecode
         $code = $this->io->getRandom();
@@ -537,7 +451,6 @@ class IndieCertService extends Service
             $me,
             $clientId,
             $redirectUri,
-            $scope,
             $this->io->getTime()
         );
 
@@ -549,9 +462,7 @@ class IndieCertService extends Service
     private function getAccount(IndieInfo $indieInfo)
     {
         $userId = $indieInfo->getUserId();
-        $accessTokens = $this->db->getAccessTokens($userId);
         $approvals = $this->db->getApprovals($userId);
-        $credential = $this->db->getCredentialForUser($userId);
 
         $response = new Response();
         $response->setBody(
@@ -560,36 +471,11 @@ class IndieCertService extends Service
                 array(
                     'me' => $userId,
                     'approvals' => $approvals,
-                    'tokens' => $accessTokens,
-                    'credential' => $credential,
                 )
             )
         );
 
         return $response;
-    }
-
-    private function generateCredential(Request $request, IndieInfo $indieInfo)
-    {
-        $credential = $this->io->getRandom();
-        $issueTime = $this->io->getTime();
-        $this->db->storeCredential($indieInfo->getUserId(), $credential, $issueTime);
-
-        return new RedirectResponse($request->getUrl()->getRootUrl().'account#credentials', 302);
-    }
-
-    private function deleteCredential(Request $request, IndieInfo $indieInfo)
-    {
-        $this->db->deleteCredential($indieInfo->getUserId());
-
-        return new RedirectResponse($request->getUrl()->getRootUrl().'account#credentials', 302);
-    }
-
-    private function deleteToken(Request $request, IndieInfo $indieInfo, $id)
-    {
-        $this->db->deleteAccessToken($indieInfo->getUserId(), $id);
-
-        return new RedirectResponse($request->getUrl()->getRootUrl().'account#access_tokens', 302);
     }
 
     private static function sameHost($u1, $u2)
