@@ -1,5 +1,8 @@
 # Changes
 
+## 0.7.0 (2015-08-28)
+- remove all authorization support, will move to separate OAuth sever
+
 ## 0.6.4 (2015-08-10)
 - update `fkooman/tpl` and use `fkooman/tpl-twig`
 - update phpseclib to 2.0.0
