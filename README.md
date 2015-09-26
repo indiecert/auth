@@ -1,8 +1,7 @@
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/fkooman/indiecert/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/fkooman/indiecert/?branch=master)
 
 # Introduction
-IndieCert is an authentication service using client certificates. This 
-includes a CA and an easy way to enroll clients.
+IndieCert is an authentication service using client certificates.
 
 # Installation
 RPM packages are available for Fedora and CentOS/RHEL. On Fedora:
@@ -27,7 +26,6 @@ Initialize the database, by default this is SQLite. If you want to use any
 other database please first modify the configuration file
 `/etc/indiecert/config.ini`.
 
-    $ sudo -u apache indiecert-init-ca
     $ sudo -u apache indiecert-init-db
 
 # Production Deployment
@@ -36,7 +34,7 @@ packages mentioned above, or build them yourself.
 
 The default (Apache) configuration will make IndieCert available under the 
 `indiecert` sub folder. If you want to deploy IndieCert on the root of a 
-domain, please check the `Dockerfile` in the `docker/` folder on what steps
+domain, please check the `Dockerfile` on `indiecert/docker` on what steps
 to perform. It shows exactly what you should do on production environments, 
 except disable the certificate check.
 
@@ -62,9 +60,8 @@ account is called `fkooman` in group `fkooman`.
     $ sudo restorecon -R /var/www/indiecert/data
     $ cp config/config.ini.default config/config.ini
 
-Now to initialize the CA and database:
+Now to initialize the database:
 
-    $ sudo -u apache bin/indiecert-init-ca
     $ sudo -u apache bin/indiecert-init-db
 
 # License
