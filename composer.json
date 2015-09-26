@@ -4,9 +4,9 @@
             "fkooman\\IndieCert\\": "src/"
         }
     },
-    "description": "Authentication service using client certificates",
+    "description": "IndieCert Authentication",
     "license": " AGPL-3.0",
-    "name": "fkooman/indiecert",
+    "name": "indiecert/auth",
     "require": {
         "ext-apc": "*",
         "ext-dom": "*",
@@ -14,7 +14,6 @@
         "ext-libxml": "*",
         "ext-pcre": "*",
         "ext-pdo": "*",
-        "ext-spl": "*",
         "fkooman/ini": "^1.0.0",
         "fkooman/io": "^1.0.0",
         "fkooman/rest": "^1.0.1",
@@ -22,7 +21,6 @@
         "fkooman/rest-plugin-authentication-tls": "^1.0.0",
         "fkooman/tpl-twig": "^1.0.0",
         "guzzlehttp/guzzle": "~5.3",
-        "php": ">=5.4",
         "phpseclib/phpseclib": "^2.0.0"
     }
 }
