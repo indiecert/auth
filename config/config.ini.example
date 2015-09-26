@@ -4,10 +4,10 @@
 ;disableServerCertCheck = true
 
 ; Uncomment this line below to enable Twig template caching
-;templateCache = "/var/lib/indiecert/tpl"
+;templateCache = "/var/lib/indiecert-auth/tpl"
 
 [PdoStorage]
-dsn = "sqlite:/var/lib/indiecert/storage.sqlite"
+dsn = "sqlite:/var/lib/indiecert-auth/storage.sqlite"
 ;dsn = "mysql:host=localhost;dbname=indiecert"
 ;username = "indiecert"
 ;password = "s3cr3t"
