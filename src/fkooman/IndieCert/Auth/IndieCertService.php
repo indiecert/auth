@@ -14,7 +14,7 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-namespace fkooman\IndieCert;
+namespace fkooman\IndieCert\Auth;
 
 use fkooman\IO\IO;
 use fkooman\Http\Request;
@@ -34,9 +34,6 @@ class IndieCertService extends Service
     /** @var PdoStorage */
     private $db;
 
-    /** @var CertManager */
-    private $certManager;
-
     /** @var \fkooman\Tpl\TemplateManagerInterface */
     private $templateManager;
 
@@ -46,12 +43,11 @@ class IndieCertService extends Service
     /** @var \fkooman\IO\IO */
     private $io;
 
-    public function __construct(PdoStorage $db, CertManager $certManager, TemplateManagerInterface $templateManager, Client $client = null, IO $io = null)
+    public function __construct(PdoStorage $db, TemplateManagerInterface $templateManager, Client $client = null, IO $io = null)
     {
         parent::__construct();
 
         $this->db = $db;
-        $this->certManager = $certManager;
         $this->templateManager = $templateManager;
 
         // Guzzle
@@ -125,20 +121,6 @@ class IndieCertService extends Service
             '/login',
             function (Request $request) {
                 return $this->getLogin($request);
-            }
-        );
-
-        $this->get(
-            '/enroll',
-            function (Request $request) {
-                return $this->getEnroll($request);
-            }
-        );
-
-        $this->post(
-            '/enroll',
-            function (Request $request) {
-                return $this->postEnroll($request);
             }
         );
 
@@ -222,37 +204,6 @@ class IndieCertService extends Service
                 )
             )
         );
-
-        return $response;
-    }
-
-    private function getEnroll(Request $request)
-    {
-        $response = new Response();
-        $response->setBody(
-            $this->templateManager->render(
-                'enrollPage',
-                array(
-                    'me' => $request->getUrl()->getQueryParameter('me'),
-                    'certChallenge' => $this->io->getRandom(),
-                    'referrer' => $request->getHeader('HTTP_REFERER'),
-                )
-            )
-        );
-
-        return $response;
-    }
-
-    private function postEnroll(Request $request)
-    {
-        $userCert = $this->certManager->enroll(
-            $request->getPostParameter('spkac'),
-            $request->getPostParameter('me'),
-            $request->getHeader('USER_AGENT')
-        );
-
-        $response = new Response(200, 'application/x-x509-user-cert');
-        $response->setBody($userCert);
 
         return $response;
     }

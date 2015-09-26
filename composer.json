@@ -1,7 +1,7 @@
 {
     "autoload": {
         "psr-0": {
-            "fkooman\\IndieCert\\": "src/"
+            "fkooman\\IndieCert\\Auth\\": "src/"
         }
     },
     "description": "IndieCert Authentication",
@@ -20,7 +20,6 @@
         "fkooman/rest-plugin-authentication-indieauth": "^1.0.0",
         "fkooman/rest-plugin-authentication-tls": "^1.0.0",
         "fkooman/tpl-twig": "^1.0.0",
-        "guzzlehttp/guzzle": "~5.3",
-        "phpseclib/phpseclib": "^2.0.0"
+        "guzzlehttp/guzzle": "~5.3"
     }
 }

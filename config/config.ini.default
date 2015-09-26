@@ -12,8 +12,3 @@ dsn = "sqlite:/var/lib/indiecert/storage.sqlite"
 ;username = "indiecert"
 ;password = "s3cr3t"
 ;dsn = "pgsql:host=localhost;port=5432;dbname=XYZ;user=ABC;password=DEF"
-
-[CA]
-storageDir = '/var/lib/indiecert/ca'
-commonName = 'Demo CA'
-keySize = 2048

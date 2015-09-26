@@ -17,9 +17,8 @@
 require_once dirname(__DIR__).'/vendor/autoload.php';
 
 use fkooman\Http\Request;
-use fkooman\IndieCert\CertManager;
-use fkooman\IndieCert\IndieCertService;
-use fkooman\IndieCert\PdoStorage;
+use fkooman\IndieCert\Auth\IndieCertService;
+use fkooman\IndieCert\Auth\PdoStorage;
 use fkooman\Tpl\Twig\TwigTemplateManager;
 use fkooman\Ini\IniReader;
 use fkooman\Rest\Plugin\Authentication\IndieAuth\IndieAuthAuthentication;
@@ -37,13 +36,6 @@ $pdo = new PDO(
     $iniReader->v('PdoStorage', 'password', false)
 );
 $db = new PdoStorage($pdo);
-
-// CertManager
-$caDir = $iniReader->v('CA', 'storageDir');
-$caCrt = file_get_contents(sprintf('%s/ca.crt', $caDir));
-$caKey = file_get_contents(sprintf('%s/ca.key', $caDir));
-
-$certManager = new CertManager($caCrt, $caKey);
 
 // Guzzle
 $disableServerCertCheck = $iniReader->v('disableServerCertCheck', false, false);
@@ -72,7 +64,7 @@ $indieAuth->setClient($client);
 $indieAuth->setDiscovery(false);
 $indieAuth->setUnauthorizedRedirectUri('/login');
 
-$service = new IndieCertService($db, $certManager, $templateManager, $client);
+$service = new IndieCertService($db, $templateManager, $client);
 $service->getPluginRegistry()->registerOptionalPlugin(
     new TlsAuthentication()
 );

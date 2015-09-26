@@ -1,6 +1,6 @@
 <?php
 
-namespace fkooman\IndieCert;
+namespace fkooman\IndieCert\Auth;
 
 use GuzzleHttp\Client;
 use DomDocument;

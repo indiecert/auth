@@ -14,7 +14,7 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-namespace fkooman\IndieCert;
+namespace fkooman\IndieCert\Auth;
 
 use PDO;
 use PHPUnit_Framework_TestCase;
@@ -62,12 +62,10 @@ class IndieCertServiceTest extends PHPUnit_Framework_TestCase
         );
         $client->getEmitter()->attach($mock);
 
-        $certManager = new CertManager('crt', 'key', $ioStub);
-
         $tplManager = new TwigTemplateManager(
             array(dirname(dirname(dirname(__DIR__))).'/views')
         );
-        $this->service = new IndieCertService($storage, $certManager, $tplManager, $client, $ioStub);
+        $this->service = new IndieCertService($storage, $tplManager, $client, $ioStub);
         $this->service->getPluginRegistry()->registerOptionalPlugin(new TlsAuthentication());
     }
 
