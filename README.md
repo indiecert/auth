@@ -1,4 +1,4 @@
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/fkooman/indiecert/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/fkooman/indiecert/?branch=master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/indiecert/auth/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/indiecert/auth/?branch=master)
 
 # Introduction
 IndieCert is an authentication service using client certificates.
@@ -51,7 +51,7 @@ account is called `fkooman` in group `fkooman`.
     $ cd /var/www
     $ sudo mkdir indiecert
     $ sudo chown fkooman.fkooman indiecert
-    $ git clone https://github.com/fkooman/indiecert.git
+    $ git clone https://github.com/indiecert/auth.git
     $ cd indiecert
     $ /path/to/composer.phar install
     $ mkdir -p data
