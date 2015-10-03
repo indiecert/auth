@@ -8,6 +8,7 @@
 
 [PdoStorage]
 dsn = "sqlite:/var/lib/indiecert-auth/storage.sqlite"
+;dsn = "sqlite:/var/www/indiecert-auth/data/storage.sqlite"
 ;dsn = "mysql:host=localhost;dbname=indiecert"
 ;username = "indiecert"
 ;password = "s3cr3t"
