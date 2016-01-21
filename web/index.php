@@ -80,15 +80,14 @@ try {
 
     $authenticationPlugin = new AuthenticationPlugin();
     $authenticationPlugin->register($indieAuth, 'indieauth');
-    //$authenticationPlugin->register(new TlsAuthentication(), 'user');
-    $authenticationPlugin->register(new DummyAuthentication('foo'), 'user');
+    $authenticationPlugin->register(new TlsAuthentication(), 'user');
+    //$authenticationPlugin->register(new DummyAuthentication('foo'), 'user');
 
     $service->getPluginRegistry()->registerDefaultPlugin($authenticationPlugin);
 
     $service->run($request)->send();
 } catch (Exception $e) {
     // internal server error
-    echo $e->getRequest();
     error_log($e->__toString());
     $e = new InternalServerErrorException($e->getMessage());
     $e->getHtmlResponse()->send();
