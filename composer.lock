@@ -4,7 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "0bae91cd210807dae4c45bf15b5bc0a4",
+    "hash": "c5c004b94e8696405c7d9f891503c8b3",
+    "content-hash": "6f8c8a08d04bd92a4ca6e088cbff3a36",
     "packages": [
         {
             "name": "fkooman/base64",
@@ -45,16 +46,16 @@
         },
         {
             "name": "fkooman/http",
-            "version": "1.0.1",
+            "version": "1.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fkooman/php-lib-http.git",
-                "reference": "0069355d4797fe51b358e9386d4c6c261a7f0880"
+                "reference": "f43078dadb881468c182b436917077f2a9e51b0b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fkooman/php-lib-http/zipball/0069355d4797fe51b358e9386d4c6c261a7f0880",
-                "reference": "0069355d4797fe51b358e9386d4c6c261a7f0880",
+                "url": "https://api.github.com/repos/fkooman/php-lib-http/zipball/f43078dadb881468c182b436917077f2a9e51b0b",
+                "reference": "f43078dadb881468c182b436917077f2a9e51b0b",
                 "shasum": ""
             },
             "require": {
@@ -85,7 +86,7 @@
                 }
             ],
             "description": "Simple PHP library for dealing with HTTP requests and responses.",
-            "time": "2015-09-07 20:18:19"
+            "time": "2015-12-22 12:27:38"
         },
         {
             "name": "fkooman/ini",
@@ -127,16 +128,16 @@
         },
         {
             "name": "fkooman/io",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fkooman/php-lib-io.git",
-                "reference": "c529a4815a4534c3118bc248e419c2e06f5bed5c"
+                "reference": "0c2d8c49b1e37b9e3593c9e8dc51f4abc0c6712a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fkooman/php-lib-io/zipball/c529a4815a4534c3118bc248e419c2e06f5bed5c",
-                "reference": "c529a4815a4534c3118bc248e419c2e06f5bed5c",
+                "url": "https://api.github.com/repos/fkooman/php-lib-io/zipball/0c2d8c49b1e37b9e3593c9e8dc51f4abc0c6712a",
+                "reference": "0c2d8c49b1e37b9e3593c9e8dc51f4abc0c6712a",
                 "shasum": ""
             },
             "require": {
@@ -162,7 +163,7 @@
                 }
             ],
             "description": "Simple IO library",
-            "time": "2015-07-21 15:48:18"
+            "time": "2015-10-03 11:35:44"
         },
         {
             "name": "fkooman/json",
@@ -205,22 +206,22 @@
         },
         {
             "name": "fkooman/rest",
-            "version": "1.0.4",
+            "version": "1.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fkooman/php-lib-rest.git",
-                "reference": "bccb1f3725a7b05bc76db5283d752e9eb7bc28b7"
+                "reference": "17930fcdd581743528448d37d3f9c70c0fb0e63f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fkooman/php-lib-rest/zipball/bccb1f3725a7b05bc76db5283d752e9eb7bc28b7",
-                "reference": "bccb1f3725a7b05bc76db5283d752e9eb7bc28b7",
+                "url": "https://api.github.com/repos/fkooman/php-lib-rest/zipball/17930fcdd581743528448d37d3f9c70c0fb0e63f",
+                "reference": "17930fcdd581743528448d37d3f9c70c0fb0e63f",
                 "shasum": ""
             },
             "require": {
                 "ext-pcre": "*",
                 "ext-spl": "*",
-                "fkooman/http": "^1.0.0",
+                "fkooman/http": "^1.1.0",
                 "php": ">=5.3.0"
             },
             "suggest": {
@@ -244,20 +245,20 @@
                 }
             ],
             "description": "Simple PHP library for writing REST services.",
-            "time": "2015-09-07 20:51:18"
+            "time": "2015-12-24 23:27:13"
         },
         {
             "name": "fkooman/rest-plugin-authentication",
-            "version": "1.0.1",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fkooman/php-lib-rest-plugin-authentication.git",
-                "reference": "058406d6a569e2fdbfb7899a4ba1d9720b7f70f0"
+                "reference": "262fbdba24cf1c5b02016dafc65e9fff37fa6cd0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fkooman/php-lib-rest-plugin-authentication/zipball/058406d6a569e2fdbfb7899a4ba1d9720b7f70f0",
-                "reference": "058406d6a569e2fdbfb7899a4ba1d9720b7f70f0",
+                "url": "https://api.github.com/repos/fkooman/php-lib-rest-plugin-authentication/zipball/262fbdba24cf1c5b02016dafc65e9fff37fa6cd0",
+                "reference": "262fbdba24cf1c5b02016dafc65e9fff37fa6cd0",
                 "shasum": ""
             },
             "require": {
@@ -268,6 +269,7 @@
             "suggest": {
                 "fkooman/rest-plugin-authentication-basic": "Basic Authentication plugin",
                 "fkooman/rest-plugin-authentication-bearer": "Bearer (OAuth) Authentication plugin",
+                "fkooman/rest-plugin-authentication-form": "HTML Form Authentication Plugin",
                 "fkooman/rest-plugin-authentication-indieauth": "IndieAuth Authentication plugin",
                 "fkooman/rest-plugin-authentication-mellon": "Mellon (SAML) Authentication plugin",
                 "fkooman/rest-plugin-authentication-tls": "TLS Client Certificate Authentication plugin"
@@ -290,20 +292,20 @@
                 }
             ],
             "description": "Authentication plugin for fkooman/rest",
-            "time": "2015-09-12 13:27:40"
+            "time": "2015-11-19 12:28:26"
         },
         {
             "name": "fkooman/rest-plugin-authentication-indieauth",
-            "version": "1.0.1",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fkooman/php-lib-rest-plugin-authentication-indieauth.git",
-                "reference": "4245db984de87bc62f036c15c9a58699166f8692"
+                "reference": "bca87c77c80664b056f87c7ffe360ff8f4f08fca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fkooman/php-lib-rest-plugin-authentication-indieauth/zipball/4245db984de87bc62f036c15c9a58699166f8692",
-                "reference": "4245db984de87bc62f036c15c9a58699166f8692",
+                "url": "https://api.github.com/repos/fkooman/php-lib-rest-plugin-authentication-indieauth/zipball/bca87c77c80664b056f87c7ffe360ff8f4f08fca",
+                "reference": "bca87c77c80664b056f87c7ffe360ff8f4f08fca",
                 "shasum": ""
             },
             "require": {
@@ -314,7 +316,8 @@
                 "ext-spl": "*",
                 "fkooman/io": "^1.0.0",
                 "fkooman/rest": "^1.0.1",
-                "fkooman/rest-plugin-authentication": "^1.0.0",
+                "fkooman/rest-plugin-authentication": "^2.0.0",
+                "fkooman/tpl": "^2.0.0",
                 "guzzlehttp/guzzle": "~5.3",
                 "php": ">=5.3.0"
             },
@@ -336,27 +339,27 @@
                 }
             ],
             "description": "IndieAuth plugin for fkooman/rest",
-            "time": "2015-09-21 10:09:59"
+            "time": "2016-01-19 14:50:02"
         },
         {
             "name": "fkooman/rest-plugin-authentication-tls",
-            "version": "1.0.1",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fkooman/php-lib-rest-plugin-authentication-tls.git",
-                "reference": "dbb6659703598b89cc26705c52eb93c442e209cd"
+                "reference": "8767ba378f276c036a65e9d1a78f531a166d93a4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fkooman/php-lib-rest-plugin-authentication-tls/zipball/dbb6659703598b89cc26705c52eb93c442e209cd",
-                "reference": "dbb6659703598b89cc26705c52eb93c442e209cd",
+                "url": "https://api.github.com/repos/fkooman/php-lib-rest-plugin-authentication-tls/zipball/8767ba378f276c036a65e9d1a78f531a166d93a4",
+                "reference": "8767ba378f276c036a65e9d1a78f531a166d93a4",
                 "shasum": ""
             },
             "require": {
                 "fkooman/base64": "^1.0.0",
                 "fkooman/rest": "^1.0.0",
-                "fkooman/rest-plugin-authentication": "^1.0.0",
-                "php": ">=5.4"
+                "fkooman/rest-plugin-authentication": "^2.0.0",
+                "php": ">=5.3.0"
             },
             "type": "library",
             "autoload": {
@@ -376,7 +379,7 @@
                 }
             ],
             "description": "TLS Client Certificate Authentication plugin for fkooman/rest",
-            "time": "2015-09-07 11:12:40"
+            "time": "2015-11-19 12:37:47"
         },
         {
             "name": "fkooman/tpl",
@@ -416,16 +419,16 @@
         },
         {
             "name": "fkooman/tpl-twig",
-            "version": "1.0.0",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fkooman/php-lib-tpl-twig.git",
-                "reference": "02c3e0e0a568990b54107f1f8dcf05216388aea2"
+                "reference": "c1f50f49ffe430b12e36c2a8e5441cd87830484a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fkooman/php-lib-tpl-twig/zipball/02c3e0e0a568990b54107f1f8dcf05216388aea2",
-                "reference": "02c3e0e0a568990b54107f1f8dcf05216388aea2",
+                "url": "https://api.github.com/repos/fkooman/php-lib-tpl-twig/zipball/c1f50f49ffe430b12e36c2a8e5441cd87830484a",
+                "reference": "c1f50f49ffe430b12e36c2a8e5441cd87830484a",
                 "shasum": ""
             },
             "require": {
@@ -451,7 +454,7 @@
                 }
             ],
             "description": "Twig for Simple Template Abstraction Library",
-            "time": "2015-08-10 11:08:23"
+            "time": "2015-12-17 20:20:16"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -658,16 +661,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v1.22.2",
+            "version": "v1.23.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "79249fc8c9ff62e41e217e0c630e2e00bcadda6a"
+                "reference": "ae53fc2c312fdee63773b75cb570304f85388b08"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/79249fc8c9ff62e41e217e0c630e2e00bcadda6a",
-                "reference": "79249fc8c9ff62e41e217e0c630e2e00bcadda6a",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/ae53fc2c312fdee63773b75cb570304f85388b08",
+                "reference": "ae53fc2c312fdee63773b75cb570304f85388b08",
                 "shasum": ""
             },
             "require": {
@@ -680,7 +683,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.22-dev"
+                    "dev-master": "1.23-dev"
                 }
             },
             "autoload": {
@@ -715,13 +718,15 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2015-09-22 13:59:32"
+            "time": "2016-01-11 14:02:19"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "fkooman/rest-plugin-authentication-indieauth": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

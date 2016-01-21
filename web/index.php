@@ -59,15 +59,14 @@ $templateManager = new TwigTemplateManager(
 
 $request = new Request($_SERVER);
 
-$indieAuth = new IndieAuthAuthentication($request->getUrl()->getRootUrl().'auth');
-$indieAuth->setClient($client);
-$indieAuth->setDiscovery(false);
-$indieAuth->setUnauthorizedRedirectUri('/login');
+$indieAuth = new IndieAuthAuthentication($templateManager, $client);
+$indieAuth->setAuthUri($request->getUrl()->getRootUrl().'auth');
 
 $service = new IndieCertService($db, $templateManager, $client);
-$service->getPluginRegistry()->registerOptionalPlugin(
-    new TlsAuthentication()
-);
-$service->getPluginRegistry()->registerOptionalPlugin($indieAuth);
+
+$authenticationPlugin = new AuthenticationPlugin();
+$authenticationPlugin->register($indieAuth, 'indieauth');
+$authenticationPlugin->register(new TlsAuthentication(), 'tls');
+$service->getPluginRegistry()->registerDefaultPlugin($authenticationPlugin);
 
 $service->run($request)->send();

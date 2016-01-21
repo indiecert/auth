@@ -16,6 +16,8 @@
  */
 namespace fkooman\IndieCert\Auth;
 
+require_once __DIR__.'/Test/TestTemplateManager.php';
+
 use PDO;
 use PHPUnit_Framework_TestCase;
 use fkooman\Http\Request;
@@ -25,6 +27,8 @@ use GuzzleHttp\Subscriber\Mock;
 use GuzzleHttp\Message\Response;
 use GuzzleHttp\Stream\Stream;
 use fkooman\Tpl\Twig\TwigTemplateManager;
+use fkooman\Rest\Plugin\Authentication\AuthenticationPlugin;
+use fkooman\IndieCert\Test\TestTemplateManager;
 
 class IndieCertServiceTest extends PHPUnit_Framework_TestCase
 {
@@ -62,11 +66,11 @@ class IndieCertServiceTest extends PHPUnit_Framework_TestCase
         );
         $client->getEmitter()->attach($mock);
 
-        $tplManager = new TwigTemplateManager(
-            array(dirname(dirname(dirname(__DIR__))).'/views')
-        );
+        $tplManager = new TestTemplateManager();
         $this->service = new IndieCertService($storage, $tplManager, $client, $ioStub);
-        $this->service->getPluginRegistry()->registerOptionalPlugin(new TlsAuthentication());
+        $ap = new AuthenticationPlugin();
+        $ap->register(new TlsAuthentication(), 'tls');
+        $this->service->getPluginRegistry()->registerDefaultPlugin($ap);
     }
 
     public function testAuthRequest()
@@ -118,8 +122,9 @@ class IndieCertServiceTest extends PHPUnit_Framework_TestCase
             array(
                 'HTTP/1.1 200 OK',
                 'Content-Type: text/html;charset=UTF-8',
+                'Content-Length: 336',
                 '',
-                file_get_contents($this->dataDir.'/askAuthorization.html'),
+                '{"askConfirmation":{"confirmUri":"confirm?client_id=https:\/\/www.client.example\/client\/&redirect_uri=https:\/\/www.client.example\/client\/callback&me=https:\/\/me.example\/&state=12345","me":"https:\/\/me.example\/","clientId":"https:\/\/www.client.example\/client\/","redirectUri":"https:\/\/www.client.example\/client\/callback"}}'
             ),
             $response->toArray()
         );
