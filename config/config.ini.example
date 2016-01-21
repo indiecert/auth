@@ -1,7 +1,6 @@
-; Disable the certificate check when requesting remote resources
-; THIS IS ONLY FOR DEVELOPMENT PURPOSES. DO NOT DISABLE THIS FOR DEPLOYMENT 
-; YOU HAVE BEEN WARNED!!!
-;disableServerCertCheck = true
+; Set the server mode. When set to 'development', the HTTP session is allowed
+; to be sent of HTTP and the TLS certificate check is disabled.
+serverMode = production
 
 ; Uncomment this line below to enable Twig template caching
 ;templateCache = "/var/lib/indiecert-auth/tpl"

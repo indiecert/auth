@@ -17,7 +17,7 @@
             Please provide your domain name.
         </p>
 
-        <form class="authenticate" method="post" action="_indieauth/auth">
+        <form class="authenticate" method="post" action="_auth/indieauth/auth">
             <input required type="text" name="me" placeholder="yourdomain.com">
             <input type="hidden" name="redirect_to" value="{{ redirect_to|e }}">
             <input class="info" type="submit" value="Sign In">

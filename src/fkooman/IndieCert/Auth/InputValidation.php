@@ -65,9 +65,9 @@ class InputValidation
             throw new BadRequestException(sprintf('"%s" is an invalid URL', $fieldName));
         }
 
-        if ('https' !== parse_url($uri, PHP_URL_SCHEME)) {
-            throw new BadRequestException(sprintf('"%s" MUST be a https URL', $fieldName));
-        }
+#        if ('https' !== parse_url($uri, PHP_URL_SCHEME)) {
+#            throw new BadRequestException(sprintf('"%s" MUST be a https URL', $fieldName));
+#        }
 
         if (null !== parse_url($uri, PHP_URL_FRAGMENT)) {
             throw new BadRequestException(sprintf('"%s" MUST NOT contain fragment', $fieldName));

@@ -26,7 +26,7 @@ use GuzzleHttp\Client;
 use fkooman\Http\RedirectResponse;
 use fkooman\Http\Exception\BadRequestException;
 use fkooman\Rest\Plugin\Authentication\IndieAuth\IndieInfo;
-use fkooman\Rest\Plugin\Authentication\Tls\CertInfo;
+use fkooman\Rest\Plugin\Authentication\UserInfoInterface;
 use fkooman\Tpl\TemplateManagerInterface;
 
 class IndieCertService extends Service
@@ -67,44 +67,58 @@ class IndieCertService extends Service
             '/',
             function (Request $request) {
                 return $this->getIndex($request);
-            }
+            },
+            array(
+                'fkooman\Rest\Plugin\Authentication\AuthenticationPlugin' => array(
+                    'enabled' => false,
+                ),
+            )
         );
 
         $this->get(
             '/faq',
             function (Request $request) {
                 return $this->getFaq($request);
-            }
+            },
+            array(
+                'fkooman\Rest\Plugin\Authentication\AuthenticationPlugin' => array(
+                    'enabled' => false,
+                ),
+            )
         );
 
         $this->get(
             '/rp',
             function (Request $request) {
                 return $this->getRp($request);
-            }
+            },
+            array(
+                'fkooman\Rest\Plugin\Authentication\AuthenticationPlugin' => array(
+                    'enabled' => false,
+                ),
+            )
         );
 
         $this->get(
             '/auth',
-            function (Request $request, CertInfo $certInfo = null) {
-                return $this->getAuth($request, $certInfo);
+            function (Request $request, UserInfoInterface $userInfo) {
+                return $this->getAuth($request, $userInfo);
             },
             array(
-                'fkooman\Rest\Plugin\Authentication\Tls\TlsAuthentication' => array(
-                    'enabled' => true,
-                    'require' => false,
+                'fkooman\Rest\Plugin\Authentication\AuthenticationPlugin' => array(
+                    'activate' => array('user'),
                 ),
             )
         );
 
         $this->post(
             '/confirm',
-            function (Request $request, CertInfo $certInfo) {
-                return $this->postConfirm($request, $certInfo);
+            function (Request $request, UserInfoInterface $userInfo) {
+                return $this->postConfirm($request, $userInfo);
             },
             array(
-                'fkooman\Rest\Plugin\Authentication\Tls\TlsAuthentication' => array(
-                    'enabled' => true,
+                'fkooman\Rest\Plugin\Authentication\AuthenticationPlugin' => array(
+                    'activate' => array('user'),
                 ),
             )
         );
@@ -114,14 +128,24 @@ class IndieCertService extends Service
             '/auth',
             function (Request $request) {
                 return $this->postAuth($request);
-            }
+            },
+            array(
+                'fkooman\Rest\Plugin\Authentication\AuthenticationPlugin' => array(
+                    'enabled' => false,
+                ),
+            )
         );
 
         $this->get(
             '/login',
             function (Request $request) {
                 return $this->getLogin($request);
-            }
+            },
+            array(
+                'fkooman\Rest\Plugin\Authentication\AuthenticationPlugin' => array(
+                    'enabled' => false,
+                ),
+            )
         );
 
         $this->get(
@@ -130,8 +154,8 @@ class IndieCertService extends Service
                 return $this->getAccount($indieInfo);
             },
             array(
-                'fkooman\Rest\Plugin\Authentication\IndieAuth\IndieAuthAuthentication' => array(
-                    'enabled' => true,
+                'fkooman\Rest\Plugin\Authentication\AuthenticationPlugin' => array(
+                    'activate' => array('indieauth'),
                 ),
             )
         );
@@ -139,19 +163,12 @@ class IndieCertService extends Service
 
     private function getIndex(Request $request)
     {
-        $redirectUri = $request->getUrl()->getRootUrl().'cb';
-
-        $response = new Response();
-        $response->setBody(
-            $this->templateManager->render(
-                'indexPage',
-                array(
-                    'redirect_uri' => $redirectUri,
-                )
+        return $this->templateManager->render(
+            'indexPage',
+            array(
+                'rootUrl' => $request->getUrl()->getRootUrl(),
             )
         );
-
-        return $response;
     }
 
     private function getFaq(Request $request)
@@ -208,7 +225,7 @@ class IndieCertService extends Service
         return $response;
     }
 
-    private function getAuth(Request $request, CertInfo $certInfo = null)
+    private function getAuth(Request $request, UserInfoInterface $userInfo = null)
     {
         $me = InputValidation::validateMe($request->getUrl()->getQueryParameter('me'));
         $clientId = InputValidation::validateUri($request->getUrl()->getQueryParameter('client_id'), 'client_id');
@@ -219,7 +236,7 @@ class IndieCertService extends Service
             throw new BadRequestException('invalid_request', 'client_id must have same host as redirect_uri');
         }
 
-        if (null === $certInfo) {
+        if (null === $userInfo) {
             return $this->templateManager->render(
                 'noCert',
                 array(
@@ -229,7 +246,7 @@ class IndieCertService extends Service
         }
 
         $certificateValidator = new CertificateValidator($this->client);
-        if (false === $certificateValidator->hasFingerprint($me, $certInfo->getUserId())) {
+        if (false === $certificateValidator->hasFingerprint($me, $userInfo->getUserId())) {
             $authorizationEndpoint = $request->getUrl()->getRootUrl().'auth';
 
             $response = new Response();
@@ -238,7 +255,7 @@ class IndieCertService extends Service
                     'missingFingerprint',
                     array(
                         'me' => $me,
-                        'certFingerprint' => $certInfo->getUserId(),
+                        'certFingerprint' => $userInfo->getUserId(),
                         'authorizationEndpoint' => $authorizationEndpoint,
                     )
                 )
@@ -293,14 +310,14 @@ class IndieCertService extends Service
         return $this->indieCodeRedirect($me, $clientId, $redirectUri, $state);
     }
 
-    private function postConfirm(Request $request, CertInfo $certInfo)
+    private function postConfirm(Request $request, UserInfoInterface $userInfo)
     {
         $me = InputValidation::validateMe($request->getUrl()->getQueryParameter('me'));
         $clientId = InputValidation::validateUri($request->getUrl()->getQueryParameter('client_id'), 'client_id');
         $redirectUri = InputValidation::validateUri($request->getUrl()->getQueryParameter('redirect_uri'), 'redirect_uri');
         $state = InputValidation::validateState($request->getUrl()->getQueryParameter('state'));
 
-        if (null === $certInfo) {
+        if (null === $userInfo) {
             $response = new Response();
             $response->setBody(
                 $this->templateManager->render(
@@ -327,7 +344,7 @@ class IndieCertService extends Service
         if (!$confirmedFingerprint) {
             $certificateValidator = new CertificateValidator($this->client);
 
-            if (false === $certificateValidator->hasFingerprint($me, $certInfo->getUserId())) {
+            if (false === $certificateValidator->hasFingerprint($me, $userInfo->getUserId())) {
                 $authorizationEndpoint = $request->getUrl()->getRootUrl().'auth';
 
                 $response = new Response();
@@ -336,7 +353,7 @@ class IndieCertService extends Service
                         'missingFingerprint',
                         array(
                             'me' => $me,
-                            'certFingerprint' => $certInfo->getUserId(),
+                            'certFingerprint' => $userInfo->getUserId(),
                             'authorizationEndpoint' => $authorizationEndpoint,
                         )
                     )

@@ -21,52 +21,75 @@ use fkooman\IndieCert\Auth\IndieCertService;
 use fkooman\IndieCert\Auth\PdoStorage;
 use fkooman\Tpl\Twig\TwigTemplateManager;
 use fkooman\Ini\IniReader;
+use fkooman\Rest\Plugin\Authentication\AuthenticationPlugin;
 use fkooman\Rest\Plugin\Authentication\IndieAuth\IndieAuthAuthentication;
 use fkooman\Rest\Plugin\Authentication\Tls\TlsAuthentication;
+use fkooman\Rest\Plugin\Authentication\Dummy\DummyAuthentication;
 use GuzzleHttp\Client;
+use fkooman\Http\Session;
+use fkooman\Http\Exception\InternalServerErrorException;
 
-$iniReader = IniReader::fromFile(
-    dirname(__DIR__).'/config/config.ini'
-);
+try {
+    $iniReader = IniReader::fromFile(
+        dirname(__DIR__).'/config/config.ini'
+    );
 
-// PdoStorage
-$pdo = new PDO(
-    $iniReader->v('PdoStorage', 'dsn'),
-    $iniReader->v('PdoStorage', 'username', false),
-    $iniReader->v('PdoStorage', 'password', false)
-);
-$db = new PdoStorage($pdo);
+    $serverMode = $iniReader->v('serverMode', false, 'production');
 
-// Guzzle
-$disableServerCertCheck = $iniReader->v('disableServerCertCheck', false, false);
-$client = new Client(
-    array(
-        'defaults' => array(
-            'verify' => !$disableServerCertCheck,
-            'timeout' => 10,
+    // PdoStorage
+    $pdo = new PDO(
+        $iniReader->v('PdoStorage', 'dsn'),
+        $iniReader->v('PdoStorage', 'username', false),
+        $iniReader->v('PdoStorage', 'password', false)
+    );
+    $db = new PdoStorage($pdo);
+
+    // Guzzle
+    $client = new Client(
+        array(
+            'defaults' => array(
+                'verify' => 'development' !== $serverMode,
+                'timeout' => 10,
+            ),
+        )
+    );
+
+    // TemplateManager
+    $templateManager = new TwigTemplateManager(
+        array(
+            dirname(__DIR__).'/views',
+            dirname(__DIR__).'/config/views',
         ),
-    )
-);
+        $iniReader->v('templateCache', false, null)
+    );
 
-// TemplateManager
-$templateManager = new TwigTemplateManager(
-    array(
-        dirname(__DIR__).'/views',
-        dirname(__DIR__).'/config/views',
-    ),
-    $iniReader->v('templateCache', false, null)
-);
+    $session = new Session();
 
-$request = new Request($_SERVER);
+    $session = new Session(
+        'indiecert-auth',
+        array(
+            'secure' => 'development' !== $serverMode,
+        )
+    );
 
-$indieAuth = new IndieAuthAuthentication($templateManager, $client);
-$indieAuth->setAuthUri($request->getUrl()->getRootUrl().'auth');
+    $request = new Request($_SERVER);
+    $indieAuth = new IndieAuthAuthentication($templateManager, $client, $session);
+    $indieAuth->setAuthUri($request->getUrl()->getRootUrl().'auth');
 
-$service = new IndieCertService($db, $templateManager, $client);
+    $service = new IndieCertService($db, $templateManager, $client);
 
-$authenticationPlugin = new AuthenticationPlugin();
-$authenticationPlugin->register($indieAuth, 'indieauth');
-$authenticationPlugin->register(new TlsAuthentication(), 'tls');
-$service->getPluginRegistry()->registerDefaultPlugin($authenticationPlugin);
+    $authenticationPlugin = new AuthenticationPlugin();
+    $authenticationPlugin->register($indieAuth, 'indieauth');
+    //$authenticationPlugin->register(new TlsAuthentication(), 'user');
+    $authenticationPlugin->register(new DummyAuthentication('foo'), 'user');
 
-$service->run($request)->send();
+    $service->getPluginRegistry()->registerDefaultPlugin($authenticationPlugin);
+
+    $service->run($request)->send();
+} catch (Exception $e) {
+    // internal server error
+    echo $e->getRequest();
+    error_log($e->__toString());
+    $e = new InternalServerErrorException($e->getMessage());
+    $e->getHtmlResponse()->send();
+}

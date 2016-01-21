@@ -26,7 +26,6 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Subscriber\Mock;
 use GuzzleHttp\Message\Response;
 use GuzzleHttp\Stream\Stream;
-use fkooman\Tpl\Twig\TwigTemplateManager;
 use fkooman\Rest\Plugin\Authentication\AuthenticationPlugin;
 use fkooman\IndieCert\Test\TestTemplateManager;
 
@@ -69,7 +68,7 @@ class IndieCertServiceTest extends PHPUnit_Framework_TestCase
         $tplManager = new TestTemplateManager();
         $this->service = new IndieCertService($storage, $tplManager, $client, $ioStub);
         $ap = new AuthenticationPlugin();
-        $ap->register(new TlsAuthentication(), 'tls');
+        $ap->register(new TlsAuthentication(), 'user');
         $this->service->getPluginRegistry()->registerDefaultPlugin($ap);
     }
 
@@ -124,7 +123,7 @@ class IndieCertServiceTest extends PHPUnit_Framework_TestCase
                 'Content-Type: text/html;charset=UTF-8',
                 'Content-Length: 336',
                 '',
-                '{"askConfirmation":{"confirmUri":"confirm?client_id=https:\/\/www.client.example\/client\/&redirect_uri=https:\/\/www.client.example\/client\/callback&me=https:\/\/me.example\/&state=12345","me":"https:\/\/me.example\/","clientId":"https:\/\/www.client.example\/client\/","redirectUri":"https:\/\/www.client.example\/client\/callback"}}'
+                '{"askConfirmation":{"confirmUri":"confirm?client_id=https:\/\/www.client.example\/client\/&redirect_uri=https:\/\/www.client.example\/client\/callback&me=https:\/\/me.example\/&state=12345","me":"https:\/\/me.example\/","clientId":"https:\/\/www.client.example\/client\/","redirectUri":"https:\/\/www.client.example\/client\/callback"}}',
             ),
             $response->toArray()
         );
