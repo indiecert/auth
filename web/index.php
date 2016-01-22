@@ -64,7 +64,7 @@ try {
     $service = new IndieCertService($pdoStorage, $templateManager, $client);
     $authenticationPlugin = new AuthenticationPlugin();
     $authenticationPlugin->register(new TlsAuthentication(), 'user');
-    //$authenticationPlugin->register(new DummyAuthentication('foo'), 'user');
+    #$authenticationPlugin->register(new DummyAuthentication('foo'), 'user');
     $service->getPluginRegistry()->registerDefaultPlugin($authenticationPlugin);
     $service->run()->send();
 } catch (Exception $e) {

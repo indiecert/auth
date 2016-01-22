@@ -48,6 +48,13 @@ p.plain {
     border-radius: 0.2em;
 }
 
+p.warning {
+    background-color: #e91;
+    padding: 1em;
+    border-radius: 0.2em;
+    color: #fff;
+}
+
 code {
     color: #c24;
     background-color: #eee;
@@ -201,6 +208,12 @@ th {
     border-bottom: 2px solid #ddd;
 }
 
+/** FOOTNOTES **/
+ol.footnote {
+    font-size: 85%;
+    color: #888;
+}
+
 /** FOOTER **/   
 hr { 
     border: 0; 
@@ -209,5 +222,9 @@ hr {
 p.footer {
     text-align: center;
     font-size: 85%;
+    color: #888;
+}
+
+p.footer a {
     color: #888;
 }
