@@ -80,12 +80,13 @@ class IndieCertService extends Service
 
         $this->get(
             '/auth',
-            function (Request $request, UserInfoInterface $userInfo) {
+            function (Request $request, UserInfoInterface $userInfo = null) {
                 return $this->getAuth($request, $userInfo);
             },
             array(
                 'fkooman\Rest\Plugin\Authentication\AuthenticationPlugin' => array(
                     'activate' => array('user'),
+                    'required' => false
                 ),
             )
         );
