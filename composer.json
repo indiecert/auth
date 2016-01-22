@@ -15,10 +15,16 @@
         "ext-pcre": "*",
         "ext-pdo": "*",
         "fkooman/config": "^1.0.0",
+        "fkooman/http": "^1.0.0",
         "fkooman/io": "^1.0.0",
         "fkooman/rest": "^1.0.1",
+        "fkooman/rest-plugin-authentication": "^2.0.0",
         "fkooman/rest-plugin-authentication-tls": "^2.0.0",
+        "fkooman/tpl": "^2.0.0",
         "fkooman/tpl-twig": "^1.0.0",
         "guzzlehttp/guzzle": "~5.3"
+    },
+    "require-dev": {
+        "fkooman/json": "^1.0.0"
     }
 }
