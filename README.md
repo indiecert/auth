@@ -24,25 +24,16 @@ Restart Apache:
 # Configuration
 Initialize the database, by default this is SQLite. If you want to use any 
 other database please first modify the configuration file
-`/etc/indiecert-auth/config.ini`.
+`/etc/indiecert-auth/config.yaml`.
 
-    $ sudo -u apache indiecert-auth-init-db
+    $ sudo -u apache indiecert-auth-init
 
 # Production Deployment
 In case you want to deploy IndieCert in production, you SHOULD use the RPM 
 packages mentioned above, or build them yourself. 
 
 The default (Apache) configuration will make IndieCert available under the 
-`indiecert-auth` sub folder. If you want to deploy IndieCert on the root of a 
-domain, please check the `Dockerfile` on the `indiecert/docker` GitHub project.
-It shows exactly what you should do on production environments, except disable 
-the certificate check. It is used by the `indiecert.net` instance.
-
-You can also run the Docker image in production, provided you mount 
-`/var/lib/indiecert-auth` somewhere in the host before starting the container 
-to be able to retain the data when the Docker image updates.
-
-Also, make sure you apply security updates to your host and docker image!
+`indiecert-auth` sub folder.
 
 # Development
 We assume that your web server runs under the `apache` user and your user 
@@ -58,11 +49,11 @@ account is called `fkooman` in group `fkooman`.
     $ sudo chown -R apache.apache data
     $ sudo semanage fcontext -a -t httpd_sys_rw_content_t '/var/www/indiecert-auth/data(/.*)?'
     $ sudo restorecon -R /var/www/indiecert-auth/data
-    $ cp config/config.ini.example config/config.ini
+    $ cp config/config.yaml.example config/config.yaml
 
 Now to initialize the database:
 
-    $ sudo -u apache bin/indiecert-auth-init-db
+    $ sudo -u apache bin/init
 
 # License
 Licensed under the GNU Affero General Public License as published by the Free 
