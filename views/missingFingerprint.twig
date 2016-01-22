@@ -1,25 +1,24 @@
 <!DOCTYPE html>
 
 <html lang="en">
-{% include 'head.html' %}
+{% include 'head.twig' %}
 <body>
-    <div id="container">
-        <a class="header" href="."><h1>IndieCert</h1></a>
+    {% include 'header.twig' %}
 
-        <p class="warn">
-            IndieCert was unable to find a matching fingerprint on your claimed URL
-        </p>
+    <p class="warning">
+        IndieCert was unable to find a matching fingerprint on your claimed URL
+    </p>
 
-        <p>
-            You claimed the identity <code>{{ me|e }}</code>, but IndieCert was unable to
-            find the fingerprint of the certificate you are currently authenticated with
-            on this page.
-        </p>
+    <p>
+        You claimed the identity <code>{{ me|e }}</code>, but IndieCert was unable to
+        find the fingerprint of the certificate you are currently authenticated with
+        on this page.
+    </p>
 
-        <p>
-            You can easily fix this by placing the following fragment in the
-            <code>&lt;head&gt;</code> section of your HTML page:
-        </p>
+    <p>
+        You can easily fix this by placing the following fragment in the
+        <code>&lt;head&gt;</code> section of your HTML page:
+    </p>
 
 <pre>
 &lt;html&gt;
@@ -34,11 +33,11 @@
 &lt;/html&gt;
 </pre>
 
-        <p>
-            If you also want to use this instance as your IndieAuth provider for relying
-            parties supporting "Distributed IndieAuth" you can add the following to your
-            HTML page as well:
-        </p>
+    <p>
+        If you also want to use this instance as your IndieAuth provider for relying
+        parties supporting "Distributed IndieAuth" you can add the following to your
+        HTML page as well:
+    </p>
 
 <pre>
 &lt;html&gt;
@@ -53,12 +52,11 @@
 &lt;/html&gt;
 </pre>
 
-        <p>
-            When done, you can <a href="">reload</a> this page and you should be
-            redirected to the service that was requesting authentication and be logged in.
-        </p>
+    <p>
+        When done, you can <a href="">reload</a> this page and you should be
+        redirected to the service that was requesting authentication and be logged in.
+    </p>
 
-        {% include 'footer.html' %}
-    </div> <!-- /container -->
+    {% include 'footer.twig' %}
 </body>
 </html>

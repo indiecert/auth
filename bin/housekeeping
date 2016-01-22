@@ -15,26 +15,25 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 require_once dirname(__DIR__).'/vendor/autoload.php';
 
-use fkooman\Ini\IniReader;
+use fkooman\Config\Reader;
+use fkooman\Config\YamlFile;
 use fkooman\IndieCert\Auth\PdoStorage;
 
 try {
-    $iniReader = IniReader::fromFile(
-        dirname(__DIR__).'/config/config.ini'
+    $reader = new Reader(
+        new YamlFile(dirname(__DIR__).'/config/config.yaml')
     );
 
     $db = new PDO(
-        $iniReader->v('PdoStorage', 'dsn'),
-        $iniReader->v('PdoStorage', 'username', false),
-        $iniReader->v('PdoStorage', 'password', false)
+        $reader->v('PdoStorage', 'dsn'),
+        $reader->v('PdoStorage', 'username', false),
+        $reader->v('PdoStorage', 'password', false)
     );
 
-    $storage = new PdoStorage($db);
-    $storage->deleteExpiredApprovals(time());
-    $storage->deleteExpiredCodes(time());
+    $pdoStorage = new PdoStorage($db);
+    $pdoStorage->deleteExpiredCodes(time());
 } catch (Exception $e) {
     echo $e->getMessage().PHP_EOL;
     exit(1);

@@ -1,0 +1,9 @@
+# Set the server mode. When set to 'development', the HTTP session is allowed
+# to be sent of HTTP and the TLS certificate check is disabled.
+serverMode: production
+
+# Uncomment this line below to enable Twig template caching
+#templateCache = "/var/lib/indiecert-auth/tpl"
+
+Db:
+    dsn: 'sqlite:/var/lib/indiecert-auth/storage.sqlite'

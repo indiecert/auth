@@ -18,14 +18,12 @@ namespace fkooman\IndieCert\Auth;
 
 use fkooman\IO\IO;
 use fkooman\Http\Request;
-use fkooman\Http\Response;
 use fkooman\Http\JsonResponse;
 use fkooman\Http\FormResponse;
 use fkooman\Rest\Service;
 use GuzzleHttp\Client;
 use fkooman\Http\RedirectResponse;
 use fkooman\Http\Exception\BadRequestException;
-use fkooman\Rest\Plugin\Authentication\IndieAuth\IndieInfo;
 use fkooman\Rest\Plugin\Authentication\UserInfoInterface;
 use fkooman\Tpl\TemplateManagerInterface;
 
@@ -51,46 +49,27 @@ class IndieCertService extends Service
         $this->templateManager = $templateManager;
 
         // Guzzle
-        if (null === $client) {
+        if (is_null($client)) {
             $client = new Client();
         }
         $this->client = $client;
 
         // IO
-        if (null === $io) {
+        if (is_null($io)) {
             $io = new IO();
         }
         $this->io = $io;
 
+        $this->registerRoutes();
+    }
+
+    private function registerRoutes()
+    {
         // Autentication NOT needed
         $this->get(
             '/',
             function (Request $request) {
                 return $this->getIndex($request);
-            },
-            array(
-                'fkooman\Rest\Plugin\Authentication\AuthenticationPlugin' => array(
-                    'enabled' => false,
-                ),
-            )
-        );
-
-        $this->get(
-            '/faq',
-            function (Request $request) {
-                return $this->getFaq($request);
-            },
-            array(
-                'fkooman\Rest\Plugin\Authentication\AuthenticationPlugin' => array(
-                    'enabled' => false,
-                ),
-            )
-        );
-
-        $this->get(
-            '/rp',
-            function (Request $request) {
-                return $this->getRp($request);
             },
             array(
                 'fkooman\Rest\Plugin\Authentication\AuthenticationPlugin' => array(
@@ -135,30 +114,6 @@ class IndieCertService extends Service
                 ),
             )
         );
-
-        $this->get(
-            '/login',
-            function (Request $request) {
-                return $this->getLogin($request);
-            },
-            array(
-                'fkooman\Rest\Plugin\Authentication\AuthenticationPlugin' => array(
-                    'enabled' => false,
-                ),
-            )
-        );
-
-        $this->get(
-            '/account',
-            function (IndieInfo $indieInfo) {
-                return $this->getAccount($indieInfo);
-            },
-            array(
-                'fkooman\Rest\Plugin\Authentication\AuthenticationPlugin' => array(
-                    'activate' => array('indieauth'),
-                ),
-            )
-        );
     }
 
     private function getIndex(Request $request)
@@ -171,60 +126,6 @@ class IndieCertService extends Service
         );
     }
 
-    private function getFaq(Request $request)
-    {
-        $response = new Response();
-        $response->setBody(
-            $this->templateManager->render(
-                'faqPage',
-                array()
-            )
-        );
-
-        return $response;
-    }
-
-    private function getRp(Request $request)
-    {
-        $authUri = $request->getUrl()->getRootUrl().'auth';
-        $verifyPath = $request->getUrl()->getRoot().'auth';
-        $hostName = $request->getUrl()->getHost();
-
-        $response = new Response();
-        $response->setBody(
-            $this->templateManager->render(
-                'relyingPartyPage',
-                array(
-                    'authUri' => $authUri,
-                    'verifyPath' => $verifyPath,
-                    'hostName' => $hostName,
-                )
-            )
-        );
-
-        return $response;
-    }
-
-    private function getLogin(Request $request)
-    {
-        $redirectTo = null;
-        if (null !== $request->getUrl()->getQueryParameter('redirect_to')) {
-            $redirectTo = InputValidation::validateRedirectTo($request->getUrl()->getRootUrl(), $request->getUrl()->getQueryParameter('redirect_to'));
-        }
-
-        $response = new Response();
-        $response->setBody(
-            $this->templateManager->render(
-                'loginPage',
-                array(
-                    'redirect_to' => $redirectTo,
-                )
-            )
-        );
-
-        return $response;
-    }
-
     private function getAuth(Request $request, UserInfoInterface $userInfo = null)
     {
         $me = InputValidation::validateMe($request->getUrl()->getQueryParameter('me'));
@@ -233,10 +134,10 @@ class IndieCertService extends Service
         $state = InputValidation::validateState($request->getUrl()->getQueryParameter('state'));
 
         if (false === self::sameHost($clientId, $redirectUri)) {
-            throw new BadRequestException('invalid_request', 'client_id must have same host as redirect_uri');
+            throw new BadRequestException('invalid_request', '"client_id" must have same host as "redirect_uri"');
         }
 
-        if (null === $userInfo) {
+        if (is_null($userInfo)) {
             return $this->templateManager->render(
                 'noCert',
                 array(
@@ -249,65 +150,43 @@ class IndieCertService extends Service
         if (false === $certificateValidator->hasFingerprint($me, $userInfo->getUserId())) {
             $authorizationEndpoint = $request->getUrl()->getRootUrl().'auth';
 
-            $response = new Response();
-            $response->setBody(
-                $this->templateManager->render(
-                    'missingFingerprint',
-                    array(
-                        'me' => $me,
-                        'certFingerprint' => $userInfo->getUserId(),
-                        'authorizationEndpoint' => $authorizationEndpoint,
-                    )
+            return $this->templateManager->render(
+                'missingFingerprint',
+                array(
+                    'me' => $me,
+                    'certFingerprint' => $userInfo->getUserId(),
+                    'authorizationEndpoint' => $authorizationEndpoint,
                 )
             );
-
-            return $response;
         }
 
-        $approval = $this->db->getApproval($me, $clientId, $redirectUri);
-        if (false !== $approval) {
-            // check if not expired
-            if ($this->io->getTime() >= $approval['expires_at']) {
-                $this->db->deleteApproval($me, $clientId, $redirectUri);
-                $approval = false;
-            }
+        // store in apcu cache that the verification of the fingerprint
+        // was successful, we do not have a user session to keep track of
+        // this kind of stuff
+        // XXX: is this secure?
+        if (function_exists('apc_add')) {
+            apc_add($me, true);
         }
 
-        if (false === $approval) {
-            // store in apcu cache that the verification of the fingerprint
-            // was successful, we do not have a user session to keep track of
-            // this kind of stuff
-            if (function_exists('apc_add')) {
-                apc_add($me, true);
-            }
+        // XXX: we could just get the query parameters... they were
+        // validated anyway... or can we?
+        $confirmUri = sprintf(
+            'confirm?client_id=%s&redirect_uri=%s&me=%s&state=%s',
+            $clientId,
+            $redirectUri,
+            $me,
+            $state
+        );
 
-            // FIXME: we could just get the query parameters... they were
-            // validated anyway...
-            $confirmUri = sprintf(
-                'confirm?client_id=%s&redirect_uri=%s&me=%s&state=%s',
-                $clientId,
-                $redirectUri,
-                $me,
-                $state
-            );
-
-            $response = new Response();
-            $response->setBody(
-                $this->templateManager->render(
-                    'askConfirmation',
-                    array(
-                        'confirmUri' => $confirmUri,
-                        'me' => $me,
-                        'clientId' => $clientId,
-                        'redirectUri' => $redirectUri,
-                    )
-                )
-            );
-
-            return $response;
-        }
-
-        return $this->indieCodeRedirect($me, $clientId, $redirectUri, $state);
+        return $this->templateManager->render(
+            'askConfirmation',
+            array(
+                'confirmUri' => $confirmUri,
+                'me' => $me,
+                'clientId' => $clientId,
+                'redirectUri' => $redirectUri,
+            )
+        );
     }
 
     private function postConfirm(Request $request, UserInfoInterface $userInfo)
@@ -317,18 +196,13 @@ class IndieCertService extends Service
         $redirectUri = InputValidation::validateUri($request->getUrl()->getQueryParameter('redirect_uri'), 'redirect_uri');
         $state = InputValidation::validateState($request->getUrl()->getQueryParameter('state'));
 
-        if (null === $userInfo) {
-            $response = new Response();
-            $response->setBody(
-                $this->templateManager->render(
-                    'noCert',
-                    array(
-                        'me' => $me,
-                    )
+        if (is_null($userInfo)) {
+            return $this->templateManager->render(
+                'noCert',
+                array(
+                    'me' => $me,
                 )
             );
-
-            return $response;
         }
 
         $confirmedFingerprint = false;
@@ -342,30 +216,21 @@ class IndieCertService extends Service
         }
 
         if (!$confirmedFingerprint) {
+            // XXX: move this to common function?
             $certificateValidator = new CertificateValidator($this->client);
 
             if (false === $certificateValidator->hasFingerprint($me, $userInfo->getUserId())) {
                 $authorizationEndpoint = $request->getUrl()->getRootUrl().'auth';
 
-                $response = new Response();
-                $response->setBody(
-                    $this->templateManager->render(
-                        'missingFingerprint',
-                        array(
-                            'me' => $me,
-                            'certFingerprint' => $userInfo->getUserId(),
-                            'authorizationEndpoint' => $authorizationEndpoint,
-                        )
+                return $this->templateManager->render(
+                    'missingFingerprint',
+                    array(
+                        'me' => $me,
+                        'certFingerprint' => $userInfo->getUserId(),
+                        'authorizationEndpoint' => $authorizationEndpoint,
                     )
                 );
-
-                return $response;
             }
-        }
-
-        // store approval if requested
-        if (null !== $request->getPostParameter('remember')) {
-            $this->db->storeApproval($me, $clientId, $redirectUri, $this->io->getTime() + 3600 * 24 * 7);
         }
 
         return $this->indieCodeRedirect($me, $clientId, $redirectUri, $state);
@@ -398,10 +263,11 @@ class IndieCertService extends Service
             $response = new FormResponse();
         }
 
-        $responseData = array(
-            'me' => $indieCode['me'],
+        $response->setBody(
+            array(
+                'me' => $indieCode['me'],
+            )
         );
-        $response->setBody($responseData);
 
         return $response;
     }
@@ -421,25 +287,6 @@ class IndieCertService extends Service
         $responseUri = sprintf('%s?me=%s&code=%s&state=%s', $redirectUri, $me, $code, $state);
 
         return new RedirectResponse($responseUri, 302);
-    }
-
-    private function getAccount(IndieInfo $indieInfo)
-    {
-        $userId = $indieInfo->getUserId();
-        $approvals = $this->db->getApprovals($userId);
-
-        $response = new Response();
-        $response->setBody(
-            $this->templateManager->render(
-                'accountPage',
-                array(
-                    'me' => $userId,
-                    'approvals' => $approvals,
-                )
-            )
-        );
-
-        return $response;
     }
 
     private static function sameHost($u1, $u2)

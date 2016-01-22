@@ -16,33 +16,33 @@
  */
 require_once dirname(__DIR__).'/vendor/autoload.php';
 
-use fkooman\Http\Request;
 use fkooman\IndieCert\Auth\IndieCertService;
 use fkooman\IndieCert\Auth\PdoStorage;
 use fkooman\Tpl\Twig\TwigTemplateManager;
 use fkooman\Ini\IniReader;
 use fkooman\Rest\Plugin\Authentication\AuthenticationPlugin;
-use fkooman\Rest\Plugin\Authentication\IndieAuth\IndieAuthAuthentication;
 use fkooman\Rest\Plugin\Authentication\Tls\TlsAuthentication;
 use fkooman\Rest\Plugin\Authentication\Dummy\DummyAuthentication;
 use GuzzleHttp\Client;
 use fkooman\Http\Session;
 use fkooman\Http\Exception\InternalServerErrorException;
+use fkooman\Config\Reader;
+use fkooman\Config\YamlFile;
 
 try {
-    $iniReader = IniReader::fromFile(
-        dirname(__DIR__).'/config/config.ini'
+    $reader = new Reader(
+        new YamlFile(dirname(__DIR__).'/config/config.yaml')
     );
 
-    $serverMode = $iniReader->v('serverMode', false, 'production');
+    $serverMode = $reader->v('serverMode', false, 'production');
 
     // PdoStorage
-    $pdo = new PDO(
-        $iniReader->v('PdoStorage', 'dsn'),
-        $iniReader->v('PdoStorage', 'username', false),
-        $iniReader->v('PdoStorage', 'password', false)
+    $db = new PDO(
+        $reader->v('Db', 'dsn'),
+        $reader->v('Db', 'username', false),
+        $reader->v('Db', 'password', false)
     );
-    $db = new PdoStorage($pdo);
+    $pdoStorage = new PdoStorage($db);
 
     // Guzzle
     $client = new Client(
@@ -60,10 +60,8 @@ try {
             dirname(__DIR__).'/views',
             dirname(__DIR__).'/config/views',
         ),
-        $iniReader->v('templateCache', false, null)
+        $reader->v('templateCache', false, null)
     );
-
-    $session = new Session();
 
     $session = new Session(
         'indiecert-auth',
@@ -72,20 +70,12 @@ try {
         )
     );
 
-    $request = new Request($_SERVER);
-    $indieAuth = new IndieAuthAuthentication($templateManager, $client, $session);
-    $indieAuth->setAuthUri($request->getUrl()->getRootUrl().'auth');
-
-    $service = new IndieCertService($db, $templateManager, $client);
-
+    $service = new IndieCertService($pdoStorage, $templateManager, $client);
     $authenticationPlugin = new AuthenticationPlugin();
-    $authenticationPlugin->register($indieAuth, 'indieauth');
-    $authenticationPlugin->register(new TlsAuthentication(), 'user');
-    //$authenticationPlugin->register(new DummyAuthentication('foo'), 'user');
-
+    //$authenticationPlugin->register(new TlsAuthentication(), 'user');
+    $authenticationPlugin->register(new DummyAuthentication('foo'), 'user');
     $service->getPluginRegistry()->registerDefaultPlugin($authenticationPlugin);
-
-    $service->run($request)->send();
+    $service->run()->send();
 } catch (Exception $e) {
     // internal server error
     error_log($e->__toString());

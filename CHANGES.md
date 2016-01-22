@@ -1,8 +1,10 @@
 # Changes
 
-## 1.1.0 (...)
+## 2.0.0 (...)
+- major refactor, strip to bare essentials
 - rename the init scripts
 - update dependencies to latest version
+- change configuration format to YAML
 - introduce `serverMode` to allow for production or development configuration
 
 ## 1.0.1 (2015-09-27)

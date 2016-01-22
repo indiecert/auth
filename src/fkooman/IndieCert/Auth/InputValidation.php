@@ -65,9 +65,12 @@ class InputValidation
             throw new BadRequestException(sprintf('"%s" is an invalid URL', $fieldName));
         }
 
-#        if ('https' !== parse_url($uri, PHP_URL_SCHEME)) {
-#            throw new BadRequestException(sprintf('"%s" MUST be a https URL', $fieldName));
-#        }
+        if ('localhost' !== parse_url($uri, PHP_URL_HOST)) {
+            // if host is not localhost, it MUST be https
+            if ('https' !== parse_url($uri, PHP_URL_SCHEME)) {
+                throw new BadRequestException(sprintf('"%s" MUST be a https URL', $fieldName));
+            }
+        }
 
         if (null !== parse_url($uri, PHP_URL_FRAGMENT)) {
             throw new BadRequestException(sprintf('"%s" MUST NOT contain fragment', $fieldName));
@@ -100,25 +103,10 @@ class InputValidation
         return $state;
     }
 
-    public static function validateRedirectTo($rootUrl, $redirectTo)
+    public static function validateRedirectTo($redirectTo)
     {
-        // no redirectTo specified
-        if (null === $redirectTo) {
-            $redirectTo = $rootUrl;
-        }
-
-        // redirectTo specified, using path relative to absRoot
-        if (0 === strpos($redirectTo, '/')) {
-            $redirectTo = $rootUrl.substr($redirectTo, 1);
-        }
-
         if (false === filter_var($redirectTo, FILTER_VALIDATE_URL)) { //, FILTER_FLAG_PATH_REQUIRED)) {
             throw new BadRequestException(sprintf('invalid redirect_to URL "%s"', $redirectTo));
-        }
-
-        // URL needs to start with absRoot
-        if (0 !== strpos($redirectTo, $rootUrl)) {
-            throw new BadRequestException('redirect_to needs to point to a URL relative to the application root');
         }
 
         return $redirectTo;

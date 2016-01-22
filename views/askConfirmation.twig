@@ -1,28 +1,28 @@
 <!DOCTYPE html>
 
 <html lang="en">
-{% include 'head.html' %}
+{% include 'head.twig' %}
 <body>
-    <div id="container">
+    {% include 'header.twig' %}
 
-        <a class="header" href="."><h1>IndieCert</h1></a>
+    <p>
+        A website wants to verify your identity!
+    </p>
+    
+    <dl>
+        <dt>Website</dt>
+        <dd><code>{{ clientId|e }}</code></dd>
+        <dt>Your Identity</dt>
+        <dd><code>{{ me|e }}</code></dd>
+    </dl>
 
-        <p>
-            A website wants to verify your identity!
-        </p>
+    <form method="post" action="{{ confirmUri|e }}">
+        <fieldset>
+        <legend>Approve</legend>
+        <button type="submit" value="Approve" autofocus>Approve</button>
+        </fieldset>
+    </form>
 
-        <table class="askConfirmation">
-            <tr><th>Website</th><td><code title="{{ redirectUri|e }}">{{ clientId|e }}</code></td></tr>
-            <tr><th>Your Identity</th><td><code>{{ me|e }}</code></td></tr>
-        </table>
-
-        <form class="askConfirmation" method="post" action="{{ confirmUri|e }}">
-            <input type="checkbox" id="remember" name="remember" />
-            <label class="remember" for="remember">Remember for 1 week</label>
-            <input class="info" type="submit" value="Approve" autofocus>
-        </form>
-
-        {% include 'footer.html' %}
-    </div> <!-- /container -->
+    {% include 'footer.twig' %}
 </body>
 </html>

@@ -1,30 +1,30 @@
 <!DOCTYPE html>
 
 <html lang="en">
-{% include 'head.html' %}
+{% include 'head.twig' %}
 <body>
-    <div id="container">
-        <a class="header" href="."><h1>IndieCert</h1></a>
-        <p class="warn">
-            You reached this page because you do not yet have a client certificate
-            installed in your browser/operating system or declined to authenticate with it
-            to IndieCert.
-        </p>
+    {% include 'header.twig' %}
 
-        <p>
-            If you want you can generate a new client certificate <a href="enroll?me={{ me|e }}">here</a>!
-            Follow the instructions provided there to get going. If you already have a
-            client certificate restart your browser<span class="sup">1</span> and
-            try again!
-        </p>
+    <p class="warning">
+        You reached this page because you do not yet have a client certificate
+        installed in your browser/operating system or declined to authenticate with it
+        to IndieCert.
+    </p>
 
-        <div class="footnotes">
-            <span class="sup">1</span>
-                Some browser will require you to restart, or use "Private Browsing" to forget
-                that you did not want to authenticate to a site using a client certificate...
-        </div>
+    <p>
+        If you want you can generate a new client certificate <a href="#">here</a>!
+        Follow the instructions provided there to get going. If you already have a
+        client certificate restart your browser (1) and
+        try again!
+    </p>
 
-        {% include 'footer.html' %}
-    </div> <!-- /container -->
+    <ol>
+        <li>
+Some browser will require you to restart, or use "Private Browsing" 
+to forget that you did not want to authenticate to a site using a client certificate...
+        </li>
+    </ol>
+
+    {% include 'footer.twig' %}
 </body>
 </html>

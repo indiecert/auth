@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c5c004b94e8696405c7d9f891503c8b3",
-    "content-hash": "6f8c8a08d04bd92a4ca6e088cbff3a36",
+    "hash": "517a0a5295b5252218bb631f06977cfa",
+    "content-hash": "c2efe9bb6412869d409046a68474117f",
     "packages": [
         {
             "name": "fkooman/base64",
@@ -43,6 +43,45 @@
             ],
             "description": "A base64 encoder and decoder",
             "time": "2015-07-13 16:08:09"
+        },
+        {
+            "name": "fkooman/config",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fkooman/php-lib-config.git",
+                "reference": "961f2cb63bab8916c921a7b29a7eb3e22b5bcda1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fkooman/php-lib-config/zipball/961f2cb63bab8916c921a7b29a7eb3e22b5bcda1",
+                "reference": "961f2cb63bab8916c921a7b29a7eb3e22b5bcda1",
+                "shasum": ""
+            },
+            "require": {
+                "ext-spl": "*",
+                "php": ">=5.3.3",
+                "symfony/yaml": "^2.7"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "fkooman\\Config\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "François Kooman",
+                    "email": "fkooman@tuxed.net",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Read and write configuration files",
+            "time": "2015-11-09 18:12:16"
         },
         {
             "name": "fkooman/http",
@@ -87,44 +126,6 @@
             ],
             "description": "Simple PHP library for dealing with HTTP requests and responses.",
             "time": "2015-12-22 12:27:38"
-        },
-        {
-            "name": "fkooman/ini",
-            "version": "1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/fkooman/php-lib-ini.git",
-                "reference": "b380a88e42ce2184e822cc8b89223cd777c484be"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/fkooman/php-lib-ini/zipball/b380a88e42ce2184e822cc8b89223cd777c484be",
-                "reference": "b380a88e42ce2184e822cc8b89223cd777c484be",
-                "shasum": ""
-            },
-            "require": {
-                "ext-spl": "*",
-                "php": ">=5.3.3"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "fkooman\\Ini\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "François Kooman",
-                    "email": "fkooman@tuxed.net",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Handle INI configuration files",
-            "time": "2015-07-13 12:06:01"
         },
         {
             "name": "fkooman/io",
@@ -293,53 +294,6 @@
             ],
             "description": "Authentication plugin for fkooman/rest",
             "time": "2016-01-21 19:55:11"
-        },
-        {
-            "name": "fkooman/rest-plugin-authentication-indieauth",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/fkooman/php-lib-rest-plugin-authentication-indieauth.git",
-                "reference": "bca87c77c80664b056f87c7ffe360ff8f4f08fca"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/fkooman/php-lib-rest-plugin-authentication-indieauth/zipball/bca87c77c80664b056f87c7ffe360ff8f4f08fca",
-                "reference": "bca87c77c80664b056f87c7ffe360ff8f4f08fca",
-                "shasum": ""
-            },
-            "require": {
-                "ext-dom": "*",
-                "ext-filter": "*",
-                "ext-libxml": "*",
-                "ext-pcre": "*",
-                "ext-spl": "*",
-                "fkooman/io": "^1.0.0",
-                "fkooman/rest": "^1.0.1",
-                "fkooman/rest-plugin-authentication": "^2.0.0",
-                "fkooman/tpl": "^2.0.0",
-                "guzzlehttp/guzzle": "~5.3",
-                "php": ">=5.3.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "fkooman\\Rest\\Plugin\\Authentication\\IndieAuth\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "François Kooman",
-                    "email": "fkooman@tuxed.net",
-                    "role": "Developer"
-                }
-            ],
-            "description": "IndieAuth plugin for fkooman/rest",
-            "time": "2016-01-19 14:50:02"
         },
         {
             "name": "fkooman/rest-plugin-authentication-tls",
@@ -660,6 +614,55 @@
             "time": "2015-07-03 13:48:55"
         },
         {
+            "name": "symfony/yaml",
+            "version": "v2.8.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/yaml.git",
+                "reference": "34c8a4b51e751e7ea869b8262f883d008a2b81b8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/34c8a4b51e751e7ea869b8262f883d008a2b81b8",
+                "reference": "34c8a4b51e751e7ea869b8262f883d008a2b81b8",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.9"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.8-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Yaml\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Yaml Component",
+            "homepage": "https://symfony.com",
+            "time": "2016-01-13 10:28:07"
+        },
+        {
             "name": "twig/twig",
             "version": "v1.23.3",
             "source": {
@@ -724,9 +727,7 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "fkooman/rest-plugin-authentication-indieauth": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

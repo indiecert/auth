@@ -14,10 +14,9 @@
         "ext-libxml": "*",
         "ext-pcre": "*",
         "ext-pdo": "*",
-        "fkooman/ini": "^1.0.0",
+        "fkooman/config": "^1.0.0",
         "fkooman/io": "^1.0.0",
         "fkooman/rest": "^1.0.1",
-        "fkooman/rest-plugin-authentication-indieauth": "dev-master",
         "fkooman/rest-plugin-authentication-tls": "^2.0.0",
         "fkooman/tpl-twig": "^1.0.0",
         "guzzlehttp/guzzle": "~5.3"
