@@ -86,7 +86,7 @@ class IndieCertService extends Service
             array(
                 'fkooman\Rest\Plugin\Authentication\AuthenticationPlugin' => array(
                     'activate' => array('user'),
-                    'required' => false
+                    'require' => false
                 ),
             )
         );
