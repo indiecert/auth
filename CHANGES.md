@@ -1,6 +1,6 @@
 # Changes
 
-## 2.0.0 (...)
+## 2.0.0 (2016-01-22)
 - major refactor, strip to bare essentials
 - rename the init scripts
 - update dependencies to latest version
