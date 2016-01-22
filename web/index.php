@@ -19,12 +19,10 @@ require_once dirname(__DIR__).'/vendor/autoload.php';
 use fkooman\IndieCert\Auth\IndieCertService;
 use fkooman\IndieCert\Auth\PdoStorage;
 use fkooman\Tpl\Twig\TwigTemplateManager;
-use fkooman\Ini\IniReader;
 use fkooman\Rest\Plugin\Authentication\AuthenticationPlugin;
 use fkooman\Rest\Plugin\Authentication\Tls\TlsAuthentication;
 use fkooman\Rest\Plugin\Authentication\Dummy\DummyAuthentication;
 use GuzzleHttp\Client;
-use fkooman\Http\Session;
 use fkooman\Http\Exception\InternalServerErrorException;
 use fkooman\Config\Reader;
 use fkooman\Config\YamlFile;
@@ -63,17 +61,10 @@ try {
         $reader->v('templateCache', false, null)
     );
 
-    $session = new Session(
-        'indiecert-auth',
-        array(
-            'secure' => 'development' !== $serverMode,
-        )
-    );
-
     $service = new IndieCertService($pdoStorage, $templateManager, $client);
     $authenticationPlugin = new AuthenticationPlugin();
-    //$authenticationPlugin->register(new TlsAuthentication(), 'user');
-    $authenticationPlugin->register(new DummyAuthentication('foo'), 'user');
+    $authenticationPlugin->register(new TlsAuthentication(), 'user');
+    //$authenticationPlugin->register(new DummyAuthentication('foo'), 'user');
     $service->getPluginRegistry()->registerDefaultPlugin($authenticationPlugin);
     $service->run()->send();
 } catch (Exception $e) {
