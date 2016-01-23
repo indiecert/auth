@@ -89,6 +89,18 @@ class IndieCertService extends Service
         );
 
         $this->get(
+            '/faq',
+            function (Request $request) {
+                return $this->getFaq($request);
+            },
+            array(
+                'fkooman\Rest\Plugin\Authentication\AuthenticationPlugin' => array(
+                    'enabled' => false,
+                ),
+            )
+        );
+
+        $this->get(
             '/auth',
             function (Request $request, UserInfoInterface $userInfo = null) {
                 return $this->getAuth($request, $userInfo);
@@ -130,10 +142,14 @@ class IndieCertService extends Service
     private function getIndex(Request $request)
     {
         return $this->templateManager->render(
-            'indexPage',
-            array(
-                'rootUrl' => $request->getUrl()->getRootUrl(),
-            )
+            'indexPage', array()
+        );
+    }
+
+    private function getFaq(Request $request)
+    {
+        return $this->templateManager->render(
+            'faqPage', array()
         );
     }
 
