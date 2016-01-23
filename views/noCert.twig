@@ -19,6 +19,7 @@
         <form method="get" action="{{ enrollUrl|e }}">
             <fieldset>
                 <legend>Enroll</legend>
+                <input type="hidden" name="me" value="{{ me|e }}">
                 <button type="submit">Enroll</button>
             </fieldset>
         </form>
