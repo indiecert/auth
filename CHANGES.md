@@ -1,5 +1,8 @@
 # Changes
 
+## 2.0.1 (2016-01-23)
+- allow to specify the enroll URL in the configuration file
+
 ## 2.0.0 (2016-01-22)
 - major refactor, strip to bare essentials
 - rename the init scripts

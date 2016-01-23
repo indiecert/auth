@@ -62,6 +62,7 @@ try {
     );
 
     $service = new IndieCertService($pdoStorage, $templateManager, $client);
+    $service->setEnrollUrl($reader->v('enrollUrl', false));
     $authenticationPlugin = new AuthenticationPlugin();
     $authenticationPlugin->register(new TlsAuthentication(), 'user');
     #$authenticationPlugin->register(new DummyAuthentication('foo'), 'user');

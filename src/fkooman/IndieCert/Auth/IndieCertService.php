@@ -41,6 +41,9 @@ class IndieCertService extends Service
     /** @var \fkooman\IO\IO */
     private $io;
 
+    /** @var string */
+    private $enrollUrl;
+
     public function __construct(PdoStorage $db, TemplateManagerInterface $templateManager, Client $client = null, IO $io = null)
     {
         parent::__construct();
@@ -60,7 +63,14 @@ class IndieCertService extends Service
         }
         $this->io = $io;
 
+        $this->enrollUrl = null;
+
         $this->registerRoutes();
+    }
+
+    public function setEnrollUrl($enrollUrl)
+    {
+        $this->enrollUrl = $enrollUrl;
     }
 
     private function registerRoutes()
@@ -142,6 +152,7 @@ class IndieCertService extends Service
             return $this->templateManager->render(
                 'noCert',
                 array(
+                    'enrollUrl' => $this->enrollUrl,
                     'me' => $me,
                 )
             );
@@ -201,6 +212,7 @@ class IndieCertService extends Service
             return $this->templateManager->render(
                 'noCert',
                 array(
+                    'enrollUrl' => $this->enrollUrl,
                     'me' => $me,
                 )
             );
