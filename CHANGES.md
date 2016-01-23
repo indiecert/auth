@@ -3,6 +3,8 @@
 ## 2.0.2 (...)
 - also provide "me" to the enroll script for WebID+TLS identifier by 
   default
+- restore the FAQ
+- make the screen less wide by default
 
 ## 2.0.1 (2016-01-23)
 - allow to specify the enroll URL in the configuration file
