@@ -5,8 +5,10 @@
 <body>
     {% include 'header.twig' %}
 
+    <h2>Authentication</h2>
+
     <p class="warning">
-        IndieCert was unable to find a matching fingerprint on your claimed URL
+        IndieCert was unable to find a matching fingerprint on your claimed URL!
     </p>
 
     <p>
@@ -16,7 +18,7 @@
     </p>
 
     <p>
-        You can easily fix this by placing the following fragment in the
+        You can easily fix this by placing the following (emphasized) fragment in the
         <code>&lt;head&gt;</code> section of your HTML page:
     </p>
 
@@ -53,8 +55,7 @@
 </pre>
 
     <p>
-        When done, you can <a href="">reload</a> this page and you should be
-        redirected to the service that was requesting authentication and be logged in.
+        When done, <a href="">reload</a> the page!
     </p>
 
     {% include 'footer.twig' %}

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+
+<html lang="en">
+{% include 'head.twig' %}
+<body>
+    {% include 'header.twig' %}
+
+    <ul class="mainMenu">
+        <li><a href="{{ root|e }}">Home</a></li>
+        <li class="active"><a href="enroll">Enrollment</a></li>
+        <li><a href="faq">FAQ</a></li>
+    </ul>
+    
+    <h2>Enrollment</h2>
+
+    <p>
+        Here you can generate a new client certificate to be installed in 
+        your browser.
+    </p>
+    <p>
+        The following browsers and platforms were tested and are working:
+    </p>
+
+    <ul>
+        <li>Firefox (Windows, Linux, Android)</li>
+        <li>Chromium (Linux)</li>
+        <li>Chrome (Windows, Android)</li>
+    </ul>
+
+    <p>
+        Press the "Generate" button below to start the certificate generation process.
+    </p>
+    <p>
+        After this has completed you should get a notification by your browser that a
+        client certificate was successfully installed.
+    </p>
+
+    <form method="post" class="enroll">
+        <fieldset>
+            <legend>Enrollment</legend>
+            <label for="spkac">Strength</label>
+            <keygen id="spkac" name="spkac" challenge="{{ certChallenge|e }}" keytype="RSA">
+            <label for="me">WebID+TLS URI</label>
+            <input type="text" name="me" value="{{ me|e }}">
+            <button type="submit">Generate</button>
+        </fieldset>
+    </form>
+
+    {% if redirectTo %}
+        <p>
+            After installing the certificate, <a href="{{ redirectTo|e }}">return</a> to the application!
+        </p>
+    {% endif %}
+
+    {% include 'footer.twig' %}
+</body>
+</html>

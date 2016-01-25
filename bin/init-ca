@@ -1,0 +1,54 @@
+#!/usr/bin/php
+<?php
+
+/**
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Affero General Public License as
+ *  published by the Free Software Foundation, either version 3 of the
+ *  License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Affero General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Affero General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+require_once dirname(__DIR__).'/vendor/autoload.php';
+
+use fkooman\Config\Reader;
+use fkooman\Config\YamlFile;
+use fkooman\IndieCert\Auth\CertManager;
+
+try {
+    $reader = new Reader(
+        new YamlFile(dirname(__DIR__).'/config/config.yaml')
+    );
+
+    // initialize the CA
+    $caDir = $reader->v('CA', 'storageDir');
+    $keySize = $reader->v('CA', 'keySize');
+    $commonName = $reader->v('CA', 'commonName');
+
+    if (!file_exists($caDir)) {
+        if (false === @mkdir($caDir)) {
+            throw new Exception('unable to create ca directory');
+        }
+    }
+
+    $caData = CertManager::generateCertificateAuthority($keySize, $commonName);
+
+    // write CA certificate
+    if (false === @file_put_contents(sprintf('%s/ca.crt', $caDir), $caData['crt'])) {
+        throw new Exception('unable to write certificate');
+    }
+
+    // write CA private key
+    if (false === @file_put_contents(sprintf('%s/ca.key', $caDir), $caData['key'])) {
+        throw new Exception('unable to write private key');
+    }
+} catch (Exception $e) {
+    echo $e->getMessage().PHP_EOL;
+    exit(1);
+}

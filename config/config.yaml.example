@@ -5,9 +5,13 @@ serverMode: production
 # Uncomment this line below to enable Twig template caching
 #templateCache = "/var/lib/indiecert-auth/tpl"
 
-# The URL to redirect the user to if they do not have a client certificate 
-# installed in their browser yet
-enrollUrl: https://enroll.indiecert.example/
+# The URL to redirect the user to if they want to visit a demo service
+demoUrl: https://demo.indiecert.example/
 
 Db:
     dsn: 'sqlite:/var/lib/indiecert-auth/storage.sqlite'
+
+CA:
+    storageDir: /var/lib/indiecert-enroll/ca
+    commonName: Demo CA
+    keySize: '2048'

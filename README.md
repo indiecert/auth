@@ -27,6 +27,7 @@ other database please first modify the configuration file
 `/etc/indiecert-auth/config.yaml`.
 
     $ sudo -u apache indiecert-auth-init
+    $ sudo -u apache indiecert-auth-init-ca
 
 # Production Deployment
 In case you want to deploy IndieCert in production, you SHOULD use the RPM 
@@ -54,6 +55,7 @@ account is called `fkooman` in group `fkooman`.
 Now to initialize the database:
 
     $ sudo -u apache bin/init
+    $ sudo -u apache bin/init-ca
 
 # License
 Licensed under the GNU Affero General Public License as published by the Free 

@@ -5,32 +5,20 @@
 <body>
     {% include 'header.twig' %}
 
+    <h2>Authentication</h2>
+
     <p class="warning">
-        You reached this page because you do not yet have a client certificate
-        installed in your browser/operating system or declined to authenticate with it
-        to IndieCert<sup>1</sup>.
+        You did not authenticate with a client certificate!
     </p>
 
-    {% if enrollUrl %}
-        <p>
-            If you want you can generate a new client certificate! 
-        </p>
+    <p>
+        If you do not yet have a client certificate, you can get one <a href="enroll?redirect_to={{ requestUrl|e }}">here</a>.
+    </p>
 
-        <form method="get" action="{{ enrollUrl|e }}">
-            <fieldset>
-                <legend>Enroll</legend>
-                <input type="hidden" name="me" value="{{ me|e }}">
-                <button type="submit">Enroll</button>
-            </fieldset>
-        </form>
-    {% endif %}
-
-    <ol class="footnote">
-        <li>
-Some browser will require you to restart, or use "Private Browsing" 
+    <p>
+Some browsers will require you to restart, or use "Private Browsing" 
 to forget that you did not want to authenticate to a site using a client certificate.
-        </li>
-    </ol>
+    </p>
 
     {% include 'footer.twig' %}
 </body>

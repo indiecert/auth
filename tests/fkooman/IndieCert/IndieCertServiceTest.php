@@ -28,6 +28,7 @@ use GuzzleHttp\Message\Response;
 use GuzzleHttp\Stream\Stream;
 use fkooman\Rest\Plugin\Authentication\AuthenticationPlugin;
 use fkooman\IndieCert\Test\TestTemplateManager;
+use fkooman\Rest\Service;
 
 class IndieCertServiceTest extends PHPUnit_Framework_TestCase
 {
@@ -66,7 +67,8 @@ class IndieCertServiceTest extends PHPUnit_Framework_TestCase
         $client->getEmitter()->attach($mock);
 
         $tplManager = new TestTemplateManager();
-        $this->service = new IndieCertService($storage, $tplManager, $client, $ioStub);
+        $this->service = new Service();
+        $this->service->addModule(new AuthModule($storage, $tplManager, $client, $ioStub));
         $ap = new AuthenticationPlugin();
         $ap->register(new TlsAuthentication(), 'user');
         $this->service->getPluginRegistry()->registerDefaultPlugin($ap);

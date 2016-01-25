@@ -16,8 +16,11 @@
  */
 require_once dirname(__DIR__).'/vendor/autoload.php';
 
-use fkooman\IndieCert\Auth\IndieCertService;
+use fkooman\Rest\Service;
 use fkooman\IndieCert\Auth\PdoStorage;
+use fkooman\IndieCert\Auth\AuthModule;
+use fkooman\IndieCert\Auth\EnrollModule;
+use fkooman\IndieCert\Auth\CertManager;
 use fkooman\Tpl\Twig\TwigTemplateManager;
 use fkooman\Rest\Plugin\Authentication\AuthenticationPlugin;
 use fkooman\Rest\Plugin\Authentication\Tls\TlsAuthentication;
@@ -26,6 +29,7 @@ use GuzzleHttp\Client;
 use fkooman\Http\Exception\InternalServerErrorException;
 use fkooman\Config\Reader;
 use fkooman\Config\YamlFile;
+use fkooman\Http\Request;
 
 try {
     $reader = new Reader(
@@ -52,6 +56,8 @@ try {
         )
     );
 
+    $request = new Request($_SERVER);
+
     // TemplateManager
     $templateManager = new TwigTemplateManager(
         array(
@@ -60,14 +66,33 @@ try {
         ),
         $reader->v('templateCache', false, null)
     );
+    $templateManager->setDefault(
+        array(
+            'root' => $request->getUrl()->getRoot(),
+            'demoUrl' => $reader->v('demoUrl', false),
+        )
+    );
 
-    $service = new IndieCertService($pdoStorage, $templateManager, $client);
-    $service->setEnrollUrl($reader->v('enrollUrl', false));
+    // CertManager
+    $caDir = $reader->v('CA', 'storageDir');
+    $caCrt = file_get_contents(sprintf('%s/ca.crt', $caDir));
+    $caKey = file_get_contents(sprintf('%s/ca.key', $caDir));
+
+    $certManager = new CertManager($caCrt, $caKey);
+
+    $service = new Service();
+    $service->addModule(
+        new AuthModule($pdoStorage, $templateManager, $client)
+    );
+    $service->addModule(
+        new EnrollModule($certManager, $templateManager)
+    );
+
     $authenticationPlugin = new AuthenticationPlugin();
     $authenticationPlugin->register(new TlsAuthentication(), 'user');
     #$authenticationPlugin->register(new DummyAuthentication('foo'), 'user');
     $service->getPluginRegistry()->registerDefaultPlugin($authenticationPlugin);
-    $service->run()->send();
+    $service->run($request)->send();
 } catch (Exception $e) {
     // internal server error
     error_log($e->__toString());

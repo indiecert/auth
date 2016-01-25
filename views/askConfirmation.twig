@@ -5,6 +5,8 @@
 <body>
     {% include 'header.twig' %}
 
+    <h2>Authorization</h2>
+
     <p>
         A website wants to verify your identity!
     </p>
@@ -19,7 +21,7 @@
     <form method="post" action="{{ confirmUri|e }}">
         <fieldset>
         <legend>Approve</legend>
-        <button type="submit" value="Approve" autofocus>Approve</button>
+        <button type="submit" value="Approve">Approve</button>
         </fieldset>
     </form>
 

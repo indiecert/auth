@@ -20,6 +20,7 @@ use fkooman\IO\IO;
 use fkooman\Http\Request;
 use fkooman\Http\JsonResponse;
 use fkooman\Http\FormResponse;
+use fkooman\Rest\ServiceModuleInterface;
 use fkooman\Rest\Service;
 use GuzzleHttp\Client;
 use fkooman\Http\RedirectResponse;
@@ -27,7 +28,7 @@ use fkooman\Http\Exception\BadRequestException;
 use fkooman\Rest\Plugin\Authentication\UserInfoInterface;
 use fkooman\Tpl\TemplateManagerInterface;
 
-class IndieCertService extends Service
+class AuthModule implements ServiceModuleInterface
 {
     /** @var PdoStorage */
     private $db;
@@ -41,13 +42,8 @@ class IndieCertService extends Service
     /** @var \fkooman\IO\IO */
     private $io;
 
-    /** @var string */
-    private $enrollUrl;
-
     public function __construct(PdoStorage $db, TemplateManagerInterface $templateManager, Client $client = null, IO $io = null)
     {
-        parent::__construct();
-
         $this->db = $db;
         $this->templateManager = $templateManager;
 
@@ -62,21 +58,12 @@ class IndieCertService extends Service
             $io = new IO();
         }
         $this->io = $io;
-
-        $this->enrollUrl = null;
-
-        $this->registerRoutes();
     }
 
-    public function setEnrollUrl($enrollUrl)
-    {
-        $this->enrollUrl = $enrollUrl;
-    }
-
-    private function registerRoutes()
+    public function init(Service $service)
     {
         // Autentication NOT needed
-        $this->get(
+        $service->get(
             '/',
             function (Request $request) {
                 return $this->getIndex($request);
@@ -88,7 +75,7 @@ class IndieCertService extends Service
             )
         );
 
-        $this->get(
+        $service->get(
             '/faq',
             function (Request $request) {
                 return $this->getFaq($request);
@@ -100,7 +87,7 @@ class IndieCertService extends Service
             )
         );
 
-        $this->get(
+        $service->get(
             '/auth',
             function (Request $request, UserInfoInterface $userInfo = null) {
                 return $this->getAuth($request, $userInfo);
@@ -113,7 +100,7 @@ class IndieCertService extends Service
             )
         );
 
-        $this->post(
+        $service->post(
             '/confirm',
             function (Request $request, UserInfoInterface $userInfo) {
                 return $this->postConfirm($request, $userInfo);
@@ -126,7 +113,7 @@ class IndieCertService extends Service
         );
 
         // this endpoint is used for verifying authorization_code by clients
-        $this->post(
+        $service->post(
             '/auth',
             function (Request $request) {
                 return $this->postAuth($request);
@@ -142,7 +129,8 @@ class IndieCertService extends Service
     private function getIndex(Request $request)
     {
         return $this->templateManager->render(
-            'indexPage', array()
+            'indexPage',
+            array()
         );
     }
 
@@ -168,7 +156,7 @@ class IndieCertService extends Service
             return $this->templateManager->render(
                 'noCert',
                 array(
-                    'enrollUrl' => $this->enrollUrl,
+                    'requestUrl' => urlencode($request->getUrl()->toString()),
                     'me' => $me,
                 )
             );
@@ -228,7 +216,7 @@ class IndieCertService extends Service
             return $this->templateManager->render(
                 'noCert',
                 array(
-                    'enrollUrl' => $this->enrollUrl,
+                    'requestUrl' => urlencode($request->getUrl()->toString()),
                     'me' => $me,
                 )
             );
