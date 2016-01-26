@@ -12,6 +12,11 @@ a {
     color: #444;
 }
 
+code, pre {
+  font-family: monospace, monospace;
+  font-size: 1em;
+}
+
 ul.mainMenu {
     margin: 0;
     padding: 0;
@@ -82,25 +87,6 @@ p.warning {
     padding: 1em;
 }
 
-dl {
+dt {
     font-weight: bold;
-}
-
-code, pre {
-    background-color: #efefef;
-    color: #c00;
-    padding: 0 0.4em;
-}
-
-pre {
-    padding: 0.4em;
-}
-
-button {
-    padding: 0.4em;
-    line-height: 1.4;
-    font-size: 100%;
-    border: 0;
-    background-color: #093;
-    color: #fff;
 }
