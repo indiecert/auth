@@ -1,5 +1,8 @@
 # Changes
 
+## 2.1.1 (2016-01-28)
+- add me parameter to enroll page request
+
 ## 2.1.0 (2016-01-27)
 - also provide "me" to the enroll script for WebID+TLS identifier by 
   default
