@@ -12,6 +12,6 @@ Db:
     dsn: 'sqlite:/var/lib/indiecert-auth/storage.sqlite'
 
 CA:
-    storageDir: /var/lib/indiecert-enroll/ca
+    storageDir: /var/lib/indiecert-auth/ca
     commonName: Demo CA
     keySize: '2048'

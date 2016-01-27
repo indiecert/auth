@@ -1,5 +1,8 @@
 # Changes
 
+## 2.1.3 (2016-01-27)
+- another configuration file fix
+
 ## 2.1.2 (2016-01-27)
 - fix example configuration file
 
