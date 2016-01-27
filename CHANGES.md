@@ -1,6 +1,9 @@
 # Changes
 
-## 2.1.1 (2016-01-28)
+## 2.1.2 (2016-01-27)
+- fix example configuration file
+
+## 2.1.1 (2016-01-27)
 - add me parameter to enroll page request
 
 ## 2.1.0 (2016-01-27)

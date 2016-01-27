@@ -3,7 +3,7 @@
 serverMode: production
 
 # Uncomment this line below to enable Twig template caching
-#templateCache = "/var/lib/indiecert-auth/tpl"
+#templateCache: /var/lib/indiecert-auth/tpl
 
 # The URL to redirect the user to if they want to visit a demo service
 demoUrl: https://demo.indiecert.example/
