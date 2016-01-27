@@ -1,6 +1,6 @@
 # Changes
 
-## 2.1.0 (2016-01-25)
+## 2.1.0 (2016-01-27)
 - also provide "me" to the enroll script for WebID+TLS identifier by 
   default
 - restore the FAQ
