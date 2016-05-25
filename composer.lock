@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "dcc10ffd0dff63cd58b86da69ac47093",
-    "content-hash": "41b8a6855095a26a701c8bf31f3a220b",
+    "hash": "8261fe2356b37634db55755535cd1e4f",
+    "content-hash": "352b482fc1fae7bf88e578cd4f726289",
     "packages": [
         {
             "name": "fkooman/base64",
@@ -46,16 +46,16 @@
         },
         {
             "name": "fkooman/config",
-            "version": "1.0.0",
+            "version": "1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fkooman/php-lib-config.git",
-                "reference": "961f2cb63bab8916c921a7b29a7eb3e22b5bcda1"
+                "reference": "b7ef9f6c7c3e40a8a9d62a471a49f8ee9338ac4d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fkooman/php-lib-config/zipball/961f2cb63bab8916c921a7b29a7eb3e22b5bcda1",
-                "reference": "961f2cb63bab8916c921a7b29a7eb3e22b5bcda1",
+                "url": "https://api.github.com/repos/fkooman/php-lib-config/zipball/b7ef9f6c7c3e40a8a9d62a471a49f8ee9338ac4d",
+                "reference": "b7ef9f6c7c3e40a8a9d62a471a49f8ee9338ac4d",
                 "shasum": ""
             },
             "require": {
@@ -81,20 +81,20 @@
                 }
             ],
             "description": "Read and write configuration files",
-            "time": "2015-11-09 18:12:16"
+            "time": "2016-05-19 06:59:02"
         },
         {
             "name": "fkooman/http",
-            "version": "1.5.1",
+            "version": "1.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fkooman/php-lib-http.git",
-                "reference": "f43078dadb881468c182b436917077f2a9e51b0b"
+                "reference": "ada6f0debe78eaed04f6dcb4ee9a7e3576322d3b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fkooman/php-lib-http/zipball/f43078dadb881468c182b436917077f2a9e51b0b",
-                "reference": "f43078dadb881468c182b436917077f2a9e51b0b",
+                "url": "https://api.github.com/repos/fkooman/php-lib-http/zipball/ada6f0debe78eaed04f6dcb4ee9a7e3576322d3b",
+                "reference": "ada6f0debe78eaed04f6dcb4ee9a7e3576322d3b",
                 "shasum": ""
             },
             "require": {
@@ -125,27 +125,27 @@
                 }
             ],
             "description": "Simple PHP library for dealing with HTTP requests and responses.",
-            "time": "2015-12-22 12:27:38"
+            "time": "2016-02-22 00:05:41"
         },
         {
             "name": "fkooman/io",
-            "version": "1.0.1",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fkooman/php-lib-io.git",
-                "reference": "0c2d8c49b1e37b9e3593c9e8dc51f4abc0c6712a"
+                "reference": "e478f37798af631ad49c3154420c24c6bbe0484c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fkooman/php-lib-io/zipball/0c2d8c49b1e37b9e3593c9e8dc51f4abc0c6712a",
-                "reference": "0c2d8c49b1e37b9e3593c9e8dc51f4abc0c6712a",
+                "url": "https://api.github.com/repos/fkooman/php-lib-io/zipball/e478f37798af631ad49c3154420c24c6bbe0484c",
+                "reference": "e478f37798af631ad49c3154420c24c6bbe0484c",
                 "shasum": ""
             },
             "require": {
                 "ext-date": "*",
-                "ext-openssl": "*",
                 "ext-spl": "*",
-                "php": ">= 5.3.3"
+                "paragonie/random_compat": "^1.0",
+                "php": ">= 5.4"
             },
             "type": "library",
             "autoload": {
@@ -164,7 +164,7 @@
                 }
             ],
             "description": "Simple IO library",
-            "time": "2015-10-03 11:35:44"
+            "time": "2016-05-25 14:27:49"
         },
         {
             "name": "fkooman/json",
@@ -337,20 +337,20 @@
         },
         {
             "name": "fkooman/tpl",
-            "version": "2.0.0",
+            "version": "2.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fkooman/php-lib-tpl.git",
-                "reference": "ce51fa8da33d231aaeefd4558f1d813a1edc5931"
+                "reference": "d6abca430ff050890f93eb353158b8ed3dc91bf4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fkooman/php-lib-tpl/zipball/ce51fa8da33d231aaeefd4558f1d813a1edc5931",
-                "reference": "ce51fa8da33d231aaeefd4558f1d813a1edc5931",
+                "url": "https://api.github.com/repos/fkooman/php-lib-tpl/zipball/d6abca430ff050890f93eb353158b8ed3dc91bf4",
+                "reference": "d6abca430ff050890f93eb353158b8ed3dc91bf4",
                 "shasum": ""
             },
             "require": {
-                "php": ">= 5.3.3"
+                "php": ">= 5.3.0"
             },
             "type": "library",
             "autoload": {
@@ -369,27 +369,29 @@
                 }
             ],
             "description": "Simple Template Abstraction Library",
-            "time": "2015-08-10 11:04:40"
+            "time": "2016-02-04 10:00:40"
         },
         {
             "name": "fkooman/tpl-twig",
-            "version": "1.1.0",
+            "version": "1.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fkooman/php-lib-tpl-twig.git",
-                "reference": "c1f50f49ffe430b12e36c2a8e5441cd87830484a"
+                "reference": "6e2187ef357d75f9f446b382f110cd7d7d290fc8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fkooman/php-lib-tpl-twig/zipball/c1f50f49ffe430b12e36c2a8e5441cd87830484a",
-                "reference": "c1f50f49ffe430b12e36c2a8e5441cd87830484a",
+                "url": "https://api.github.com/repos/fkooman/php-lib-tpl-twig/zipball/6e2187ef357d75f9f446b382f110cd7d7d290fc8",
+                "reference": "6e2187ef357d75f9f446b382f110cd7d7d290fc8",
                 "shasum": ""
             },
             "require": {
+                "ext-gettext": "*",
                 "ext-spl": "*",
-                "fkooman/tpl": "^2.0.0",
-                "php": ">= 5.3.3",
-                "twig/twig": "^1.18"
+                "fkooman/tpl": "^2.1.0",
+                "php": ">= 5.4",
+                "twig/extensions": "^1.3.0",
+                "twig/twig": "^1.20"
             },
             "type": "library",
             "autoload": {
@@ -408,7 +410,7 @@
                 }
             ],
             "description": "Twig for Simple Template Abstraction Library",
-            "time": "2015-12-17 20:20:16"
+            "time": "2016-04-11 11:53:32"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -570,6 +572,54 @@
             "time": "2014-10-12 19:18:40"
         },
         {
+            "name": "paragonie/random_compat",
+            "version": "v1.4.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/paragonie/random_compat.git",
+                "reference": "c7e26a21ba357863de030f0b9e701c7d04593774"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/c7e26a21ba357863de030f0b9e701c7d04593774",
+                "reference": "c7e26a21ba357863de030f0b9e701c7d04593774",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.*|5.*"
+            },
+            "suggest": {
+                "ext-libsodium": "Provides a modern crypto API that can be used to generate random bytes."
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "lib/random.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Paragon Initiative Enterprises",
+                    "email": "security@paragonie.com",
+                    "homepage": "https://paragonie.com"
+                }
+            ],
+            "description": "PHP 5.x polyfill for random_bytes() and random_int() from PHP 7",
+            "keywords": [
+                "csprng",
+                "pseudorandom",
+                "random"
+            ],
+            "time": "2016-03-18 20:34:03"
+        },
+        {
             "name": "phpseclib/phpseclib",
             "version": "2.0.1",
             "source": {
@@ -660,16 +710,16 @@
         },
         {
             "name": "react/promise",
-            "version": "v2.2.1",
+            "version": "v2.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/reactphp/promise.git",
-                "reference": "3b6fca09c7d56321057fa8867c8dbe1abf648627"
+                "reference": "8025426794f1944de806618671d4fa476dc7626f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/reactphp/promise/zipball/3b6fca09c7d56321057fa8867c8dbe1abf648627",
-                "reference": "3b6fca09c7d56321057fa8867c8dbe1abf648627",
+                "url": "https://api.github.com/repos/reactphp/promise/zipball/8025426794f1944de806618671d4fa476dc7626f",
+                "reference": "8025426794f1944de806618671d4fa476dc7626f",
                 "shasum": ""
             },
             "require": {
@@ -700,20 +750,20 @@
                 }
             ],
             "description": "A lightweight implementation of CommonJS Promises/A for PHP",
-            "time": "2015-07-03 13:48:55"
+            "time": "2016-05-03 17:50:52"
         },
         {
             "name": "symfony/yaml",
-            "version": "v2.8.2",
+            "version": "v2.8.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "34c8a4b51e751e7ea869b8262f883d008a2b81b8"
+                "reference": "e4fbcc65f90909c999ac3b4dfa699ee6563a9940"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/34c8a4b51e751e7ea869b8262f883d008a2b81b8",
-                "reference": "34c8a4b51e751e7ea869b8262f883d008a2b81b8",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/e4fbcc65f90909c999ac3b4dfa699ee6563a9940",
+                "reference": "e4fbcc65f90909c999ac3b4dfa699ee6563a9940",
                 "shasum": ""
             },
             "require": {
@@ -749,20 +799,72 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2016-01-13 10:28:07"
+            "time": "2016-03-29 19:00:15"
         },
         {
-            "name": "twig/twig",
-            "version": "v1.23.3",
+            "name": "twig/extensions",
+            "version": "v1.3.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/twigphp/Twig.git",
-                "reference": "ae53fc2c312fdee63773b75cb570304f85388b08"
+                "url": "https://github.com/twigphp/Twig-extensions.git",
+                "reference": "449e3c8a9ffad7c2479c7864557275a32b037499"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/ae53fc2c312fdee63773b75cb570304f85388b08",
-                "reference": "ae53fc2c312fdee63773b75cb570304f85388b08",
+                "url": "https://api.github.com/repos/twigphp/Twig-extensions/zipball/449e3c8a9ffad7c2479c7864557275a32b037499",
+                "reference": "449e3c8a9ffad7c2479c7864557275a32b037499",
+                "shasum": ""
+            },
+            "require": {
+                "twig/twig": "~1.20|~2.0"
+            },
+            "require-dev": {
+                "symfony/translation": "~2.3"
+            },
+            "suggest": {
+                "symfony/translation": "Allow the time_diff output to be translated"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.3-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Twig_Extensions_": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                }
+            ],
+            "description": "Common additional features for Twig that do not directly belong in core",
+            "homepage": "http://twig.sensiolabs.org/doc/extensions/index.html",
+            "keywords": [
+                "i18n",
+                "text"
+            ],
+            "time": "2015-08-22 16:38:35"
+        },
+        {
+            "name": "twig/twig",
+            "version": "v1.24.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/twigphp/Twig.git",
+                "reference": "3e5aa30ebfbafd5951fb1b01e338e1800ce7e0e8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/3e5aa30ebfbafd5951fb1b01e338e1800ce7e0e8",
+                "reference": "3e5aa30ebfbafd5951fb1b01e338e1800ce7e0e8",
                 "shasum": ""
             },
             "require": {
@@ -775,7 +877,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.23-dev"
+                    "dev-master": "1.24-dev"
                 }
             },
             "autoload": {
@@ -810,7 +912,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2016-01-11 14:02:19"
+            "time": "2016-01-25 21:22:18"
         }
     ],
     "packages-dev": [],

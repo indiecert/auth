@@ -1,5 +1,8 @@
 # Changes
 
+## 2.1.4 (2016-05-25)
+- update `fkooman/io`
+
 ## 2.1.3 (2016-01-27)
 - another configuration file fix
 

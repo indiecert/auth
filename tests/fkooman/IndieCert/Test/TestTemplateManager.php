@@ -26,6 +26,10 @@ class TestTemplateManager implements TemplateManagerInterface
     {
     }
 
+    public function addDefault(array $templateVariables)
+    {
+    }
+
     public function render($templateName, array $templateVariables = array())
     {
         return Json::encode(
