@@ -1,5 +1,8 @@
 # Changes
 
+## 2.1.5 (2016-05-25)
+- update `fkooman/json`
+
 ## 2.1.4 (2016-05-25)
 - update `fkooman/io`
 
