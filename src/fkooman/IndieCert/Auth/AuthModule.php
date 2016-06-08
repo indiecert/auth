@@ -14,10 +14,12 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 namespace fkooman\IndieCert\Auth;
 
 use fkooman\IO\IO;
 use fkooman\Http\Request;
+use fkooman\Http\Response;
 use fkooman\Http\JsonResponse;
 use fkooman\Http\FormResponse;
 use fkooman\Rest\ServiceModuleInterface;
@@ -90,6 +92,10 @@ class AuthModule implements ServiceModuleInterface
         $service->get(
             '/auth',
             function (Request $request, UserInfoInterface $userInfo = null) {
+                if ('HEAD' === $request->getMethod()) {
+                    return new Response();
+                }
+
                 return $this->getAuth($request, $userInfo);
             },
             array(

@@ -1,5 +1,9 @@
 # Changes
 
+## 2.1.6 (2016-06-08)
+- fix issue #21 by making a HEAD request always return `200 OK`, 
+  handling https://github.com/aaronpk/IndieAuth.com/issues/93
+
 ## 2.1.5 (2016-05-25)
 - update `fkooman/json`
 
